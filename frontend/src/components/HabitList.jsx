@@ -1,7 +1,13 @@
 import { useAppSelector } from "../hooks/store";
+import { useHabitsActions } from "../hooks/useHabitsActions";
 
 const HabitList = () => {
     const habits = useAppSelector((state) => state.habits);
+    const { removeNewHabit } = useHabitsActions();
+
+    const handleRemoveHabit = (id) => {
+        removeNewHabit(id); // Llama a la función que elimina el hábito por id
+    };
 
     return (
         <div className="mt-8">
@@ -21,6 +27,12 @@ const HabitList = () => {
                                     <p className="text-sm text-gray-600">{habit.description}</p>
                                 )}
                             </div>
+                            <button
+                                onClick={() => handleRemoveHabit(habit.id)}
+                                className="bg-red-500 hover:bg-red-600 text-white font-semibold py-2 px-4 rounded-lg transition duration-300 ease-in-out focus:outline-none focus:ring-2 focus:ring-red-400 focus:ring-offset-2"
+                            >
+                                Eliminar
+                            </button>
                         </li>
                     ))}
                 </ul>

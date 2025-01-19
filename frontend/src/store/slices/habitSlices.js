@@ -1,6 +1,13 @@
 import { createSlice } from '@reduxjs/toolkit';
 
-const initialState = []; // El estado inicial es un array.
+const DEFAULT_STATE = []; // El estado inicial es un array.
+
+
+const initialState = (() => {
+	const persistedState = localStorage.getItem("__redux__state__");
+	return persistedState ? JSON.parse(persistedState).habits : DEFAULT_STATE;
+})();
+
 
 const habitSlice = createSlice({
 	name: 'habits',
@@ -11,7 +18,6 @@ const habitSlice = createSlice({
 			state.push({ ...action.payload, id });
 		},
 		removeHabit: (state, action) => {
-			// Filtra el array para eliminar el hábito con el ID dado.
 			return state.filter((habit) => habit.id !== action.payload);
 		},
 		updateHabit: (state, action) => {

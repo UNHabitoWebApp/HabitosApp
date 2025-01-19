@@ -1,5 +1,5 @@
 import { useAppDispatch } from "./store";
-import { addHabit } from "../store/slices/habitSlices";
+import { addHabit, removeHabit } from "../store/slices/habitSlices";
 
 export const useHabitsActions = () => {
     const dispatch = useAppDispatch();
@@ -13,5 +13,9 @@ export const useHabitsActions = () => {
         dispatch(addHabit(habit));
     }
 
-    return { addDefaultHabbit, addNewHabit };
+    const removeNewHabit = (id) => {
+        dispatch(removeHabit(id));
+    }
+
+    return { addDefaultHabbit, addNewHabit, removeNewHabit };
 }
