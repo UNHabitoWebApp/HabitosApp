@@ -5,7 +5,17 @@ const DEFAULT_STATE = []; // El estado inicial es un array.
 
 const initialState = (() => {
 	const persistedState = localStorage.getItem("__redux__state__");
-	return persistedState ? JSON.parse(persistedState).habits : DEFAULT_STATE;
+
+	try {
+
+		if(persistedState.habtis === undefined){
+			return DEFAULT_STATE
+		}
+
+		return persistedState 
+	}catch (e){
+		return DEFAULT_STATE;
+	}
 })();
 
 
