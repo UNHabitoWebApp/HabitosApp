@@ -2,7 +2,15 @@
 export default {
   content: ['./index.html', './src/**/*.{js,jsx}'],
   theme: {
-    extend: {},
+    extend: {
+      colors: {
+        verdePrincipal: '#569788', 
+        verdeSecundario: {
+          DEFAULT: '#DCFAE6', 
+          '20': 'rgba(220, 250, 230, 0.2)',
+        },
+      },
+    },
   },
   plugins: [],
 };
