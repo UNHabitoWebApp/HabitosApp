@@ -3,7 +3,14 @@ import PropTypes from "prop-types";
 import classNames from "classnames";
 import { useCurrentTimeAndDate } from "../../hooks/useDateActions";
 
-const DayFragment = ({ events, first = false, last = false, unique = false }) => {
+const DayFragment = (
+    {
+        events,
+        first = false,
+        last = false,
+        unique = false
+    }
+) => {
     const mergedEvents = [];
     // Combinar eventos con cálculo de minutos
     events.forEach((event) => {
@@ -31,8 +38,8 @@ const DayFragment = ({ events, first = false, last = false, unique = false }) =>
     const containerClasses = classNames(
         "relative w-full h-[1440px]",
         {
-            "border-l-2 border-[#F2F4F7]": first || unique,
-            "border-r-2 border-[#F2F4F7]": last || unique,
+            "border-l-2 border-[#F2F4F7]": false,
+            "border-r-2 border-[#F2F4F7]": false,
         }
     );
 
