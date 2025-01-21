@@ -22,13 +22,13 @@ const Calendar = () => {
 
     const formatDayName = (day) => {
         const dayMap = {
-            Monday: "Lu",
-            Tuesday: "Ma",
-            Wednesday: "Mié",
-            Thursday: "Ju",
-            Friday: "Vi",
-            Saturday: "Sa",
-            Sunday: "Do",
+            Monday: "Lunes",
+            Tuesday: "Martes",
+            Wednesday: "Miércoles",
+            Thursday: "Jueves",
+            Friday: "Viernes",
+            Saturday: "Sabado",
+            Sunday: "Domingo",
         };
         return dayMap[day] || day;
     };
@@ -38,7 +38,7 @@ const Calendar = () => {
             <h1 className="text-2xl font-bold mb-4">Calendario Semanal</h1>
             <h2 className="text-lg mb-2">Hoy es: {currentDate}</h2>
             <h2 className="text-lg mb-6">Hora Actual: {currentTime}</h2>
-            <div className="flex w-full max-w-[1200px] min-w-[1200px] mx-auto">
+            <div className="flex w-full max-w-[1200px] min-w-[880px] mx-auto">
                 {daysOfWeek.map((day, index) => (
                     <div
                         key={index}
@@ -55,6 +55,7 @@ const Calendar = () => {
                         <DayFragment
                             key={index}
                             first={index === 0}
+                            last={index === daysOfWeek.length - 1}
                             events={[events[index]]} />
                     </div>
                 ))}

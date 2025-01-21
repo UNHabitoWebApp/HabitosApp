@@ -1,12 +1,12 @@
 import React from "react";
 import PropTypes from "prop-types";
+import classNames from "classnames";
 
-const DayFragment = ({ events, first = false }) => {
+const DayFragment = ({ events, first = false, last = false, unique = false }) => {
     const mergedEvents = [];
 
-    // Combinar eventos consecutivos del mismo tipo
+    // Combinar eventos con cálculo de minutos
     events.forEach((event) => {
-        const lastEvent = mergedEvents[mergedEvents.length - 1];
         const eventStart =
             parseFloat(event.start.split(":")[0]) * 60 +
             (parseFloat(event.start.split(":")[1]) || 0);
@@ -14,31 +14,30 @@ const DayFragment = ({ events, first = false }) => {
             parseFloat(event.end.split(":")[0]) * 60 +
             (parseFloat(event.end.split(":")[1]) || 0);
 
-        if (
-            lastEvent &&
-            lastEvent.name === event.name &&
-            lastEvent.end === event.start
-        ) {
-            // Expandir el último evento si son consecutivos
-            lastEvent.end = event.end;
-        } else {
-            // Añadir nuevo evento si no son consecutivos
-            mergedEvents.push({
-                ...event,
-                startMinutes: eventStart,
-                endMinutes: eventEnd,
-            });
-        }
+        mergedEvents.push({
+            ...event,
+            startMinutes: eventStart,
+            endMinutes: eventEnd,
+        });
     });
 
-    // Generar la cuadrícula para todo el día (24 horas)
+    // Generar la cuadrícula para las 24 horas
     const gridLines = Array.from({ length: 24 }, (_, index) => ({
         hour: index,
-        top: `${(index / 24) * 100}%`, // Posición en porcentaje
+        top: `${(index / 24) * 100}%`,
     }));
 
+    // Determinar las clases del contenedor según si es el primero o último
+    const containerClasses = classNames(
+        "relative w-full h-[1440px]",
+        {
+            "border-l": first || unique,
+            "border-r": last || unique,
+        }
+    );
+
     return (
-        <div className="relative w-full h-[1440px] border rounded-md">
+        <div className={containerClasses}>
             <div className="relative w-full h-full">
                 {/* Renderizar la cuadrícula */}
                 {gridLines.map((line) => (
@@ -54,8 +53,8 @@ const DayFragment = ({ events, first = false }) => {
                             <span
                                 className="absolute text-xs text-gray-500"
                                 style={{
-                                    left: "-40px", // Se sale del contenedor
-                                    transform: "translateY(-50%)",
+                                    left: "-40px",
+                                    transform: "translateY(-60%)",
                                 }}
                             >
                                 {line.hour}:00
@@ -71,10 +70,10 @@ const DayFragment = ({ events, first = false }) => {
                     return (
                         <div
                             key={index}
-                            className="absolute left-0 right-0 bg-teal-200 border border-teal-400 text-xs text-center rounded-md overflow-hidden"
+                            className="absolute left-0 right-0 bg-teal-200 border border-teal-400 text-xs text-center overflow-hidden"
                             style={{
-                                top: `${(event.startMinutes / 1440) * 100}%`, // Posición inicial
-                                height: `${(eventHeight / 1440) * 100}%`, // Altura proporcional
+                                top: `${(event.startMinutes / 1440) * 100}%`,
+                                height: `${(eventHeight / 1440) * 100}%`,
                             }}
                             title={event.description}
                         >
@@ -98,6 +97,8 @@ DayFragment.propTypes = {
         })
     ).isRequired,
     first: PropTypes.bool,
+    last: PropTypes.bool,
+    unique: PropTypes.bool,
 };
 
 export default DayFragment;
