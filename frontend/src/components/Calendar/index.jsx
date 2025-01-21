@@ -42,7 +42,7 @@ const Calendar = () => {
                 {daysOfWeek.map((day, index) => (
                     <div
                         key={index}
-                        className="flex-grow border-r last:border-r-0 flex flex-col items-center"
+                        className="flex-grow border-r-2 border-[#F2F4F7] last:border-r-0 flex flex-col items-center"
                         style={{
                             width: "14.28%",
                             minWidth: "14.28%",

@@ -31,8 +31,8 @@ const DayFragment = ({ events, first = false, last = false, unique = false }) =>
     const containerClasses = classNames(
         "relative w-full h-[1440px]",
         {
-            "border-l": first || unique,
-            "border-r": last || unique,
+            "border-l-2 border-[#F2F4F7]": first || unique,
+            "border-r-2 border-[#F2F4F7]": last || unique,
         }
     );
 
@@ -43,10 +43,10 @@ const DayFragment = ({ events, first = false, last = false, unique = false }) =>
                 {gridLines.map((line) => (
                     <div
                         key={line.hour}
-                        className="absolute left-0 right-0 border-t border-gray-300"
+                        className="absolute left-0 right-0 border-t-2 border-[#F2F4F7]"
                         style={{
                             top: line.top,
-                            height: "1px",
+                            height: "10px",
                         }}
                     >
                         {first && (
