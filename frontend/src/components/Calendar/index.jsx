@@ -8,6 +8,7 @@ import { useTimeUpdater } from "../../hooks/useTimeUpdater";
 import { generateDayClasses } from "../../utils/classNameUtils";
 import { formatDayName } from "../../utils/dateUtils";
 import DayFragment from "./DayFragment";
+import './general.css'
 
 const events = [
     { name: "Pierna", description: "Rutina de ejercicios", start: "9:00", end: "11:30" },
@@ -31,19 +32,27 @@ const Calendar = () => {
             <h1 className="text-2xl font-bold mb-4">Calendario Semanal</h1>
             <h2 className="text-lg mb-2">Hoy es: {currentDate}</h2>
             <h2 className="text-lg mb-6">Hora Actual: {currentTime}</h2>
+
+            {/* Contenedor de días de la semana */}
             <div className="flex w-[93%] min-w-[1000px] mx-auto">
                 {daysOfWeek.map((day, index) => (
                     <div
-                        key={index}
-                        className={generateDayClasses(index, daysOfWeek.length)}
+                        key={`day-${index}`}
+                        className={`${generateDayClasses(index)} text-center font-semibold py-2`}
                     >
-                        {/* Contenedor de día y fecha */}
-                        <div className="text-center font-semibold py-2">
-                            <div className="text-sm">{formatDayName(day.day)}</div>
-                            <div className="text-xs">{day.date}</div>
-                        </div>
+                        <div className="text-sm">{formatDayName(day.day)}</div>
+                        <div className="text-xs">{day.date}</div>
+                    </div>
+                ))}
+            </div>
 
-                        {/* DayFragment */}
+            {/* Contenedor de DayFragments */}
+            <div className="flex flex-2 w-[93%] min-w-[1000px] mx-auto overflow-y-auto overflow-x-visible">
+                {daysOfWeek.map((day, index) => (
+                    <div
+                        key={`fragment-${index}`}
+                        className={`${generateDayClasses(index)} h-96 `}
+                    >
                         <DayFragment
                             first={index === 0}
                             last={index === daysOfWeek.length - 1}

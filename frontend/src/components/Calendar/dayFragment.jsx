@@ -1,14 +1,12 @@
 import React from "react";
 import PropTypes from "prop-types";
 import classNames from "classnames";
-import { useCurrentTimeAndDate } from "../../hooks/useDateActions";
+import TimeGrid from "./TimeGrid"
 
 const DayFragment = (
     {
         events,
         first = false,
-        last = false,
-        unique = false
     }
 ) => {
     const mergedEvents = [];
@@ -28,11 +26,6 @@ const DayFragment = (
         });
     });
 
-    // Generar la cuadrícula para las 24 horas
-    const gridLines = Array.from({ length: 24 }, (_, index) => ({
-        hour: index,
-        top: `${(index / 24) * 100}%`,
-    }));
 
     // Determinar las clases del contenedor según si es el primero o último
     const containerClasses = classNames(
@@ -47,29 +40,8 @@ const DayFragment = (
         <div className={containerClasses}>
             <div className="relative w-full h-full">
                 {/* Renderizar la cuadrícula */}
-                {gridLines.map((line) => (
-                    <div
-                        key={line.hour}
-                        className="absolute left-0 right-0 border-t-2 border-[#F2F4F7]"
-                        style={{
-                            top: line.top,
-                            height: "10px",
-                        }}
-                    >
-                        {first && (
-                            <span
-                                className="absolute text-xs text-gray-500"
-                                style={{
-                                    left: "-40px",
-                                    transform: "translateY(-60%)",
-                                }}
-                            >
-                                {line.hour}:00
-                            </span>
-                        )}
-                    </div>
-                ))}
 
+                <TimeGrid showLabels={first} />
                 {/* Renderizar los eventos */}
                 {mergedEvents.map((event, index) => {
                     const eventHeight = event.endMinutes - event.startMinutes;
