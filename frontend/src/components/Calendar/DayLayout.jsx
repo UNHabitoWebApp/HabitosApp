@@ -32,7 +32,7 @@ const DayLayout = ({ day, index }) => {
 
 DayLayout.propTypes = {
     day: PropTypes.shape({
-        day: PropTypes.instanceOf(Date).isRequired,
+        day: PropTypes.string.isRequired,
         date: PropTypes.string.isRequired
     }),
     index: PropTypes.number.isRequired

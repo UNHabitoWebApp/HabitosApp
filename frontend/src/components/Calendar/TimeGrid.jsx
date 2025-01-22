@@ -1,6 +1,7 @@
 import PropTypes from "prop-types";
 
 const TimeGrid = ({ showLabels = false }) => {
+
     // Generar horas de 1 a 23
     const gridLines = Array.from({ length: 23 }, (_, index) => ({
         hour: index + 1, // Ajuste para empezar en 1

@@ -1,6 +1,7 @@
 import PropTypes from "prop-types";
 import TimeGrid from "./TimeGrid"
 import EventCard from "./EventCard";
+import CurrentTimeIndicator from "./CurrentTimeIndicator";
 import { generateDayFragmentContainerClasses } from "../../utils/classNameUtils";
 
 const DayFragment = (
@@ -35,6 +36,7 @@ const DayFragment = (
     return (
         <div className={containerClasses}>
             <div className="relative w-full h-full">
+                <CurrentTimeIndicator showLabels={first} />
                 <TimeGrid showLabels={first} />
                 {mergedEvents.map((event, index) => {
                     return (
