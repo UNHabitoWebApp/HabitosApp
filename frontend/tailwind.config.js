@@ -7,7 +7,7 @@ export default {
         verdePrincipal: '#569788', 
         verdeSecundario: {
           DEFAULT: '#DCFAE6', 
-          '20': 'rgba(220, 250, 230, 0.2)',
+          '20': 'rgba(220, 250, 230, 0.4)',
         },
       },
     },
