@@ -9,6 +9,24 @@ export const generateDaysLayoytClasses = (id) => {
     );
 };
 
+export const generateDayNumberClasses = (isToday) => {
+    return classNames(
+        "text-xs",
+        {
+            "flex items-center justify-center w-8 h-8 bg-verdePrincipal text-white rounded-full": isToday
+        }
+    );
+}
+
+export const generateDayNameClasses = (isToday) => {
+    return classNames(
+        "text-sm",
+        {
+            "text-verdePrincipal": isToday
+        }
+    );
+}
+
 export const generateDayFragmentContainerClasses = (first, last, unique) => {
     return classNames(
         "relative w-full h-[1440px] border-r-2",
