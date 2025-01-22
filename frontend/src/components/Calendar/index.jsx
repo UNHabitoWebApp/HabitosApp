@@ -1,14 +1,12 @@
-import React from "react";
 import {
     useDateActions,
     useDateSelectors,
     useCurrentTimeAndDate
 } from "../../hooks/useDateActions";
 import { useTimeUpdater } from "../../hooks/useTimeUpdater";
-import { generateDaysLayoytClasses } from "../../utils/classNameUtils";
-import { formatDayName } from "../../utils/dateUtils";
 import DayFragment from "./DayFragment";
-import './general.css'
+import DayLayout from "./DayLayout";
+import './general.css';
 
 const events = [
     { name: "Pierna", description: "Rutina de ejercicios", start: "9:00", end: "11:30" },
@@ -36,13 +34,11 @@ const Calendar = () => {
             {/* Contenedor de días de la semana */}
             <div className="flex flex-2  w-[93%] min-w-[1000px] mx-auto overflow-y-auto pr-[3.5px]">
                 {daysOfWeek.map((day, index) => (
-                    <div
-                        key={`day-${index}`}
-                        className={`${generateDaysLayoytClasses(index)} `}
-                    >
-                        <div className="text-sm">{formatDayName(day.day)}</div>
-                        <div className="text-xs">{day.date}</div>
-                    </div>
+                    <DayLayout
+                        day={day}
+                        index={index}
+                        key={index}
+                    />
                 ))}
             </div >
 
