@@ -34,11 +34,11 @@ const Calendar = () => {
             <h2 className="text-lg mb-6">Hora Actual: {currentTime}</h2>
 
             {/* Contenedor de días de la semana */}
-            <div className="flex flex-2  w-[93%] min-w-[1000px] mx-auto overflow-y-auto pr-[4px]">
+            <div className="flex flex-2  w-[93%] min-w-[1000px] mx-auto overflow-y-auto pr-[3.5px]">
                 {daysOfWeek.map((day, index) => (
                     <div
                         key={`day-${index}`}
-                        className={`${generateDayClasses(index)} border-r text-center font-semibold py-2`}
+                        className={`${generateDayClasses(index)} border-t-2 border-r-2 border-b-2 text-center font-semibold py-2`}
                     >
                         <div className="text-sm">{formatDayName(day.day)}</div>
                         <div className="text-xs">{day.date}</div>
@@ -52,7 +52,7 @@ const Calendar = () => {
                     daysOfWeek.map((day, index) => (
                         <div
                             key={`fragment-${index}`}
-                            className={`${generateDayClasses(index)} h-96 `}
+                            className={`flex-grow flex flex-col items-center w-[14.28%] min-w-[14.28%] h-96 `}
                         >
                             <DayFragment
                                 first={index === 0}

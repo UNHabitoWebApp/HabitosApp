@@ -33,8 +33,8 @@ const DayFragment = (
     const containerClasses = classNames(
         "relative w-full h-[1440px] border-r-2",
         {
-            "border-l-2 border-[#F2F4F7]": first | unique,
-            "border-r-2 border-[#F2F4F7]": last | unique,
+            "border-l-2": first | unique,
+            "border-r-2": last | unique,
         }
     );
 
