@@ -11,8 +11,6 @@ import PropTypes from 'prop-types'
 const DayLayout = ({ day, index }) => {
     const { currentDate } = useCurrentTimeAndDate();
     const isToday = currentDate.split("-")[2] === day.date;
-    console.log(currentDate.split("-"));
-    console.log(isToday);
 
     return (
         <div

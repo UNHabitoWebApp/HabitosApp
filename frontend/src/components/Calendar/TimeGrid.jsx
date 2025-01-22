@@ -1,9 +1,10 @@
 import PropTypes from "prop-types";
 
 const TimeGrid = ({ showLabels = false }) => {
-    const gridLines = Array.from({ length: 24 }, (_, index) => ({
-        hour: index,
-        top: `${(index / 24) * 100}%`,
+    // Generar horas de 1 a 23
+    const gridLines = Array.from({ length: 23 }, (_, index) => ({
+        hour: index + 1, // Ajuste para empezar en 1
+        top: `${((index + 1) / 24) * 100}%`,
     }));
 
     return (
@@ -24,7 +25,7 @@ const TimeGrid = ({ showLabels = false }) => {
                             style={{
                                 left: "-35px",
                                 top: "50%",
-                                transform: "translateY(-60%)",
+                                transform: "translateY(-75%)",
                                 zIndex: 10,
                             }}
                         >
@@ -38,7 +39,6 @@ const TimeGrid = ({ showLabels = false }) => {
         </div>
     );
 };
-
 
 TimeGrid.propTypes = {
     showLabels: PropTypes.bool,

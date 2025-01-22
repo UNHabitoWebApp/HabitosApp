@@ -26,12 +26,14 @@ const Calendar = () => {
     useTimeUpdater(remainingTime, remainingTimeForNextMinute, updateCurrentTimeAction, resetDateAction);
 
     return (
-        <>
+        <div className="h-full bg-white rounded-lg ">
+            {/*
             <h1 className="text-2xl font-bold mb-4">Calendario Semanal</h1>
             <h2 className="text-lg mb-6">Hora Actual: {currentTime}</h2>
+            */}
 
             {/* Contenedor de días de la semana */}
-            <div className="flex flex-2  w-[93%] min-w-[1000px] mx-auto overflow-y-auto pr-[3.5px] pl-[40px]">
+            <div className="flex w-[93%] min-w-[1000px] mx-auto overflow-y-auto pr-[3.5px] pl-[40px]">
                 {daysOfWeek.map((day, index) => (
                     <DayLayout
                         day={day}
@@ -58,7 +60,7 @@ const Calendar = () => {
                     ))
                 }
             </div >
-        </>
+        </div>
     );
 };
 

@@ -2,9 +2,9 @@ import classNames from "classnames";
 
 export const generateDaysLayoytClasses = (id) => {
     return classNames(
-        "flex-grow flex flex-col items-center justify-center w-[14.28%] min-w-[14.28%] border-t-2 border-r-2 border-b-2 text-center font-semibold py-4",
+        "flex-grow flex flex-col items-center justify-center w-[14.28%] min-w-[14.28%] border-b-2 text-center font-semibold py-4",
         {
-            "border-l-2": id == 0
+            "border-r-2" : id != 6,
         }
     );
 };
@@ -30,10 +30,10 @@ export const generateDayNameClasses = (isToday) => {
 
 export const generateDayFragmentContainerClasses = (first, last, unique) => {
     return classNames(
-        "relative w-full h-[1440px] border-r-2",
+        "relative w-full h-[1440px]",
         {
             "border-l-2": first | unique,
-            "border-r-2": last | unique,
+            "border-r-2": !last | unique,
         }
     );
 }
