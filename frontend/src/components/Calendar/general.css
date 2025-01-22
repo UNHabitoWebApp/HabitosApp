@@ -6,7 +6,6 @@
 
 /* Track (fondo del scrollbar) */
 .flex-2::-webkit-scrollbar-track {
-  background: #f0f0f0; /* Color de fondo */
   border-radius: 10px;
 }
 

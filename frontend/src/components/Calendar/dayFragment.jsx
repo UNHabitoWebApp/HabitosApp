@@ -7,6 +7,8 @@ const DayFragment = (
     {
         events,
         first = false,
+        last = false,
+        unique = false,
     }
 ) => {
     const mergedEvents = [];
@@ -29,10 +31,10 @@ const DayFragment = (
 
     // Determinar las clases del contenedor según si es el primero o último
     const containerClasses = classNames(
-        "relative w-full h-[1440px]",
+        "relative w-full h-[1440px] border-r-2",
         {
-            "border-l-2 border-[#F2F4F7]": false,
-            "border-r-2 border-[#F2F4F7]": false,
+            "border-l-2 border-[#F2F4F7]": first | unique,
+            "border-r-2 border-[#F2F4F7]": last | unique,
         }
     );
 
@@ -40,7 +42,6 @@ const DayFragment = (
         <div className={containerClasses}>
             <div className="relative w-full h-full">
                 {/* Renderizar la cuadrícula */}
-
                 <TimeGrid showLabels={first} />
                 {/* Renderizar los eventos */}
                 {mergedEvents.map((event, index) => {

@@ -34,33 +34,35 @@ const Calendar = () => {
             <h2 className="text-lg mb-6">Hora Actual: {currentTime}</h2>
 
             {/* Contenedor de días de la semana */}
-            <div className="flex w-[93%] min-w-[1000px] mx-auto">
+            <div className="flex flex-2  w-[93%] min-w-[1000px] mx-auto overflow-y-auto pr-[4px]">
                 {daysOfWeek.map((day, index) => (
                     <div
                         key={`day-${index}`}
-                        className={`${generateDayClasses(index)} text-center font-semibold py-2`}
+                        className={`${generateDayClasses(index)} border-r text-center font-semibold py-2`}
                     >
                         <div className="text-sm">{formatDayName(day.day)}</div>
                         <div className="text-xs">{day.date}</div>
                     </div>
                 ))}
-            </div>
+            </div >
 
             {/* Contenedor de DayFragments */}
-            <div className="flex flex-2 w-[93%] min-w-[1000px] mx-auto overflow-y-auto overflow-x-visible">
-                {daysOfWeek.map((day, index) => (
-                    <div
-                        key={`fragment-${index}`}
-                        className={`${generateDayClasses(index)} h-96 `}
-                    >
-                        <DayFragment
-                            first={index === 0}
-                            last={index === daysOfWeek.length - 1}
-                            events={[events[index]]}
-                        />
-                    </div>
-                ))}
-            </div>
+            <div className="flex flex-2 w-[93%] min-w-[1000px] mx-auto overflow-y-auto" >
+                {
+                    daysOfWeek.map((day, index) => (
+                        <div
+                            key={`fragment-${index}`}
+                            className={`${generateDayClasses(index)} h-96 `}
+                        >
+                            <DayFragment
+                                first={index === 0}
+                                last={index === daysOfWeek.length - 1}
+                                events={[events[index]]}
+                            />
+                        </div>
+                    ))
+                }
+            </div >
         </>
     );
 };
