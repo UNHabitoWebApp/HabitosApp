@@ -17,23 +17,28 @@ const TimeGrid = ({ showLabels = false }) => {
                         height: "10px",
                     }}
                 >
-                    {/* Etiqueta de hora opcional */}
                     {showLabels && (
-                        <span
-                            className="absolute text-xs text-gray-500"
+                        // Contenedor independiente para las etiquetas
+                        <div
+                            className="absolute"
                             style={{
-                                left: "-40px",
+                                left: "-35px",
+                                top: "50%",
                                 transform: "translateY(-60%)",
+                                zIndex: 10,
                             }}
                         >
-                            {line.hour}:00
-                        </span>
+                            <span className="text-xs text-gray-500">
+                                {line.hour}:00
+                            </span>
+                        </div>
                     )}
                 </div>
             ))}
         </div>
     );
 };
+
 
 TimeGrid.propTypes = {
     showLabels: PropTypes.bool,
