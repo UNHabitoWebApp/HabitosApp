@@ -1,11 +1,20 @@
 import classNames from "classnames";
 
-export const generateDayClasses = (id) => {
+export const generateDaysLayoytClasses = (id) => {
     return classNames(
-        "flex-grow flex flex-col items-center w-[14.28%] min-w-[14.28%]",
+        "flex-grow flex flex-col items-center w-[14.28%] min-w-[14.28%] border-t-2 border-r-2 border-b-2 text-center font-semibold py-2",
         {
             "border-l-2": id == 0
         }
     );
 };
 
+export const generateDayFragmentContainerClasses = (first, last, unique) => {
+    return classNames(
+        "relative w-full h-[1440px] border-r-2",
+        {
+            "border-l-2": first | unique,
+            "border-r-2": last | unique,
+        }
+    );
+}

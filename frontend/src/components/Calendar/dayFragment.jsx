@@ -1,7 +1,8 @@
 import React from "react";
 import PropTypes from "prop-types";
-import classNames from "classnames";
 import TimeGrid from "./TimeGrid"
+import EventCard from "./EventCard";
+import { generateDayFragmentContainerClasses } from "../../utils/classNameUtils";
 
 const DayFragment = (
     {
@@ -30,48 +31,15 @@ const DayFragment = (
 
 
     // Determinar las clases del contenedor según si es el primero o último
-    const containerClasses = classNames(
-        "relative w-full h-[1440px] border-r-2",
-        {
-            "border-l-2": first | unique,
-            "border-r-2": last | unique,
-        }
-    );
+    const containerClasses = generateDayFragmentContainerClasses(first, last, unique);
 
     return (
         <div className={containerClasses}>
             <div className="relative w-full h-full">
-                {/* Renderizar la cuadrícula */}
                 <TimeGrid showLabels={first} />
-                {/* Renderizar los eventos */}
                 {mergedEvents.map((event, index) => {
-                    const eventHeight = event.endMinutes - event.startMinutes;
-                    const isSmallHeight = eventHeight < 50; // Define un umbral para considerar la altura "demasiado pequeña"
-
                     return (
-                        <div
-                            key={index}
-                            className={`absolute left-0 right-0 bg-verdeSecundario-20 font-semibold text-sm overflow-hidden border-l-4 border-verdePrincipal rounded-md p-2 flex ${isSmallHeight ? "items-center justify-between" : "flex-col"
-                                }`}
-                            style={{
-                                top: `${(event.startMinutes / 1440) * 100}%`,
-                                height: `${(eventHeight / 1440) * 100}%`,
-                            }}
-                            title={event.description}
-                        >
-                            <div
-                                className={`font-bold text-verdePrincipal ${isSmallHeight ? "text-sm" : "mb-1"
-                                    }`}
-                            >
-                                {event.name}
-                            </div>
-                            <div
-                                className={`text-xs text-verdePrincipal ${isSmallHeight ? "text-sm text-right overflow-hidden" : ""
-                                    }`}
-                            >
-                                {`${event.start} – ${event.end}`}
-                            </div>
-                        </div>
+                        <EventCard key={index} event={event} />
                     );
                 })}
             </div>

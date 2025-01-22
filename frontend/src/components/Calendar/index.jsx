@@ -5,7 +5,7 @@ import {
     useCurrentTimeAndDate
 } from "../../hooks/useDateActions";
 import { useTimeUpdater } from "../../hooks/useTimeUpdater";
-import { generateDayClasses } from "../../utils/classNameUtils";
+import { generateDaysLayoytClasses } from "../../utils/classNameUtils";
 import { formatDayName } from "../../utils/dateUtils";
 import DayFragment from "./DayFragment";
 import './general.css'
@@ -38,7 +38,7 @@ const Calendar = () => {
                 {daysOfWeek.map((day, index) => (
                     <div
                         key={`day-${index}`}
-                        className={`${generateDayClasses(index)} border-t-2 border-r-2 border-b-2 text-center font-semibold py-2`}
+                        className={`${generateDaysLayoytClasses(index)} `}
                     >
                         <div className="text-sm">{formatDayName(day.day)}</div>
                         <div className="text-xs">{day.date}</div>
