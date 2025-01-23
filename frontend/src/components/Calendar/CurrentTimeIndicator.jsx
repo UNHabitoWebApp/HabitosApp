@@ -1,7 +1,8 @@
 import PropTypes from "prop-types";
 import { useCurrentTimeAndDate } from "../../hooks/useDateActions";
+import { generateCurrentTimeIndicatorClasses } from "../../utils/classNameUtils";
 
-const CurrentTimeIndicator = ({ showLabels }) => {
+const CurrentTimeIndicator = ({ showLabels, last }) => {
     const { currentTime } = useCurrentTimeAndDate();
 
     // Separar la hora, minutos y período (am/pm)
@@ -21,7 +22,7 @@ const CurrentTimeIndicator = ({ showLabels }) => {
 
     return (
         <div
-            className="absolute left-0 right-0 border-t-2 border-verdePrincipal"
+            className={generateCurrentTimeIndicatorClasses(last)}
             style={{
                 top: `${currentTimePosition}%`,
                 zIndex: 20,
@@ -32,7 +33,7 @@ const CurrentTimeIndicator = ({ showLabels }) => {
                     className="absolute text-xs font-bold text-white bg-verdePrincipal px-2 py-1 rounded-full"
                     style={{
                         top: "50%",
-                        left: "-40px",
+                        left: "-46px",
                         transform: "translateY(-50%)",
                     }}
                 >
@@ -46,6 +47,7 @@ const CurrentTimeIndicator = ({ showLabels }) => {
 
 CurrentTimeIndicator.propTypes = {
     showLabels: PropTypes.bool,
+    last: PropTypes.bool,
 };
 
 export default CurrentTimeIndicator;

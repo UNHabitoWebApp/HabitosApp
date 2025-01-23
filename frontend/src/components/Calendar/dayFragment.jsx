@@ -36,7 +36,7 @@ const DayFragment = (
     return (
         <div className={containerClasses}>
             <div className="relative w-full h-full">
-                <CurrentTimeIndicator showLabels={first} />
+                <CurrentTimeIndicator showLabels={first} last={last} />
                 <TimeGrid showLabels={first} />
                 {mergedEvents.map((event, index) => {
                     return (

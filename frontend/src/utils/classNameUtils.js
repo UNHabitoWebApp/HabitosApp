@@ -37,3 +37,12 @@ export const generateDayFragmentContainerClasses = (first, last, unique) => {
         }
     );
 }
+
+export const generateCurrentTimeIndicatorClasses = (last) => {
+    return classNames(
+        "absolute left-0 right-0 border-t-2 border-verdePrincipal",
+        {
+            "w-[102%]": !last,
+        }
+    );
+}

@@ -26,7 +26,7 @@ const Calendar = () => {
     return (
         <div className="w-[85%] h-full bg-white rounded-lg flex flex-col shadow-md">
             {/* Contenedor de días de la semana */}
-            <div className="flex flex-none pr-[0.30rem] pl-[40px]">
+            <div className="flex flex-none pr-[0.30rem] pl-[45px]">
                 {daysOfWeek.map((day, index) => (
                     <DayLayout
                         day={day}
@@ -37,7 +37,7 @@ const Calendar = () => {
             </div>
 
             {/* Contenedor de DayFragments */}
-            <div className="flex flex-grow overflow-y-auto pl-[40px] flex-2">
+            <div className="flex flex-grow overflow-y-auto pl-[45px] flex-2">
                 {daysOfWeek.map((day, index) => (
                     <div
                         key={`fragment-${index}`}
