@@ -24,7 +24,7 @@ const Calendar = () => {
     useTimeUpdater(remainingTime, remainingTimeForNextMinute, updateCurrentTimeAction, resetDateAction);
 
     return (
-        <div className="w-[85%] h-full bg-white rounded-lg flex flex-col shadow-md">
+        <div className="w-[90%] h-full bg-white flex flex-col border border-gray-200 rounded-md shadow-sm">
             {/* Contenedor de días de la semana */}
             <div className="flex flex-none pr-[0.30rem] pl-[45px]">
                 {daysOfWeek.map((day, index) => (
