@@ -1,7 +1,6 @@
 import {
     useDateActions,
     useDateSelectors,
-    useCurrentTimeAndDate
 } from "../../hooks/useDateActions";
 import { useTimeUpdater } from "../../hooks/useTimeUpdater";
 import DayFragment from "./DayFragment";
@@ -21,19 +20,13 @@ const events = [
 const Calendar = () => {
     const { updateCurrentTimeAction, resetDateAction } = useDateActions();
     const { daysOfWeek, remainingTime, remainingTimeForNextMinute } = useDateSelectors();
-    const { currentTime } = useCurrentTimeAndDate();
 
     useTimeUpdater(remainingTime, remainingTimeForNextMinute, updateCurrentTimeAction, resetDateAction);
 
     return (
-        <div className="h-full bg-white rounded-lg ">
-            {/*
-            <h1 className="text-2xl font-bold mb-4">Calendario Semanal</h1>
-            <h2 className="text-lg mb-6">Hora Actual: {currentTime}</h2>
-            */}
-
+        <div className="w-[85%] h-full bg-white rounded-lg flex flex-col shadow-md">
             {/* Contenedor de días de la semana */}
-            <div className="flex w-[93%] min-w-[1000px] mx-auto overflow-y-auto pr-[3.5px] pl-[40px]">
+            <div className="flex flex-none pr-[0.30rem] pl-[40px]">
                 {daysOfWeek.map((day, index) => (
                     <DayLayout
                         day={day}
@@ -41,26 +34,25 @@ const Calendar = () => {
                         key={index}
                     />
                 ))}
-            </div >
+            </div>
 
             {/* Contenedor de DayFragments */}
-            <div className="flex flex-2 w-[93%] min-w-[1000px] mx-auto overflow-y-auto pl-[40px]">
-                {
-                    daysOfWeek.map((day, index) => (
-                        <div
-                            key={`fragment-${index}`}
-                            className={`flex-grow flex flex-col items-center w-[14.28%] min-w-[14.28%] h-96`}
-                        >
-                            <DayFragment
-                                first={index === 0}
-                                last={index === daysOfWeek.length - 1}
-                                events={[events[index]]}
-                            />
-                        </div>
-                    ))
-                }
-            </div >
+            <div className="flex flex-grow overflow-y-auto pl-[40px] flex-2">
+                {daysOfWeek.map((day, index) => (
+                    <div
+                        key={`fragment-${index}`}
+                        className="flex-grow flex flex-col items-center w-[14.28%] min-w-[14.28%]"
+                    >
+                        <DayFragment
+                            first={index === 0}
+                            last={index === daysOfWeek.length - 1}
+                            events={[events[index]]}
+                        />
+                    </div>
+                ))}
+            </div>
         </div>
+
     );
 };
 

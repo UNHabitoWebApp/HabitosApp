@@ -4,8 +4,6 @@ import { useCurrentTimeAndDate } from "../../hooks/useDateActions";
 const CurrentTimeIndicator = ({ showLabels }) => {
     const { currentTime } = useCurrentTimeAndDate();
 
-    console.log("Current Time:", currentTime);
-
     // Separar la hora, minutos y período (am/pm)
     const [time, period] = currentTime.split(" ");
     const [hoursRaw, minutes] = time.split(":").map(Number);
@@ -17,14 +15,9 @@ const CurrentTimeIndicator = ({ showLabels }) => {
             ? 0
             : hoursRaw;
 
-    console.log("Hours:", hours);
-    console.log("Minutes:", minutes);
-
     // Calcular la posición en porcentaje del día
     const totalMinutes = hours * 60 + minutes;
     const currentTimePosition = (totalMinutes / 1440) * 100;
-
-    console.log("Current Time Position:", currentTimePosition);
 
     return (
         <div

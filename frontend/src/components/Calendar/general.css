@@ -1,7 +1,7 @@
 /* Aplica solo al scrollbar */
 .flex-2::-webkit-scrollbar {
-  width: 4px; /* Grosor del scrollbar */
-  height: 2px; /* Grosor horizontal, si es necesario */
+  width: 5px;
+  height: 2px; 
 }
 
 /* Track (fondo del scrollbar) */
