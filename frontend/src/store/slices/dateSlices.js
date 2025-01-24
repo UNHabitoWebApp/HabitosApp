@@ -34,16 +34,50 @@ const dateSlice = createSlice({
         updateCurrentTime: (state) => {
             state.currentTime = moment().format('hh:mm A'); 
         },
+        forward: (state) => {
+            if (state.mode === 'week') {
+                state.selectedWeek += 1; // Avanzar una semana
+            } else {
+                // Reconstruir un objeto moment a partir de selectedDate
+                const newDate = moment()
+                    .year(state.selectedDate.year)
+                    .month(state.selectedDate.monthNumber - 1) // Los meses en moment son 0 indexados
+                    .date(state.selectedDate.date)
+                    .add(1, 'day'); // Avanzar un día
+        
+                // Actualizar selectedDate
+                state.selectedDate = momentToObject(newDate);
+            }
+        },
+        backward: (state) => {
+            if (state.mode === 'week') {
+                state.selectedWeek -= 1; // Retroceder una semana
+            } else {
+                const newDate = moment()
+                    .year(state.selectedDate.year)
+                    .month(state.selectedDate.monthNumber - 1) // Los meses en moment son 0 indexados
+                    .date(state.selectedDate.date)
+                    .subtract(1, 'day'); // Retroceder un día
+        
+                console.log(newDate);
+
+                // Actualizar selectedDate
+                state.selectedDate = momentToObject(newDate);
+            }
+        },
+        toggleMode : (state) => {
+            state.mode = state.mode === 'week' ? 'day' : 'week';
+        }
     },
 });
 
 // Selector para calcular los días de la semana
 export const selectDaysOfWeek = createSelector(
     (state) => state.date, // Estado de Redux relacionado con las fechas
-    ({ currentWeek, currentDate }) => {
+    ({ selectedWeek , currentDate }) => {
         const startOfWeek = moment()
             .year(moment(currentDate).year())
-            .week(currentWeek)
+            .week(selectedWeek)
             .startOf('week');
 
         const days = [];
@@ -83,5 +117,13 @@ export const selectRemainingTimeForNextMinute = createSelector(
 );
 
 
-export const { updateCurrentWeek, resetToToday, updateCurrentTime, getDaysOfWeek } = dateSlice.actions;
+export const { 
+    updateCurrentWeek, 
+    resetToToday, 
+    updateCurrentTime, 
+    getDaysOfWeek ,
+    forward , 
+    backward,
+    toggleMode
+} = dateSlice.actions;
 export default dateSlice.reducer;
