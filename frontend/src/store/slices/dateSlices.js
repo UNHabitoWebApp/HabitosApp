@@ -11,6 +11,7 @@ moment.updateLocale('es', {
 const DEFAULT_STATE = {
     currentWeek: moment().week(),
     currentDate: momentToObject(moment()),
+    currrentDateMoment:moment(),
     currentTime: moment().format('hh:mm A'), 
     daysOfWeek: [], 
     selectedDate: momentToObject(moment()),
@@ -37,29 +38,37 @@ const dateSlice = createSlice({
         forward: (state) => {
             if (state.mode === 'week') {
                 state.selectedWeek += 1; // Avanzar una semana
+
+                if (state.currrentDateMoment.week() !== state.selectedWeek) {
+                    state.selectedDate = momentToObject(state.currrentDateMoment.add(1, 'week'));
+                }
             } else {
                 // Reconstruir un objeto moment a partir de selectedDate
-                const newDate = moment()
-                    .year(state.selectedDate.year)
-                    .month(state.selectedDate.monthNumber - 1) // Los meses en moment son 0 indexados
-                    .date(state.selectedDate.date)
-                    .add(1, 'day'); // Avanzar un día
+                const newDate = state.currrentDateMoment.add(1, 'day'); 
         
+                if (newDate.week() !== state.selectedWeek) {
+                    state.selectedWeek = newDate.week();
+                }
+
                 // Actualizar selectedDate
                 state.selectedDate = momentToObject(newDate);
             }
         },
         backward: (state) => {
             if (state.mode === 'week') {
-                state.selectedWeek -= 1; // Retroceder una semana
+                state.selectedWeek -= 1; 
+
+                if (state.currrentDateMoment.week() !== state.selectedWeek) {
+                    state.selectedDate = momentToObject(state.currrentDateMoment.subtract(1, 'week'));
+                }
+                
             } else {
-                const newDate = moment()
-                    .year(state.selectedDate.year)
-                    .month(state.selectedDate.monthNumber - 1) // Los meses en moment son 0 indexados
-                    .date(state.selectedDate.date)
-                    .subtract(1, 'day'); // Retroceder un día
+                const newDate = state.currrentDateMoment.subtract(1, 'day');
         
-                console.log(newDate);
+
+                if (newDate.week() !== state.selectedWeek) {
+                    state.selectedWeek = newDate.week();
+                }
 
                 // Actualizar selectedDate
                 state.selectedDate = momentToObject(newDate);
