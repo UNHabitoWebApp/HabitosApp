@@ -76,6 +76,10 @@ const dateSlice = createSlice({
         },
         toggleMode : (state) => {
             state.mode = state.mode === 'week' ? 'day' : 'week';
+        },
+        resetCurrentValues: (state) => {
+            state.selectedDate = momentToObject(moment());
+            state.selectedWeek = moment().week();
         }
     },
 });
@@ -133,6 +137,7 @@ export const {
     getDaysOfWeek ,
     forward , 
     backward,
-    toggleMode
+    toggleMode,
+    resetCurrentValues
 } = dateSlice.actions;
 export default dateSlice.reducer;

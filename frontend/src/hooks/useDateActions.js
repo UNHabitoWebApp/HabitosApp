@@ -6,7 +6,8 @@ import {
     selectRemainingTimeForNextMinute,
     forward,
     backward,
-    toggleMode
+    toggleMode,
+    resetCurrentValues
 } from '../store/slices/dateSlices';
 import { useAppDispatch, useAppSelector } from './store';
 
@@ -33,12 +34,17 @@ export const useDateActions = () => {
         dispatch(toggleMode());
     }
 
+    const resetCurrent = () => {
+        dispatch(resetCurrentValues());
+    }
+
     return { 
         updateCurrentTimeAction, 
         resetDateAction, 
         forwardAction, 
         backwardAction,
-        toggleModeAction
+        toggleModeAction,
+        resetCurrent 
     };
 };
 
