@@ -1,16 +1,16 @@
-import { useCurrentTimeAndDate } from '../../hooks/useDateActions'
+import { useCurrentDateInfo } from '../../hooks/useDateActions'
 import {
     generateDayNameClasses,
     generateDayNumberClasses,
     generateDaysLayoytClasses
 } from '../../utils/classNameUtils'
-import { formatDayName } from '../../utils/dateUtils'
+import { areEqualDates, formatDayName } from '../../utils/dateUtils'
 import PropTypes from 'prop-types'
 
 
 const DayLayout = ({ day, index }) => {
-    const { currentDate } = useCurrentTimeAndDate();
-    const isToday = currentDate.split("-")[2] === day.date;
+    const { currentDate } = useCurrentDateInfo();
+    const isToday = areEqualDates(day, currentDate);
 
     return (
         <div

@@ -11,14 +11,14 @@ export const useDateActions = () => {
     const dispatch = useAppDispatch();
 
     const updateCurrentTimeAction = () => {
-        dispatch(updateCurrentTime()); // Llama a la acción que actualiza el tiempo
+        dispatch(updateCurrentTime());
     };
 
     const resetDateAction = () => {
-        dispatch(resetToToday()); // Llama a la acción para restablecer la fecha
+        dispatch(resetToToday());
     };
 
-    return { updateCurrentTimeAction, resetDateAction }; // Asegúrate de que estas funciones se estén exportando
+    return { updateCurrentTimeAction, resetDateAction };
 };
 
 export const useDateSelectors = () => {
@@ -33,8 +33,9 @@ export const useDateSelectors = () => {
     };
 };
 
-export const useCurrentTimeAndDate = () => {
+export const useCurrentDateInfo = () => {
     const currentTime = useAppSelector((state) => state.date.currentTime);
     const currentDate = useAppSelector((state) => state.date.currentDate);
-    return { currentTime, currentDate };
+    const currentMode = useAppSelector((state) => state.date.mode);
+    return { currentTime, currentDate, currentMode };
 };

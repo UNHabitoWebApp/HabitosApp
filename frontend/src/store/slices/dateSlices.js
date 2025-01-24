@@ -1,6 +1,7 @@
 import { createSlice, createSelector } from '@reduxjs/toolkit';
 import moment from 'moment';
 import 'moment/locale/es';
+import { momentToObject } from '../../utils/dateUtils';
 
 moment.locale('es');
 moment.updateLocale('es', {
@@ -9,9 +10,12 @@ moment.updateLocale('es', {
 
 const DEFAULT_STATE = {
     currentWeek: moment().week(),
-    currentDate: moment().format('YYYY-MM-DD'),
+    currentDate: momentToObject(moment()),
     currentTime: moment().format('hh:mm A'), 
     daysOfWeek: [], 
+    selectedDate: momentToObject(moment()),
+    selectedWeek: moment().week(),
+    mode: 'week',
 };
 
 const initialState = DEFAULT_STATE;
@@ -30,25 +34,6 @@ const dateSlice = createSlice({
         updateCurrentTime: (state) => {
             state.currentTime = moment().format('hh:mm A'); 
         },
-        getDaysOfWeek: (state) => {
-            const startOfWeek = moment()
-                .year(moment(state.currentDate).year())
-                .week(state.currentWeek)
-                .startOf('week');
-
-            const days = [];
-            for (let i = 0; i < 7; i++) {
-                days.push({
-                    day: startOfWeek.format('dddd'),
-                    date: startOfWeek.format('DD'),
-                    month: startOfWeek.format('MMMM'),
-                    year: startOfWeek.format('YYYY'),
-                });
-                startOfWeek.add(1, 'day');
-            }
-
-            return days;
-        },
     },
 });
 
@@ -63,12 +48,7 @@ export const selectDaysOfWeek = createSelector(
 
         const days = [];
         for (let i = 0; i < 7; i++) {
-            days.push({
-                day: startOfWeek.format('dddd'),
-                date: startOfWeek.format('DD'),
-                month: startOfWeek.format('MMMM'),
-                year: startOfWeek.format('YYYY'),
-            });
+            days.push(momentToObject(startOfWeek));
             startOfWeek.add(1, 'day');
         }
 

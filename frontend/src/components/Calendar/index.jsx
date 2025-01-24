@@ -1,9 +1,10 @@
 import {
-    useCurrentTimeAndDate,
+    useCurrentDateInfo,
     useDateActions,
     useDateSelectors,
 } from "../../hooks/useDateActions";
 import { useTimeUpdater } from "../../hooks/useTimeUpdater";
+import { areEqualDates } from "../../utils/dateUtils";
 import DayFragment from "./DayFragment";
 import DayLayout from "./DayLayout";
 import './general.css';
@@ -18,39 +19,23 @@ const events = [
     { name: "Dormir", description: "Descansar", start: "23:00", end: "23:59" },
 ];
 
-const monthMap = {
-    January: '01',
-    February: '02',
-    March: '03',
-    April: '04',
-    May: '05',
-    June: '06',
-    July: '07',
-    August: '08',
-    September: '09',
-    October: '10',
-    November: '11',
-    December: '12',
-};
-
 const Calendar = () => {
     const { updateCurrentTimeAction, resetDateAction } = useDateActions();
     const { daysOfWeek, remainingTime, remainingTimeForNextMinute } = useDateSelectors();
 
     useTimeUpdater(remainingTime, remainingTimeForNextMinute, updateCurrentTimeAction, resetDateAction);
-
-    const onlyDay = true;    // Cambiar según el estado deseado.
-    const { currentDate } = useCurrentTimeAndDate();
+    // Cambiar según el estado deseado.
+    const { currentDate, currentMode } = useCurrentDateInfo();
 
     const currentDayIndex = daysOfWeek.findIndex(day =>
-        `${day.year}-${monthMap[day.month]}-${day.date}` === currentDate
+        areEqualDates(day, currentDate)
     );
 
     return (
         <div className="w-[90%] h-full bg-white flex flex-col border border-gray-200 rounded-md shadow-sm">
             {/* Contenedor de días de la semana */}
             <div className="flex flex-none pr-[0.30rem] pl-[45px]">
-                {onlyDay ? (
+                {currentMode == 'day' ? (
                     currentDayIndex !== -1 && (
                         <DayLayout
                             day={daysOfWeek[currentDayIndex]}
@@ -71,7 +56,7 @@ const Calendar = () => {
 
             {/* Contenedor de DayFragments */}
             <div className="flex flex-grow overflow-y-auto pl-[45px] flex-2">
-                {onlyDay ? (
+                {currentMode == 'day' ? (
                     currentDayIndex !== -1 && (
                         <div
                             key={`fragment-${currentDayIndex}`}

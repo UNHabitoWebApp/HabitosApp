@@ -1,9 +1,9 @@
 import PropTypes from "prop-types";
-import { useCurrentTimeAndDate } from "../../hooks/useDateActions";
+import { useCurrentDateInfo } from "../../hooks/useDateActions";
 import { generateCurrentTimeIndicatorClasses } from "../../utils/classNameUtils";
 
 const CurrentTimeIndicator = ({ showLabels, last }) => {
-    const { currentTime } = useCurrentTimeAndDate();
+    const { currentTime } = useCurrentDateInfo();
 
     // Separar la hora, minutos y período (am/pm)
     const [time, period] = currentTime.split(" ");
