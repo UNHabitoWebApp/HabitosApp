@@ -18,31 +18,32 @@ const CalendarPanel = () => {
                 Hoy
             </button>
 
-            {/* Menú desplegable para cambiar modo */}
-            <div className="relative">
-                <button
-                    onClick={toggleDropdown}
-                    className="px-3 py-1 bg-verdePrincipal text-white rounded hover:bg-verdePrincipalHover transition"
-                >
-                    Cambiar vista
-                </button>
-                {dropdownOpen && (
-                    <div className="absolute right-0 mt-2 bg-white border border-gray-200 rounded shadow-lg">
-                        <button
-                            onClick={() => {
-                                toggleModeAction();
-                                toggleDropdown();
-                            }}
-                            className="block px-4 py-2 text-gray-700 hover:bg-gray-100 w-full text-left"
-                        >
-                            {currentMode === 'week' ? 'Cambiar a Día' : 'Cambiar a Semana'}
-                        </button>
-                    </div>
-                )}
-            </div>
+
             {/* Contenedor de flechas */}
             <div className="flex items-center gap-4">
                 {/* Flecha izquierda */}
+                {/* Menú desplegable para cambiar modo */}
+                <div className="relative">
+                    <button
+                        onClick={toggleDropdown}
+                        className="px-3 py-1 bg-verdePrincipal text-white rounded hover:bg-verdePrincipalHover transition"
+                    >
+                        Elegir modo
+                    </button>
+                    {dropdownOpen && (
+                        <div className="absolute right-0 mt-2 bg-white border border-gray-200 rounded shadow-lg">
+                            <button
+                                onClick={() => {
+                                    toggleModeAction();
+                                    toggleDropdown();
+                                }}
+                                className="block px-4 py-2 text-gray-700 hover:bg-gray-100 w-full text-left"
+                            >
+                                {currentMode === 'week' ? 'Día' : 'Semana'}
+                            </button>
+                        </div>
+                    )}
+                </div>
                 <button
                     onClick={backwardAction}
                     className="p-2 rounded-full hover:bg-gray-300 transition flex items-center justify-center"
