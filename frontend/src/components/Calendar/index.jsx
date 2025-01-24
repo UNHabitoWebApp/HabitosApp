@@ -7,6 +7,7 @@ import { useTimeUpdater } from "../../hooks/useTimeUpdater";
 import { areEqualDates } from "../../utils/dateUtils";
 import DayFragment from "./DayFragment";
 import DayLayout from "./DayLayout";
+import CalendarPanel from "./CalendarPanel";
 import './general.css';
 
 const events = [
@@ -20,11 +21,10 @@ const events = [
 ];
 
 const Calendar = () => {
-    const { updateCurrentTimeAction, resetDateAction, backwardAction, forwardAction, toggleModeAction } = useDateActions();
+    const { updateCurrentTimeAction, resetDateAction } = useDateActions();
     const { daysOfWeek, remainingTime, remainingTimeForNextMinute } = useDateSelectors();
 
     useTimeUpdater(remainingTime, remainingTimeForNextMinute, updateCurrentTimeAction, resetDateAction);
-    // Cambiar según el estado deseado.
     const { selectedDate, currentMode } = useCurrentDateInfo();
 
     const currentDayIndex = daysOfWeek.findIndex(day =>
@@ -33,33 +33,8 @@ const Calendar = () => {
 
     return (
         <div className="w-[90%] h-full bg-white flex flex-col border border-gray-200 rounded-md shadow-sm">
-            {/* Contenedor de flechas */}
-            <div className="flex justify-between items-center px-4 py-2 bg-gray-100 border-b border-gray-300">
-                <button
-                    onClick={backwardAction}
-                    className="text-verdePrincipal hover:verdePrincipal transition"
-                >
-                    &#8592; {/* Flecha izquierda */}
-                </button>
-                <h2 className="text-lg font-medium text-gray-700">
-                    {currentMode === 'week' ? 'Semana Actual' : 'Día Actual'}
-                </h2>
-                <div className="flex items-center gap-4">
-                    <button
-                        onClick={toggleModeAction}
-                        className="px-2 py-1 bg-verdePrincipal text-white rounded hover:verdePrincipal transition"
-                    >
-                        Cambiar a {currentMode === 'week' ? 'Día' : 'Semana'}
-                    </button>
-                    <button
-                        onClick={forwardAction}
-                        className="text-verdePrincipal hover:verdePrincipal transition"
-                    >
-                        &#8594; {/* Flecha derecha */}
-                    </button>
-                </div>
-            </div>
-
+            {/* Contenedor de configuracion */}
+            <CalendarPanel />
             {/* Contenedor de días de la semana */}
             <div className="flex flex-none pr-[0.30rem] pl-[45px]">
                 {currentMode == 'day' ? (
