@@ -30,7 +30,8 @@ const dateSlice = createSlice({
         },
         resetToToday: (state) => {
             state.currentWeek = moment().week();
-            state.currentDate = moment().format('YYYY-MM-DD');
+            state.currentDate = momentToObject(moment());
+            state.currrentDateMoment = moment();
         },
         updateCurrentTime: (state) => {
             state.currentTime = moment().format('hh:mm A'); 
@@ -49,7 +50,6 @@ const dateSlice = createSlice({
                 if (newDate.week() !== state.selectedWeek) {
                     state.selectedWeek = newDate.week();
                 }
-
                 // Actualizar selectedDate
                 state.selectedDate = momentToObject(newDate);
             }
@@ -65,11 +65,9 @@ const dateSlice = createSlice({
             } else {
                 const newDate = state.currrentDateMoment.subtract(1, 'day');
         
-
                 if (newDate.week() !== state.selectedWeek) {
                     state.selectedWeek = newDate.week();
                 }
-
                 // Actualizar selectedDate
                 state.selectedDate = momentToObject(newDate);
             }
@@ -80,6 +78,7 @@ const dateSlice = createSlice({
         resetCurrentValues: (state) => {
             state.selectedDate = momentToObject(moment());
             state.selectedWeek = moment().week();
+            state.currrentDateMoment = moment();
         }
     },
 });

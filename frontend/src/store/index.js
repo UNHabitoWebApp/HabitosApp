@@ -3,10 +3,23 @@ import habitReducer from './slices/habitSlices';
 import dateReducer from './slices/dateSlices';
 
 const persistanceLocalStorageMiddleware = store => next => action => {
-    next(action);
-    const stateToPersist = { ...store.getState() };
-    delete stateToPersist.date; // No persistas las fechas
-    localStorage.setItem("__redux__state__", JSON.stringify(stateToPersist));
+    next(action); // Asegura que la acción fluya a través de los middlewares
+
+    const state = store.getState();
+    // Crea una copia profunda del estado pero excluye la propiedad `date`
+    const stateToPersist = { ...state };
+
+    // Elimina cualquier propiedad que no quieras persistir
+    delete stateToPersist.date;
+
+    // Puedes validar o limpiar aún más aquí si necesitas manejar más propiedades
+
+    try {
+        // Serializa y guarda el estado en localStorage
+        localStorage.setItem("__redux__state__", JSON.stringify(stateToPersist));
+    } catch (error) {
+        console.error("Error al guardar en localStorage:", error);
+    }
 };
 
 const store = configureStore({

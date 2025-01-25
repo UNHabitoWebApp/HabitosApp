@@ -9,7 +9,8 @@ export const useTimeUpdater = (remainingTime, remainingTimeForNextMinute, update
 
         // Establecer un timeout para realizar la actualización al final del día
         const timeout = setTimeout(() => {
-            resetDateAction(); // Usar la acción del hook
+            resetDateAction();
+            updateCurrentTimeAction();
         }, remainingTime); // Timeout con el tiempo restante hasta medianoche
 
         // Limpiar los intervalos y timeouts al desmontar el componente
