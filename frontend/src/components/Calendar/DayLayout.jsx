@@ -12,9 +12,11 @@ const DayLayout = ({ day, index }) => {
     const { currentDate } = useCurrentDateInfo();
     const isToday = areEqualDates(day, currentDate);
 
+
+
     return (
         <div
-            className={`${generateDaysLayoytClasses(index)} `}
+            className={`${generateDaysLayoytClasses(index)}`}
         >
             <div
                 className={generateDayNameClasses(isToday)}
