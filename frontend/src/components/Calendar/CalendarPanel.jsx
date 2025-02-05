@@ -1,8 +1,9 @@
-import { useCurrentDateInfo, useDateActions } from '../../hooks/useDateActions';
+import { useCurrentDateInfo, useDateActions, useDateSelectors } from '../../hooks/useDateActions';
 import { useState } from 'react';
 
 const CalendarPanel = () => {
     const { backwardAction, forwardAction, toggleModeAction, resetCurrent } = useDateActions();
+    const { actualLabel } = useDateSelectors();
     const { currentMode } = useCurrentDateInfo();
     const [dropdownOpen, setDropdownOpen] = useState(false);
 
@@ -10,19 +11,19 @@ const CalendarPanel = () => {
 
     return (
         <div className="flex justify-between items-center px-4 py-2 bg-gray-100 border-b border-gray-300">
-            {/* Botón "Hoy" */}
-            <button
-                onClick={resetCurrent}
-                className="px-3 py-1 bg-verdePrincipal text-white rounded hover:bg-verdePrincipalHover transition"
-            >
-                Hoy
-            </button>
+            {/* Contenedor que agrupa el botón "Hoy" y la fecha */}
+            <div className="flex items-center gap-2">
+                <button
+                    onClick={resetCurrent}
+                    className="px-3 py-1 bg-verdePrincipal text-white rounded hover:bg-verdePrincipalHover transition"
+                >
+                    Hoy
+                </button>
+                <h2 className="text-md font-semibold text-gray-700 ml-2">{actualLabel}</h2>
+            </div>
 
-
-            {/* Contenedor de flechas */}
+            {/* Contenedor de flechas y selector de modo */}
             <div className="flex items-center gap-4">
-                {/* Flecha izquierda */}
-                {/* Menú desplegable para cambiar modo */}
                 <div className="relative">
                     <button
                         onClick={toggleDropdown}
@@ -61,7 +62,6 @@ const CalendarPanel = () => {
                     </svg>
                 </button>
 
-                {/* Flecha derecha */}
                 <button
                     onClick={forwardAction}
                     className="p-2 rounded-full hover:bg-gray-300 transition flex items-center justify-center"
@@ -79,7 +79,6 @@ const CalendarPanel = () => {
                     </svg>
                 </button>
             </div>
-
         </div>
     );
 };

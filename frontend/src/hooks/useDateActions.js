@@ -7,7 +7,8 @@ import {
     forward,
     backward,
     toggleMode,
-    resetCurrentValues
+    resetCurrentValues,
+    selectActualDateLabel
 } from '../store/slices/dateSlices';
 import { useAppDispatch, useAppSelector } from './store';
 
@@ -52,11 +53,14 @@ export const useDateSelectors = () => {
     const daysOfWeek = useAppSelector(selectDaysOfWeek);
     const remainingTime = useAppSelector(selectRemainingTime);
     const remainingTimeForNextMinute = useAppSelector(selectRemainingTimeForNextMinute);
+    const actualLabel = useAppSelector(selectActualDateLabel);
+
 
     return {
         daysOfWeek,
         remainingTime,
-        remainingTimeForNextMinute
+        remainingTimeForNextMinute,
+        actualLabel
     };
 };
 
