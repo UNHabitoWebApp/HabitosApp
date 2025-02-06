@@ -9,17 +9,18 @@ import PropTypes from 'prop-types'
 
 
 const DayLayout = ({ day, index }) => {
-    const { currentDate } = useCurrentDateInfo();
+    const { currentDate, currentMode } = useCurrentDateInfo();
     const { clickDay } = useDateActions();
     const isToday = areEqualDates(day, currentDate);
 
     const handleDayClick = () => {
+        if (currentMode === 'day') return;
         clickDay(day);
     }
 
     return (
         <div
-            className={`${generateDaysLayoytClasses(index)}`}
+            className={`${generateDaysLayoytClasses(index, currentMode)}`}
             onClick={handleDayClick}
         >
             <div

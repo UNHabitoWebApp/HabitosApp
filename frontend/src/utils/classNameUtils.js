@@ -1,13 +1,20 @@
 import classNames from "classnames";
 
-export const generateDaysLayoytClasses = (id) => {
+export const generateDaysLayoytClasses = (id, day) => {
     return classNames(
-        "flex-grow flex flex-col min-h-24 items-center justify-center w-[14.28%] min-w-[14.28%] border-b-2 text-center font-semibold py-4 cursor-pointer", // Agregamos cursor-pointer
+        "flex-grow flex flex-col min-h-24 items-center justify-center w-[14.28%] min-w-[14.28%]",
+        "border-b-2 text-center font-semibold py-4 ", 
         {
             "border-r-2": id !== 6,
+        },
+        {
+            "cursor-pointer transition duration-200":day==='week',
+            "ease-in-out hover:bg-gray-100 hover:shadow-sm": day === 'week',
         }
+            
     );
 };
+
 
 export const generateDayNumberClasses = (isToday) => {
     return classNames(
