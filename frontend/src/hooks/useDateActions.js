@@ -8,7 +8,8 @@ import {
     backward,
     toggleMode,
     resetCurrentValues,
-    selectActualDateLabel
+    selectActualDateLabel,
+    setDay
 } from '../store/slices/dateSlices';
 import { useAppDispatch, useAppSelector } from './store';
 
@@ -39,13 +40,18 @@ export const useDateActions = () => {
         dispatch(resetCurrentValues());
     }
 
+    const clickDay = (day) => {
+        dispatch(setDay(day));
+    }
+
     return { 
         updateCurrentTimeAction, 
         resetDateAction, 
         forwardAction, 
         backwardAction,
         toggleModeAction,
-        resetCurrent 
+        resetCurrent,
+        clickDay
     };
 };
 

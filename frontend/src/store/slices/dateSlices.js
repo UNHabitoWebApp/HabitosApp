@@ -80,6 +80,16 @@ const dateSlice = createSlice({
             state.selectedDate = momentToObject(moment());
             state.selectedWeek = moment().week();
             state.currentDateMomentISO = moment().toISOString();
+        },
+        setDay: (state, action) => {
+            const { date, monthNumber, year } = action.payload;
+
+            const newDate = moment(`${year}-${monthNumber}-${date}`, "YYYY-MM-DD");
+
+            state.selectedDate = momentToObject(newDate);
+            state.currentDateMomentISO = newDate.toISOString();
+            state.selectedWeek = newDate.week();
+            state.mode = 'day';
         }
     },
 });
@@ -149,6 +159,7 @@ export const {
     forward , 
     backward,
     toggleMode,
-    resetCurrentValues
+    resetCurrentValues,
+    setDay
 } = dateSlice.actions;
 export default dateSlice.reducer;

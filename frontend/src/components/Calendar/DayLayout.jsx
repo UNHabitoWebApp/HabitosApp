@@ -1,4 +1,4 @@
-import { useCurrentDateInfo } from '../../hooks/useDateActions'
+import { useCurrentDateInfo, useDateActions } from '../../hooks/useDateActions'
 import {
     generateDayNameClasses,
     generateDayNumberClasses,
@@ -10,13 +10,17 @@ import PropTypes from 'prop-types'
 
 const DayLayout = ({ day, index }) => {
     const { currentDate } = useCurrentDateInfo();
+    const { clickDay } = useDateActions();
     const isToday = areEqualDates(day, currentDate);
 
-
+    const handleDayClick = () => {
+        clickDay(day);
+    }
 
     return (
         <div
             className={`${generateDaysLayoytClasses(index)}`}
+            onClick={handleDayClick}
         >
             <div
                 className={generateDayNameClasses(isToday)}
