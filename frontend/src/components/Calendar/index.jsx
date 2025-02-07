@@ -9,20 +9,13 @@ import DayFragment from "./DayFragment";
 import DayLayout from "./DayLayout";
 import CalendarPanel from "./CalendarPanel";
 import './general.css';
+import { useEventsOfWeek } from "../../hooks/useHabitsActions";
 
-const events = [
-    { name: "Pierna", description: "Rutina de ejercicios", start: "9:00", end: "11:30" },
-    { name: "Journaling", description: "Escribir reflexiones", start: "13:00", end: "14:00" },
-    { name: "Lectura", description: "Leer un libro", start: "1:00", end: "6:30" },
-    { name: "Cocinar", description: "Preparar la cena", start: "19:00", end: "20:00" },
-    { name: "Meditar", description: "Práctica de mindfulness", start: "21:00", end: "21:30" },
-    { name: "Dormir", description: "Descansar", start: "22:00", end: "23:00" },
-    { name: "Dormir", description: "Descansar", start: "23:00", end: "23:59" },
-];
 
 const Calendar = () => {
     const { updateCurrentTimeAction, resetDateAction } = useDateActions();
     const { daysOfWeek, remainingTime, remainingTimeForNextMinute } = useDateSelectors();
+    const events = useEventsOfWeek(daysOfWeek);
 
     useTimeUpdater(remainingTime, remainingTimeForNextMinute, updateCurrentTimeAction, resetDateAction);
     const { selectedDate, currentMode } = useCurrentDateInfo();
@@ -67,7 +60,7 @@ const Calendar = () => {
                             <DayFragment
                                 first={true}
                                 last={true}
-                                events={events.filter((_, idx) => idx === currentDayIndex)}
+                                day={events.find((_, idx) => idx === currentDayIndex)}
                             />
                         </div>
                     )
@@ -80,7 +73,7 @@ const Calendar = () => {
                             <DayFragment
                                 first={index === 0}
                                 last={index === daysOfWeek.length - 1}
-                                events={[events[index]]}
+                                day={events[index]}
                             />
                         </div>
                     ))

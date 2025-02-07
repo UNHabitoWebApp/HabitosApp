@@ -61,7 +61,6 @@ export const useDateSelectors = () => {
     const remainingTimeForNextMinute = useAppSelector(selectRemainingTimeForNextMinute);
     const actualLabel = useAppSelector(selectActualDateLabel);
 
-
     return {
         daysOfWeek,
         remainingTime,

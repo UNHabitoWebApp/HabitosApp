@@ -1,45 +1,95 @@
 import { createSlice } from '@reduxjs/toolkit';
+import { createSelector } from "@reduxjs/toolkit";
+import { DEFAULT_STATE } from '../DEFAULT_STATES';
 
-const DEFAULT_STATE = []; // El estado inicial es un array.
 
 
 const initialState = (() => {
-	const persistedState = localStorage.getItem("__redux__state__");
+    const persistedState = localStorage.getItem("__redux__state__");
 
-	try {
+    if (!persistedState) {
+        return DEFAULT_STATE; // Si no hay datos en localStorage, usar el estado por defecto
+    }
 
-		if(persistedState.habtis === undefined){
-			return DEFAULT_STATE
-		}
+    try {
+        const parsedState = JSON.parse(persistedState); // Convertir el string en un objeto
 
-		return persistedState 
-	}catch (e){
-		return DEFAULT_STATE;
-	}
+        if (!parsedState.habits) {
+            return DEFAULT_STATE;
+        }
+
+        return parsedState.habits; 
+    } catch (error) {
+        console.error("Error al parsear localStorage:", error);
+        return DEFAULT_STATE; // En caso de error, usar el estado por defecto
+    }
 })();
 
 
 const habitSlice = createSlice({
-	name: 'habits',
+	name: "habits",
 	initialState,
 	reducers: {
-		addHabit: (state, action) => {   
-			const id = crypto.randomUUID(); // Genera un ID único.
-			state.push({ ...action.payload, id });
+		addHabit: (state, action) => {
+			const { year, month, day, habit } = action.payload;
+
+			// Asegurar estructura anidada
+			if (!state[year]) state[year] = {};
+			if (!state[year][month]) state[year][month] = {};
+			if (!state[year][month][day]) state[year][month][day] = { habits: [] };
+
+			// Agregar hábito al día correspondiente
+			state[year][month][day].habits.push({
+				...habit,
+				id: crypto.randomUUID(),
+			});
 		},
+
 		removeHabit: (state, action) => {
-			return state.filter((habit) => habit.id !== action.payload);
-		},
-		updateHabit: (state, action) => {
-			// Encuentra el índice del hábito a actualizar.
-			const index = state.findIndex((habit) => habit.id === action.payload.id);
-			if (index !== -1) {
-				// Actualiza el hábito en la posición correspondiente.
-				state[index] = { ...state[index], ...action.payload };
+			const { year, month, day, habitId } = action.payload;
+
+			if (state[year]?.[month]?.[day]?.habits) {
+				state[year][month][day].habits = state[year][month][day].habits.filter(
+					(habit) => habit.id !== habitId
+				);
+
+				// Elimina estructuras vacías para evitar objetos innecesarios
+				if (state[year][month][day].habits.length === 0) delete state[year][month][day];
+				if (Object.keys(state[year][month]).length === 0) delete state[year][month];
+				if (Object.keys(state[year]).length === 0) delete state[year];
 			}
 		},
-	},
+
+		updateHabit: (state, action) => {
+			const { year, month, day, habitId, updates } = action.payload;
+
+			if (state[year]?.[month]?.[day]?.habits) {
+				const habitIndex = state[year][month][day].habits.findIndex(
+					(habit) => habit.id === habitId
+				);
+				if (habitIndex !== -1) {
+					state[year][month][day].habits[habitIndex] = {
+						...state[year][month][day].habits[habitIndex],
+						...updates,
+					};
+				}
+			}
+		},
+  	},
 });
+
+// 📌 Selector para obtener hábitos de una lista de fechas
+export const selectHabitsByDates = createSelector(
+    [(state) => state.habits, (_, dates) => dates], // Mantener input selector puro
+    (habits, dates) => {
+        return dates.map(({ year, monthNumber, date }) => ({
+            year,
+            monthNumber,
+            date,
+            habits: habits[year]?.[monthNumber]?.[date]?.habits || [],
+        }));
+    }
+);
 
 export const { addHabit, removeHabit, updateHabit } = habitSlice.actions;
 export default habitSlice.reducer;
