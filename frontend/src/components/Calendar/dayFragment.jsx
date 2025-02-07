@@ -7,8 +7,6 @@ import { generateDayFragmentContainerClasses } from "../../utils/classNameUtils"
 const DayFragment = ({ day, first = false, last = false, unique = false }) => {
     const { habits = [] } = day; // Extraemos la información del día
 
-    console.log(habits);
-
     const mergedEvents = [];
 
     // Convertimos los hábitos en eventos con minutos calculados
