@@ -39,10 +39,7 @@ const habitSlice = createSlice({
 			if (!state[year][month][day]) state[year][month][day] = { habits: [] };
 
 			// Agregar hábito al día correspondiente
-			state[year][month][day].habits.push({
-				...habit,
-				id: crypto.randomUUID(),
-			});
+			state[year][month][day].habits.push(habit);
 		},
 
 		removeHabit: (state, action) => {

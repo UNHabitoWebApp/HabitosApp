@@ -5,7 +5,12 @@ export const useHabitsActions = () => {
     const dispatch = useAppDispatch();
 
     const addDefaultHabbit = () => {
-        const newHabit = { name: "Leer 20 páginas al día" };
+        const newHabit = {
+            "year": "2025",
+            "month": "2",
+            "day": "15",
+            "habit": { name: "Leer 20 páginas al día" }
+        };
         dispatch(addHabit(newHabit));
     }    
 
