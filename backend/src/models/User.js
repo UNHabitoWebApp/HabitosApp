@@ -1,46 +1,48 @@
 import mongoose from "../config/mongoConfig.js";
 
-const transform = (doc, ret) => {
-	ret.id = ret._id.toString();
-	delete ret._id;
-	return ret;
-};
-
-const modifyOptions = {
-	getters: true,
-	virtuals: true,
-	transform
-};
-
 const UserSchema = new mongoose.Schema(
 	{
-		correo: {
+		email: {
 			type: String,
 			required: true,
 			unique: true
 		},
-		contrasena: {
+		password: {
 			type: String,
 			required: true
 		},
-		nombre: {
+		firstName: {
 			type: String,
 			required: true
 		},
-		apellido: {
+		lastName: {
 			type: String,
 			required: true
 		},
-		ultimaVez: {
+		lastLogin: {
 			type: Date,
 			default: Date.now
 		}
 	},
 	{
-		timestamps: true,   // Agrega createdAt y updatedAt automáticamente
-		versionKey: false,  // Elimina el campo __v
-		toJSON: modifyOptions,
-		toObject: modifyOptions
+		timestamps: true,
+		versionKey: false,
+		toJSON: {
+			getters: true,
+			virtuals: true,
+			transform: (doc, ret) => {
+				ret.id = ret._id.toString();
+				return ret;
+			}
+		},
+		toObject: {
+			getters: true,
+			virtuals: true,
+			transform: (doc, ret) => {
+				ret.id = ret._id.toString();
+				return ret;
+			}
+		}
 	}
 );
 
