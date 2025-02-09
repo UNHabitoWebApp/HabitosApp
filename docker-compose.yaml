@@ -1,0 +1,22 @@
+services:
+  db_habit:
+    image: mongo:6
+    restart: always
+    container_name: habit_un_db
+    hostname: habit_un
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: habit_un
+    volumes:
+      - mongodata:/data/db
+    ports:
+      - "27017:27017"
+    networks:
+      - database_network
+
+networks:
+  database_network:
+    driver: bridge
+
+volumes:
+  mongodata:
