@@ -6,12 +6,12 @@ import initializeRoutes from "./routes/index.js";
 const app = express();
 
 app.use(
-    cors({
+	cors({
     	origin: true,
     	credentials: true,
     	allowedHeaders: "Content-Type, Authorization",
     	allowOrigin: "http://localhost:3000",
-    })
+	})
 );
 
 app.use(express.json());
