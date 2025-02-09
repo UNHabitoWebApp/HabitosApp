@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { getPing } from "../middlewares/pingMiddleware.js";
+import { getPing } from "../middlewares/controllers/pingMiddleware.js";
 
 const pingRouter = Router();
 
