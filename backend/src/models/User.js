@@ -1,13 +1,25 @@
 import mongoose from "../config/mongoConfig.js";
 
-const UsuarioSchema = new mongoose.Schema(
+const transform = (doc, ret) => {
+	ret.id = ret._id.toString();
+	delete ret._id;
+	return ret;
+};
+
+const modifyOptions = {
+	getters: true,
+	virtuals: true,
+	transform
+};
+
+const UserSchema = new mongoose.Schema(
 	{
 		correo: {
 			type: String,
 			required: true,
 			unique: true
 		},
-		contraseña: {
+		contrasena: {
 			type: String,
 			required: true
 		},
@@ -25,11 +37,13 @@ const UsuarioSchema = new mongoose.Schema(
 		}
 	},
 	{
-		timestamps: true,
-		versionKey: false
+		timestamps: true,   // Agrega createdAt y updatedAt automáticamente
+		versionKey: false,  // Elimina el campo __v
+		toJSON: modifyOptions,
+		toObject: modifyOptions
 	}
 );
 
-const Usuario = mongoose.model("Usuario", UsuarioSchema);
+const User = mongoose.model("User", UserSchema);
 
-export default Usuario;
+export default User;
