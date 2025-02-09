@@ -1,6 +1,6 @@
 import jwt from "jsonwebtoken";
 import bcrypt from "bcryptjs";
-import UserService from "../services/User.js";
+import UserService from "../services/userService.js";
 import { SECRET_KEY, REFRESH_SECRET_KEY } from "../config/config.js";
 
 /**
@@ -19,14 +19,14 @@ export const login = async (request, response) => {
             return response.status(401).json({ message: "Contraseña incorrecta" });
         }
 
-        // Crear el access token 
+        // Crear el access token
         const token = jwt.sign(
             { id: user._id, email: user.email },
             SECRET_KEY,
-            { expiresIn: "15m" } 
+            { expiresIn: "15m" }
         );
 
-        // Crear el refresh token 
+        // Crear el refresh token
         const refreshToken = jwt.sign(
             { id: user._id, email: user.email },
             REFRESH_SECRET_KEY,
@@ -34,11 +34,11 @@ export const login = async (request, response) => {
         );
 
         // Almacenar el refresh token en cookies (httpOnly)
-        response.cookie('refreshToken', refreshToken, {
-            httpOnly: true, 
-            secure: false, 
-            sameSite: 'Strict', 
-            maxAge: 7 * 24 * 60 * 60 * 1000, 
+        response.cookie("refreshToken", refreshToken, {
+            httpOnly: true,
+            secure: false,
+            sameSite: "Strict",
+            maxAge: 7 * 24 * 60 * 60 * 1000,
         });
 
         // Actualizar el último login del usuario
@@ -56,7 +56,7 @@ export const login = async (request, response) => {
 export const register = async (request, response) => {
     try {
         const { email, password, lastName, firstName } = request.body;
-        
+
         // Verificar si el usuario ya existe
         const existingUser = await UserService.getUserByEmail(email);
         if (existingUser) {
@@ -74,7 +74,7 @@ export const register = async (request, response) => {
             firstName,
             createdAt: new Date(),
         };
-        
+
         const createdUser = await UserService.createUser(newUser);
 
         // Generar el JWT
@@ -92,10 +92,10 @@ export const register = async (request, response) => {
         );
 
         // Almacenar el refresh token en las cookies
-        response.cookie('refreshToken', refreshToken, {
+        response.cookie("refreshToken", refreshToken, {
             httpOnly: true,  // No accesible desde JavaScript
             secure: false,
-            sameSite: 'Strict', 
+            sameSite: "Strict",
             maxAge: 7 * 24 * 60 * 60 * 1000,
         });
 
@@ -104,10 +104,10 @@ export const register = async (request, response) => {
         await UserService.updateUser(createdUser._id, { lastLogin: createdUser.lastLogin });
 
         // Enviar el access token en el cuerpo de la respuesta
-        return response.status(201).json({ 
-            message: "Registro exitoso", 
-            accessToken: token, 
-            user: createdUser 
+        return response.status(201).json({
+            message: "Registro exitoso",
+            accessToken: token,
+            user: createdUser
         });
     } catch (error) {
         return response.status(500).json({ message: "Error en el servidor", error: error.message });
@@ -120,7 +120,7 @@ export const refreshToken = async (request, response) => {
         // Obtener el refresh token de las cookies
         console.log(request);
         const refreshToken = request.cookies.refreshToken;
-        
+
         // Verificar si el refresh token existe
         if (!refreshToken) {
             return response.status(401).json({ message: "No se proporcionó el refresh token." });
@@ -139,7 +139,7 @@ export const refreshToken = async (request, response) => {
         const newAccessToken = jwt.sign(
             { id: user._id, email: user.email },
             SECRET_KEY,
-            { expiresIn: "15m" } 
+            { expiresIn: "15m" }
         );
 
         // Retornar el nuevo access token

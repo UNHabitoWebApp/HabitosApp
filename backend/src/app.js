@@ -6,12 +6,12 @@ import cookieParser from "cookie-parser";
 const app = express();
 
 app.use(
-	cors({
+    cors({
     	origin: true,
     	credentials: true,
     	allowedHeaders: "Content-Type, Authorization",
     	allowOrigin: "*",
-	})
+    })
 );
 
 app.use(express.json());
