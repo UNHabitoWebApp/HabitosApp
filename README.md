@@ -92,3 +92,23 @@ La carpeta `middlewares` ahora agrupa no solo los middlewares tradicionales (com
 
 - Archivo de entrada al backend. Desde este punto se inicializa la aplicación y se levanta el servicio.
 ---
+
+
+###  Iniciar los Contenedores de Docker
+Navega a la raíz del proyecto y ejecuta el siguiente comando para levantar los contenedores de Docker:
+
+```
+docker-compose up
+```
+
+### Ejecutar el Backend
+Una vez que los contenedores estén en funcionamiento, navega a la carpeta del backend y ejecuta el servidor en modo de desarrollo:
+
+```
+cd backend
+npm run dev
+```
+
+### API
+
+Hay un .json en la carpeta de backend con ejemplos de como deben ser las peticiones del Auth es una coleccion de thunderclient thunder-collection_auth.json la importan en el cliente de thunderclient para usarla
