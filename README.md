@@ -94,6 +94,8 @@ La carpeta `middlewares` ahora agrupa no solo los middlewares tradicionales (com
 ---
 
 
+## Requisitos Previos
+- **Docker**: Asegúrate de tener Docker instalado en tu sistema. Puedes descargarlo desde [aquí](https://www.docker.com/get-started).
 ###  Iniciar los Contenedores de Docker
 Navega a la raíz del proyecto y ejecuta el siguiente comando para levantar los contenedores de Docker:
 
