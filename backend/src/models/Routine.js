@@ -16,9 +16,9 @@ const RoutineSchema = new mongoose.Schema(
 		toJSON: {
 			transform: (doc, ret) => {
 				ret.id = ret._id.toString();
-				ret._userId = ret.userId.toString();
 				ret.userId = ret.userId.toString();
 				ret.exercises = ret.exercises.map(e => e.toString());
+				delete ret._id;
 				return ret;
 			}
 		}

@@ -40,6 +40,7 @@ const UserSchema = new mongoose.Schema(
 			virtuals: true,
 			transform: (doc, ret) => {
 				ret.id = ret._id.toString();
+				delete ret._id;
 				return ret;
 			}
 		}

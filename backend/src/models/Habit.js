@@ -7,7 +7,15 @@ const VariableSchema = new mongoose.Schema({
 		allowedValues: { type: [String], required: function () { return this.type === "enum"; } },
 		min: { type: Number, required: function () { return this.type === "integer"; } },
 		max: { type: Number, required: function () { return this.type === "integer"; } },
-		maxLength: { type: Number, required: function () { return this.type === "open"; } }
+		maxLength: { type: Number, required: function () { return this.type === "open"; } },
+	},
+});
+
+VariableSchema.set("toJSON", {
+	transform: (doc, ret) => {
+		ret.id = ret._id.toString();
+		delete ret._id;
+		return ret;
 	}
 });
 
@@ -28,13 +36,14 @@ const HabitSchema = new mongoose.Schema(
 		toJSON: {
 			transform: (doc, ret) => {
 				ret.id = ret._id.toString();
-				ret._userId = ret.userId ? ret.userId : null;
 				ret.userId = ret.userId ? ret.userId.toString() : null;
+				delete ret._id;
 				return ret;
 			}
 		}
 	}
 );
+
 
 const Habit = mongoose.model("Habit", HabitSchema);
 export default Habit;
