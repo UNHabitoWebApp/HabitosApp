@@ -1,11 +1,10 @@
 import app from "./app.js";
+import { port } from "./config/index.js";
 
 const startServer = async () => {
 	try {
-		const port = process.env.PORT || 8080;
-
 		app.listen(port, () => {
-			console.log(`Servidor encendido! Escuchando en el puerto: ${port}`);
+			console.log(`Servidor encendido! Escuchando en el puerto: http://localhost:${port}`);
 		});
 	} catch (error) {
 		console.error("Error al iniciar la aplicación:", error);
