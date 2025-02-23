@@ -131,4 +131,57 @@ body {
     float: right;
     margin-right: 100px;
 }
-  
+
+.registro-link {
+  display: block;
+  text-align: center;
+}
+
+.registro-link:hover {
+  color: #4d8577;
+}
+
+.form-group:first-child {
+  margin-top: 40px; /* Keeps email field lower */
+}
+
+.form-group {
+  margin-bottom: 20px;
+  width: 100%;
+}
+
+.password-group {
+  margin-top: 20px; /* Keeps password field closer to email */
+}
+
+.texto {
+  margin-top: 20px;
+  font-size: 24px;
+  line-height: 36px;
+  text-align: center;
+}
+
+.password-container {
+  position: relative;
+  width: 100%;
+}
+
+.toggle-password {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  font-size: 16px;
+}
+
+.toggle-password:hover {
+  opacity: 0.8;
+}
+
+.toggle-password:focus {
+  outline: none;
+}

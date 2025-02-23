@@ -4,6 +4,9 @@ import About from '../pages/About';
 import AddHabbit from '../pages/AddHabbit'
 import NotFound from '../pages/NotFound';
 import Habits from '../pages/Habits';
+import Login from '../pages/Login';
+import Register from '../pages/Registro';
+import ConfirmacionRegistro from '../pages/ConfirmacionRegistro';
 
 const AppRoutes = () => {
     return (
@@ -14,6 +17,9 @@ const AppRoutes = () => {
             <Route path="/add" element={<AddHabbit />} />
             {/* Ruta comodín para 404 */}
             <Route path="*" element={<NotFound />} />
+            <Route path="/login" element={<Login />} />
+            <Route path="/register" element={<Register/>} />
+            <Route path="/confirmacion" element={<ConfirmacionRegistro/>} />
         </Routes >
     );
 };
