@@ -1,11 +1,10 @@
 import { useState } from "react";
 import BackToHomeButton from "./BackToHomeButton";
-import FeedbackScreen from "./FeedbackScreen";
 import add from "../../assets/icons/add.png";
+import PropTypes from "prop-types";
 
-export default function RoutineForm() {
+export default function RoutineForm({ onSave }) {
   const [isAddingRoutine, setIsAddingRoutine] = useState(false);
-  const [showFeedback, setShowFeedback] = useState(false); // Nuevo estado
   const [routine, setRoutine] = useState({
     name: "",
     exercises: [{ type: "", name: "" }],
@@ -26,10 +25,6 @@ export default function RoutineForm() {
     updatedExercises[index][field] = value;
     setRoutine({ ...routine, exercises: updatedExercises });
   };
-
-  if (showFeedback) {
-    return <FeedbackScreen title="¡Felicitaciones! Has creado una nueva rutina" description="Ahora agregala a los días que la quieras realizar si aún no lo has hecho." />
-  }
 
   return (
     <>
@@ -112,7 +107,11 @@ export default function RoutineForm() {
       {/* Bloque Horario */}
       {isAddingRoutine && (
         <div className="mt-2 p-2 bg-[#ADD9C5] border-2 border-[#5F936C] rounded-[20px] w-full max-w-md">
-            <h2 className="text-black text-[15px] text-center mb-2">Horario</h2>
+            <h2 className="text-black text-[15px] text-center mb-2 flex items-center justify-center gap-2">Horario 
+              <span title="Si al hábito no se le ingresa día y hora, el hábito quedará como no programado" className="cursor-pointer">
+                  ⓘ
+              </span>
+            </h2>
         
             <div className="flex items-center justify-between">
                 {/* Días de la semana */}
@@ -200,7 +199,10 @@ export default function RoutineForm() {
         <div className="mt-1 mb-5 flex justify-center gap-4 w-full max-w-md">
             <BackToHomeButton/>
             <button className="mt-5 px-7 py-1 text-white text-sm bg-[#569788] rounded-[20px] transition-all duration-300 hover:bg-[#84A59D]"
-            onClick={() => setShowFeedback(true)}
+            onClick={() => {
+              console.log("Datos guardados:", routine);
+              onSave();
+            }}
             >
             Guardar
             </button>
@@ -212,3 +214,7 @@ export default function RoutineForm() {
     </>
   );
 }
+
+RoutineForm.propTypes = {
+  onSave: PropTypes.func.isRequired,
+};

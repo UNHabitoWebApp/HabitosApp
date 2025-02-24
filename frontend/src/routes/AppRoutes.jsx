@@ -2,7 +2,7 @@ import { Routes, Route } from 'react-router-dom';
 import Home from '../pages/Home'
 import About from '../pages/About';
 //import AddHabbit from '../pages/AddHabbit'
-import CreateHabbit from '../components/createHabbit/HabbitSelector';
+import CreateHabbit from '../pages/CreateHabbit';
 import NotFound from '../pages/NotFound';
 import Habits from '../pages/Habits';
 
