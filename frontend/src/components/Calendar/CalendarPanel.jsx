@@ -52,7 +52,7 @@ const CalendarPanel = () => {
                 <div className="flex items-center ">
                     <button
                         onClick={backwardAction}
-                        className="p-2 rounded-full hover:bg-gray-300 transition flex items-center justify-center"
+                        className="p-2 rounded-full md:hover:bg-gray-300 lg:hover:bg-gray-300 transition flex items-center justify-center"
                         aria-label="Retroceder"
                     >
                         <svg
@@ -69,7 +69,7 @@ const CalendarPanel = () => {
 
                     <button
                         onClick={forwardAction}
-                        className="p-2 rounded-full hover:bg-gray-300 transition flex items-center justify-center"
+                        className="p-2 rounded-full md:hover:bg-gray-300 lg:hover:bg-gray-300 transition flex items-center justify-center"
                         aria-label="Avanzar"
                     >
                         <svg

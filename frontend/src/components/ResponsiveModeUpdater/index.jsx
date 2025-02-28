@@ -12,8 +12,8 @@ const ResponsiveModeUpdater = () => {
         const updateMode = () => {
             const isSmallScreen = window.innerWidth < 850;
 
-            if (isSmallScreen && currentMode !== "day") {
-                toggleModeAction();
+            if (isSmallScreen) {
+                if (currentMode !== "day") toggleModeAction();
             } else {
                 if (openHabitManager) setVariable("openHabitManager", false);
                 if (currentMode !== "week") toggleModeAction();
