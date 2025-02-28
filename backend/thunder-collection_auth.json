@@ -1,0 +1,78 @@
+{
+    "clientName": "Thunder Client",
+    "collectionName": "auth",
+    "collectionId": "ed54954f-99f9-4046-8f50-0d9e8bc98f38",
+    "dateExported": "2025-02-09T18:01:56.468Z",
+    "version": "1.2",
+    "folders": [],
+    "requests": [
+        {
+            "_id": "97d2ff0f-b5d9-4952-acc2-5ebd4285e8f9",
+            "colId": "ed54954f-99f9-4046-8f50-0d9e8bc98f38",
+            "containerId": "",
+            "name": "Register",
+            "url": "localhost:8080/auth/login",
+            "method": "POST",
+            "sortNum": 10000,
+            "created": "2025-02-09T17:41:05.974Z",
+            "modified": "2025-02-09T17:47:27.701Z",
+            "headers": [],
+            "body": {
+                "type": "json",
+                "raw": "{\n  \"firstName\": \"jhony\",\n  \"lastName\":\"fonseca\",\n  \"email\": \"verify@gmail.com\",\n  \"password\":\"password\"\n}",
+                "form": []
+            }
+        },
+        {
+            "_id": "7de115a8-f3a2-4494-a2ea-165b74b37379",
+            "colId": "ed54954f-99f9-4046-8f50-0d9e8bc98f38",
+            "containerId": "",
+            "name": "Login",
+            "url": "localhost:8080/auth/login",
+            "method": "POST",
+            "sortNum": 20000,
+            "created": "2025-02-09T17:45:25.232Z",
+            "modified": "2025-02-09T17:45:25.232Z",
+            "headers": [],
+            "body": {
+                "type": "json",
+                "raw": "{\n  \"firstName\": \"jhony\",\n  \"lastName\":\"fonseca\",\n  \"email\": \"verify@gmail.com\",\n  \"password\":\"password\"\n}",
+                "form": []
+            }
+        },
+        {
+            "_id": "e4e03ceb-6d3f-4634-9ad7-c17f150b50fb",
+            "colId": "ed54954f-99f9-4046-8f50-0d9e8bc98f38",
+            "containerId": "",
+            "name": "Refreshg",
+            "url": "localhost:8080/auth/refresh",
+            "method": "GET",
+            "sortNum": 30000,
+            "created": "2025-02-09T17:57:50.303Z",
+            "modified": "2025-02-09T17:57:50.303Z",
+            "headers": [
+                {
+                    "name": "Cookie",
+                    "value": "refreshToken=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3YThlODcwMzFlZjI0NWZjNTUyYTE1MSIsImVtYWlsIjoidmVyaWZ5QGdtYWlsLmNvbSIsImlhdCI6MTczOTEyMzI0NywiZXhwIjoxNzM5NzI4MDQ3fQ.Y_Rcm4FGIHyq-lMwRQaLzpGNEJli9Ae6ebERL04wqrQ; Max-Age=604800; Path=/; Expires=Sun, 16 Feb 2025 17:47:27 GMT; HttpOnly; SameSite=Strict"
+                }
+            ]
+        },
+        {
+            "_id": "0ea0c0c2-502c-4e8b-9346-36919bd37137",
+            "colId": "ed54954f-99f9-4046-8f50-0d9e8bc98f38",
+            "containerId": "",
+            "name": "Prueba auth",
+            "url": "localhost:8080/ping/ping",
+            "method": "GET",
+            "sortNum": 40000,
+            "created": "2025-02-09T18:00:01.596Z",
+            "modified": "2025-02-09T18:00:01.596Z",
+            "headers": [],
+            "auth": {
+                "type": "bearer",
+                "bearer": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3YThlODcwMzFlZjI0NWZjNTUyYTE1MSIsImVtYWlsIjoidmVyaWZ5QGdtYWlsLmNvbSIsImlhdCI6MTczOTEyMzg0NiwiZXhwIjoxNzM5MTI0NzQ2fQ.JsDCcXJhtViIW1sSF360cfvAK1-RFMGPSJO6JCugkiw"
+            }
+        }
+    ],
+    "ref": "WSN8whUc-a5EoNu8hIfpqXhpcMP8px7uzo5fxPzyWXbRQoS4stVtcUevRnb6yS6lDPnNOvXZJ45wMgB2CJ4xwg"
+}
