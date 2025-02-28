@@ -1,13 +1,19 @@
 import { useState } from "react";
+import { HiX } from "react-icons/hi";
 import PropTypes from "prop-types";
+import { useControlActions, useControlSelectors } from "../../hooks/useControlActions";
 
-const HabitManager = ({ isOpen, onClose }) => {
-    const [scheduledHabits, setScheduledHabits] = useState([
+const HabitManager = () => {
+    const { openHabitManager: isOpen } = useControlSelectors();
+    const { setVariable } = useControlActions();
+    const onClose = () => setVariable("openHabitManager", false);
+
+    const [scheduledHabits] = useState([
         "Pierna", "Journaling", "Tomar agua", "Hábito", "Hábito", "Hábito",
         "Pierna", "Journaling", "Tomar agua", "Hábito", "Hábito", "Hábito"
     ]);
 
-    const [unscheduledHabits, setUnscheduledHabits] = useState([
+    const [unscheduledHabits] = useState([
         "Hábito", "Hábito", "Hábito", "Hábito", "Hábito", "Hábito", "Hábito", "Hábito", "Hábito", "Hábito"
     ]);
 
@@ -18,13 +24,15 @@ const HabitManager = ({ isOpen, onClose }) => {
                 transition-transform duration-300 ease-in-out lg:relative lg:w-64 lg:translate-x-0 lg:h-full 
                 flex flex-col rounded-l-2xl lg:rounded-2xl z-40`}
         >
-            {/* Botón de cierre en móviles */}
-            <button onClick={onClose} className="absolute top-4 right-3 text-gray-700 lg:hidden">
-                ❌
-            </button>
-
             {/* Encabezado principal */}
-            <h2 className="text-lg font-semibold text-center mb-1">Tus Hábitos</h2>
+            {/* Encabezado principal con botón de cierre */}
+            <div className="flex items-center justify-between mb-1">
+                <h2 className="text-lg font-semibold">Tus Hábitos</h2>
+                <button onClick={onClose} className="lg:hidden text-black hover:text-gray-700 transition-colors duration-200">
+                    <HiX className="w-5 h-5" />
+                </button>
+            </div>
+
 
             {/* Contenedor de listas de hábitos */}
             <div className="flex flex-col flex-1">
@@ -32,9 +40,11 @@ const HabitManager = ({ isOpen, onClose }) => {
                 <HabitList title="No Programados" habits={unscheduledHabits} />
 
                 {/* Botón para añadir hábito */}
-                <div className="bg-verdePrincipal p-4 m-1 rounded-full shadow-md border-2 border-verdePrincipal flex items-center justify-center">
-                    <p className="text-white">Añadir Hábito</p>
+                <div className="bg-verdePrincipal p-4 m-1 rounded-full shadow-md border-2 border-verdePrincipal flex items-center justify-center 
+                    transition-all duration-200 hover:bg-verdeSecundario hover:border-verdeOscuro hover:shadow-lg cursor-pointer group">
+                    <p className="text-white group-hover:text-black">Añadir Hábito</p>
                 </div>
+
             </div>
         </div>
     );
@@ -59,11 +69,6 @@ const HabitItem = ({ habit }) => (
         <span className="text-verdeTerciario">{habit}</span>
     </div>
 );
-
-HabitManager.propTypes = {
-    isOpen: PropTypes.bool.isRequired,
-    onClose: PropTypes.func.isRequired,
-};
 
 HabitList.propTypes = {
     title: PropTypes.string.isRequired,

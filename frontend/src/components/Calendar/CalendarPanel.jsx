@@ -1,12 +1,14 @@
+import { FaEllipsisV } from "react-icons/fa";
+import { useControlActions } from '../../hooks/useControlActions';
 import { useCurrentDateInfo, useDateActions, useDateSelectors } from '../../hooks/useDateActions';
 import { useState } from 'react';
 
 const CalendarPanel = () => {
     const { backwardAction, forwardAction, toggleModeAction, resetCurrent } = useDateActions();
+    const { setVariable } = useControlActions();
     const { actualLabel } = useDateSelectors();
     const { currentMode } = useCurrentDateInfo();
     const [dropdownOpen, setDropdownOpen] = useState(false);
-
     const toggleDropdown = () => setDropdownOpen(!dropdownOpen);
 
     return (
@@ -22,8 +24,8 @@ const CalendarPanel = () => {
                 <h2 className="sm:text-sm md:text-sm lg:text-md font-semibold text-gray-700 ml-2">{actualLabel}</h2>
             </div>
 
-            {/* Contenedor de flechas y selector de modo */}
-            <div className="flex items-center gap-4">
+            {/* Contenedor de flechas y modo */}
+            <div className="flex items-center md:gap-2 lg:gap-4 ml-auto">
                 <div className="relative">
                     <button
                         onClick={toggleDropdown}
@@ -45,39 +47,54 @@ const CalendarPanel = () => {
                         </div>
                     )}
                 </div>
-                <button
-                    onClick={backwardAction}
-                    className="p-2 rounded-full hover:bg-gray-300 transition flex items-center justify-center"
-                    aria-label="Retroceder"
-                >
-                    <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        strokeWidth={2}
-                        stroke="currentColor"
-                        className="w-5 h-5 text-gray-700"
-                    >
-                        <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
-                    </svg>
-                </button>
 
-                <button
-                    onClick={forwardAction}
-                    className="p-2 rounded-full hover:bg-gray-300 transition flex items-center justify-center"
-                    aria-label="Avanzar"
-                >
-                    <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        strokeWidth={2}
-                        stroke="currentColor"
-                        className="w-5 h-5 text-gray-700"
+                {/* Flechas agrupadas */}
+                <div className="flex items-center ">
+                    <button
+                        onClick={backwardAction}
+                        className="p-2 rounded-full hover:bg-gray-300 transition flex items-center justify-center"
+                        aria-label="Retroceder"
                     >
-                        <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
-                    </svg>
-                </button>
+                        <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            strokeWidth={2}
+                            stroke="currentColor"
+                            className="w-5 h-5 text-gray-700"
+                        >
+                            <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
+                        </svg>
+                    </button>
+
+                    <button
+                        onClick={forwardAction}
+                        className="p-2 rounded-full hover:bg-gray-300 transition flex items-center justify-center"
+                        aria-label="Avanzar"
+                    >
+                        <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            strokeWidth={2}
+                            stroke="currentColor"
+                            className="w-5 h-5 text-gray-700"
+                        >
+                            <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
+                        </svg>
+                    </button>
+                </div>
+
+                {/* Botón de 3 puntos alineado a la derecha */}
+                <div>
+                    <button
+                        onClick={() => setVariable("openHabitManager", true)}
+                        className="p-2 rounded-full hover:bg-gray-300 transition flex items-center justify-center"
+                        aria-label="Abrir menú"
+                    >
+                        <FaEllipsisV className="text-gray-700 text-xl" />
+                    </button>
+                </div>
             </div>
         </div>
     );
