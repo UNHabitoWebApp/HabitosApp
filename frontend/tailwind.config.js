@@ -9,6 +9,7 @@ export default {
           DEFAULT: '#DCFAE6', 
           '20': 'rgba(220, 250, 230, 0.4)',
         },
+        verdeTerciario: '#ADD9C5'
       },
     },
   },

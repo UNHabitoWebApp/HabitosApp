@@ -25,7 +25,7 @@ const Calendar = () => {
     );
 
     return (
-        <div className="w-[90%] h-full bg-white flex flex-col border border-gray-200 rounded-md shadow-sm">
+        <div className="w-[100%] h-full bg-white flex flex-col border border-gray-200 rounded-md shadow-sm">
             {/* Contenedor de configuracion */}
             <CalendarPanel />
             {/* Contenedor de días de la semana */}

@@ -1,3 +1,19 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer utilities {
+    .custom-scrollbar::-webkit-scrollbar {
+      width: 6px; /* Grosor */
+    }
+  
+    .custom-scrollbar::-webkit-scrollbar-thumb {
+      background-color: #569788; /* Color verde */
+      border-radius: 10px;
+    }
+  
+    .custom-scrollbar::-webkit-scrollbar-track {
+      background: transparent;
+    }
+  }
+  
