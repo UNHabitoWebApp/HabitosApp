@@ -1,29 +1,29 @@
 import { useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { toggleMode } from "../../store/slices/dateSlices";
 import { useControlActions } from '../../hooks/useControlActions';
+import { useCurrentDateInfo, useDateActions } from "../../hooks/useDateActions";
 
 const ResponsiveModeUpdater = () => {
-    const dispatch = useDispatch();
     const { setVariable } = useControlActions();
-    const currentMode = useSelector(state => state.date.mode);
+    const { toggleModeAction } = useDateActions();
+    const { currentMode } = useCurrentDateInfo();
+    const { openHabitManager } = useControlActions();
 
     useEffect(() => {
         const updateMode = () => {
             const isSmallScreen = window.innerWidth < 850;
 
-            // Solo cambia a "day" si es pequeño, pero no fuerza "week" en pantallas grandes
             if (isSmallScreen && currentMode !== "day") {
-                dispatch(toggleMode("day"));
+                toggleModeAction();
             } else {
-                setVariable("openHabitManager", false);
+                if (openHabitManager) setVariable("openHabitManager", false);
+                if (currentMode !== "week") toggleModeAction();
             }
         };
 
         updateMode();
         window.addEventListener("resize", updateMode);
         return () => window.removeEventListener("resize", updateMode);
-    }, [dispatch, currentMode, setVariable]);
+    }, [toggleModeAction, currentMode, setVariable, openHabitManager]);
 
     return null;
 };
