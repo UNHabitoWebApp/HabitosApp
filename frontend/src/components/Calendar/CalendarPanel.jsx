@@ -19,7 +19,7 @@ const CalendarPanel = () => {
                 >
                     Hoy
                 </button>
-                <h2 className="text-md font-semibold text-gray-700 ml-2">{actualLabel}</h2>
+                <h2 className="sm:text-sm md:text-sm lg:text-md font-semibold text-gray-700 ml-2">{actualLabel}</h2>
             </div>
 
             {/* Contenedor de flechas y selector de modo */}
@@ -27,7 +27,7 @@ const CalendarPanel = () => {
                 <div className="relative">
                     <button
                         onClick={toggleDropdown}
-                        className="px-3 py-1 bg-verdePrincipal text-white rounded hover:bg-verdePrincipalHover transition"
+                        className="px-3 py-1 bg-verdePrincipal text-white rounded hover:bg-verdePrincipalHover transition hidden lg:block"
                     >
                         Elegir modo
                     </button>

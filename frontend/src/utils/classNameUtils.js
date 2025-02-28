@@ -2,7 +2,7 @@ import classNames from "classnames";
 
 export const generateDaysLayoytClasses = (id, day) => {
     return classNames(
-        "flex-grow flex flex-col min-h-24 items-center justify-center w-[14.28%] min-w-[14.28%]",
+        "flex-grow flex flex-col  md:min-h-20 min-h-24 items-center justify-center w-[14.28%] min-w-[14.28%]",
         "border-b-2 text-center font-semibold py-4 ", 
         {
             "border-r-2": id !== 6,

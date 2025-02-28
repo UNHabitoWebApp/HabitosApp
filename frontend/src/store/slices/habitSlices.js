@@ -1,27 +1,24 @@
-import { createSlice } from '@reduxjs/toolkit';
-import { createSelector } from "@reduxjs/toolkit";
+import { createSlice, createSelector } from '@reduxjs/toolkit';
 import { DEFAULT_STATE } from '../DEFAULT_STATES';
-
-
 
 const initialState = (() => {
     const persistedState = localStorage.getItem("__redux__state__");
 
     if (!persistedState) {
-        return DEFAULT_STATE; // Si no hay datos en localStorage, usar el estado por defecto
+        return DEFAULT_STATE; 
     }
 
     try {
-        const parsedState = JSON.parse(persistedState); // Convertir el string en un objeto
+        const parsedState = JSON.parse(persistedState); 
 
         if (!parsedState.habits) {
-            return DEFAULT_STATE;
+            return DEFAULT_STATE;	
         }
 
         return parsedState.habits; 
     } catch (error) {
         console.error("Error al parsear localStorage:", error);
-        return DEFAULT_STATE; // En caso de error, usar el estado por defecto
+        return DEFAULT_STATE; 
     }
 })();
 

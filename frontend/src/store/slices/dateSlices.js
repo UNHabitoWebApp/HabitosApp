@@ -5,7 +5,7 @@ import { getMonthName, momentToObject } from '../../utils/dateUtils';
 
 moment.locale('es');
 moment.updateLocale('es', {
-    week: { dow: 1 }, // Inicia la semana en lunes
+    week: { dow: 1 }, 
 });
 
 const DEFAULT_STATE = {
@@ -16,7 +16,7 @@ const DEFAULT_STATE = {
     daysOfWeek: [], 
     selectedDate: momentToObject(moment()),
     selectedWeek: moment().week(),
-    mode: 'week',
+    mode: 'week'
 };
 
 const initialState = DEFAULT_STATE;
