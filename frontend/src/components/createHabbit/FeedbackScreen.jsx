@@ -1,5 +1,5 @@
 import PropTypes from "prop-types";
-import saved from "../../assets/icons/saved.png";
+import saved from "../../assets/icons/saved.svg";
 
 
 const FeedbackScreen = ({ title, description }) => {

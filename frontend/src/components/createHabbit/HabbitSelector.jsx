@@ -3,8 +3,8 @@ import RoutineForm from "./RoutineForm";
 import PersonalizedForm from "./PersonalizedForm";
 import FeedbackScreen from "./FeedbackScreen";
 import BackToHomeButton from "./BackToHomeButton";
-import personalized from "../../assets/icons/personalized.png"; 
-import routine from "../../assets/icons/routine.png"; 
+import personalized from "../../assets/icons/personalized.svg"; 
+import routine from "../../assets/icons/routine.svg"; 
 
 
 export default function HabitSelector() {

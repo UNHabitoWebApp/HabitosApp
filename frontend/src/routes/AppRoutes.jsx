@@ -9,6 +9,10 @@ import ExerciseRoutine from '../components/FillHabit/ListRoutine';
 import ExerciseForm from '../components/HabitLog/HabitLog';
 import PersonalizeLog from '../components/HabitLog/HabitLogPersonalize';
 import HabitSelectorEdit from '../components/HabitEdit/HabbitSelectorEdit';
+import Login from '../pages/Login';
+import Register from '../pages/Registro';
+import ConfirmacionRegistro from '../pages/ConfirmacionRegistro';
+
 const AppRoutes = () => {
     return (
         <Routes>
@@ -22,6 +26,9 @@ const AppRoutes = () => {
             <Route path='/edit/routine/:id' element={<HabitSelectorEdit />}></Route>
             {/* Ruta comodín para 404 */}
             <Route path="*" element={<NotFound />} />
+            <Route path="/login" element={<Login />} />
+            <Route path="/register" element={<Register/>} />
+            <Route path="/confirmacion" element={<ConfirmacionRegistro/>} />
         </Routes >
     );
 };
