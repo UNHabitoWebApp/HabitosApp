@@ -69,31 +69,17 @@ const Login = () => {
                 Contraseña
               </label>
               <div className="relative">
-                <input
-                  id="password"
-                  type={showPassword ? "text" : "password"}
-                  placeholder="********"
-                  className="
-                    h-10 
-                    w-full
-                    border 
-                    border-gray-400 
-                    rounded 
-                    px-3 
-                    text-sm 
-                    focus:outline-none 
-                  "
-                />
                 <button
                   type="button"
                   onClick={togglePasswordVisibility}
                   className="
                     absolute 
-                    right-3 
+                    left-3 
                     top-1/2 
                     -translate-y-1/2
                     text-gray-600
                     hover:text-gray-800
+                    z-10
                   "
                 >
                   {showPassword ? (
@@ -107,6 +93,22 @@ const Login = () => {
                     </svg>
                   )}
                 </button>
+                <input
+                  id="password"
+                  type={showPassword ? "text" : "password"}
+                  placeholder="********"
+                  className="
+                    h-10 
+                    w-full
+                    border 
+                    border-gray-400 
+                    rounded 
+                    pl-10
+                    pr-3 
+                    text-sm 
+                    focus:outline-none 
+                  "
+                />
               </div>
             </div>
 
