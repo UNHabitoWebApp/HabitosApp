@@ -1,6 +1,6 @@
 import { useState } from "react";
 import BackToHomeButton from "./BackToHomeButton";
-import add from "../../assets/icons/add.png";
+import add from "../../assets/icons/add.svg";
 import PropTypes from "prop-types";
 
 export default function RoutineForm({ onSave }) {
