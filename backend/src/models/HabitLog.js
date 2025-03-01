@@ -3,7 +3,10 @@ import mongoose from "../config/mongoConfig.js";
 const VariableSchema = new mongoose.Schema({
     name: { type: String, required: true },
     value: { type: mongoose.Schema.Types.Mixed, required: true }, // Dynamic value
-    set: { type: Number, required: false }
+    set: { type: Number, required: false, default: 0 },
+    reps: { type: Number, required: false, default: 0 },
+    kilograms: { type: Number, required: false, default: 0 },
+    observation: { type: String, required: false }
 });
 
 const HabitLogSchema = new mongoose.Schema(
