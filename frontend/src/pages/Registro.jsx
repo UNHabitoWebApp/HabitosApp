@@ -28,7 +28,7 @@ const Registro = () => {
   return (
     <div className="flex flex-col min-h-screen overflow-x-hidden">
       {/* Encabezado */}
-      <header className="w-full h-20 bg-[#5F936C] fixed top-0 z-50" />
+      {/* <header className="w-full h-20 bg-[#5F936C] fixed top-0 z-50" /> */}
 
       {/* Contenido principal */}
       <main className="flex-1 flex flex-col lg:flex-row items-center justify-center px-4 gap-16 lg:gap-32 mt-20 mb-9">
@@ -192,6 +192,14 @@ const Registro = () => {
                 ¡El campo de contraseña y confirmar contraseña deben coincidir!
               </p>
             )}
+
+          </div>
+
+          {/* Add the link here, between form and button */}
+          <div className="text-center mt-4 mb-6">
+            <Link to="/login" className="text-sm underline cursor-pointer">
+              ¿Ya tienes cuenta?
+            </Link>
           </div>
 
           {/* Botón Registrarme */}
@@ -199,8 +207,8 @@ const Registro = () => {
             onClick={handleSubmit}
             className="
               absolute 
-              -bottom-12
-              lg:-bottom-20
+              -bottom-8        {/* Changed from -bottom-12 */}
+              lg:-bottom-10    {/* Changed from lg:-bottom-20 */}
               bg-[#569788] 
               hover:bg-[#4c8577] 
               text-white 
@@ -262,7 +270,7 @@ const Registro = () => {
       </main>
 
       {/* Footer */}
-      <footer className="w-full h-9 bg-[#5F936C] fixed bottom-0 left-0 right-0 z-50" />
+      {/* <footer className="w-full h-9 bg-[#5F936C] fixed bottom-0 left-0 right-0 z-50" /> */}
     </div>
   );
 };

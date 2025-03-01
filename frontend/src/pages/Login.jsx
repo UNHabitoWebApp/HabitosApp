@@ -1,18 +1,24 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import register from '../assets/register.png';
 
 const Login = () => {
   const [showPassword, setShowPassword] = useState(false);
+  const navigate = useNavigate();
 
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
   };
 
+  const handleLogin = () => {
+    // Aquí puedes agregar la lógica de autenticación
+    navigate('/');  // Navega a la ruta principal (Home/Calendar)
+  };
+
   return (
     <div className="flex flex-col min-h-screen overflow-x-hidden">
-      {/* Encabezado */}
-      <header className="w-full h-20 bg-[#5F936C] fixed top-0 left-0 right-0 z-50" />
+      {/* Encabezado
+      <header className="w-full h-20 bg-[#5F936C] fixed top-0 left-0 right-0 z-50" /> */}
 
       {/* Contenido principal */}
       <main className="flex-1 flex flex-col lg:flex-row items-center justify-center px-4 gap-16 lg:gap-32 mt-20 mb-9">
@@ -122,6 +128,7 @@ const Login = () => {
 
             {/* Botón Entrar */}
           <button
+            onClick={handleLogin}
             className="
               absolute 
               -bottom-12
@@ -188,7 +195,7 @@ const Login = () => {
       </main>
 
       {/* Footer */}
-      <footer className="w-full h-9 bg-[#5F936C] fixed bottom-0 left-0 right-0 z-50" />
+      {/* <footer className="w-full h-9 bg-[#5F936C] fixed bottom-0 left-0 right-0 z-50" /> */}
     </div>
   );
 };
