@@ -1,0 +1,21 @@
+/* Aplica solo al scrollbar */
+.flex-2::-webkit-scrollbar {
+  width: 5px;
+  height: 2px; 
+}
+
+/* Track (fondo del scrollbar) */
+.flex-2::-webkit-scrollbar-track {
+  border-radius: 10px;
+}
+
+/* Thumb (barra deslizante) */
+.flex-2::-webkit-scrollbar-thumb {
+  background: #888; /* Color del scrollbar */
+  border-radius: 10px; /* Redondeado */
+}
+
+/* Hover en el scrollbar */
+.flex-2::-webkit-scrollbar-thumb:hover {
+  background: #555; /* Color al pasar el mouse */
+}
