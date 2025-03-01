@@ -4,7 +4,6 @@ import add from "../../assets/icons/add.svg";
 import PropTypes from "prop-types";
 
 export default function PersonalizedForm({ onSave }) {
-  const [notificarme, setNotificarme] = useState(false);
 
   const [personalized, setPersonalized] = useState({
     name: "",
@@ -12,6 +11,7 @@ export default function PersonalizedForm({ onSave }) {
     days: [],
     startTime: "",
     endTime: "",
+    notificarme: false,
   });
 
   const addVariable = () => {
@@ -178,7 +178,16 @@ export default function PersonalizedForm({ onSave }) {
           {/* Notificarme */}
           <div className="flex justify-center items-center w-full mt-2">
             <label className="flex items-center gap-2 text-sm">
-              <input type="checkbox" checked={notificarme} onChange={() => setNotificarme(!notificarme)} />
+              <input 
+                type="checkbox" 
+                checked={personalized.notificarme} 
+                onChange={() => 
+                  setPersonalized((prev) => ({
+                    ...prev,
+                    notificarme: !prev.notificarme,
+                  }))
+                } 
+              />
               Notificarme
             </label>
           </div>
@@ -192,7 +201,7 @@ export default function PersonalizedForm({ onSave }) {
           <button className="mt-5 px-7 py-1 text-white text-sm bg-[#569788] rounded-[20px] transition-all duration-300 hover:bg-[#84A59D]"
           onClick={() => {
             console.log("Datos guardados:", personalized);
-            onSave(notificarme);
+            onSave(personalized.notificarme);
           }}
           >
           Guardar
