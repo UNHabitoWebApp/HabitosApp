@@ -33,6 +33,7 @@ body {
     width: 100%;
     height: 35px;
     background: #5F936C;
+    z-index: 1;
 }
   
   /* Caja que contiene el formulario */
@@ -44,9 +45,6 @@ body {
   width: 552px;
   min-height: 338px;
   background: #ADD9C5;
-  border: 2px solid #5F936C;
-  border-radius: 20px;
-  padding: 20px;
 }
   /* Ajustes del formulario interno */
   .form-box form {
@@ -87,6 +85,8 @@ body {
   
   /* Botón para registrar */
   .btn-registrar {
+    position: relative; /* necesita posición para que z-index funcione */
+    z-index: 10;        /* capa por encima */
     margin-top: 580px;
     margin-left: -450px;
     background: #569788;
@@ -185,3 +185,45 @@ body {
 .toggle-password:focus {
   outline: none;
 }
+
+@media screen and (max-width: 768px) {
+  /* Ajusta el contenedor principal para apilar elementos verticalmente */
+  .registro-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px;
+  }
+  
+  /* Centra el formulario y ajusta su ancho */
+  .form-box {
+    position: relative;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    /* width: 90%; */
+    padding: 20px;
+    margin-top: 20px;
+    width: 552px;
+    min-height: 338px;
+    margin-bottom: 20px; /* Espacio para el botón */
+  }
+  
+  /* Reubica el contenido derecho debajo del formulario */
+  .contenido-derecha {
+    position: relative;
+    left: 0;
+    top: 0;
+    width: 100%;
+    text-align: center;
+    margin-top: 20px;
+  }
+  
+  /* Ajusta el botón para que se centre */
+  .btn-registrar {
+    margin: 20px auto;
+    display: block;
+  }
+}
+
+
