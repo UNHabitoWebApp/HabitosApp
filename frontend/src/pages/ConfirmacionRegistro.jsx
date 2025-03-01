@@ -9,25 +9,64 @@ const ConfirmacionRegistro = () => {
   };
 
   return (
-    <div className="relative w-full h-screen bg-[#F0F7F5]">
+    <div className="relative w-full min-h-screen bg-[#F0F7F5] overflow-x-hidden">
       {/* Header */}
-      <div className="absolute w-full h-20 bg-[#5F936C]" />
-      
+      <header className="w-full h-20 bg-[#5F936C] fixed top-0 z-50" />
       {/* Footer */}
-      <div className="absolute bottom-0 w-full h-[35px] bg-[#5F936C]" />
+      <footer className="w-full h-9 bg-[#5F936C] fixed bottom-0 left-0 right-0 z-50" />
       
       {/* Confirmation Box */}
       <div 
-        className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[561px] h-[380px] bg-[#ADD9C5] border-2 border-[#5F936C] rounded-[20px] flex flex-col items-center cursor-pointer hover:bg-[#9CC5B3] transition-colors"
+        className="
+          absolute 
+          left-1/2 
+          top-1/2 
+          -translate-x-1/2 
+          -translate-y-1/2 
+          w-[90%]
+          sm:w-[80%]
+          md:w-[70%]
+          max-w-[561px]
+          h-auto
+          min-h-[380px]
+          bg-[#ADD9C5] 
+          border-2 
+          border-[#5F936C] 
+          rounded-[20px] 
+          flex 
+          flex-col 
+          items-center 
+          justify-center
+          cursor-pointer 
+          hover:bg-[#9CC5B3] 
+          transition-colors
+          p-6
+          space-y-6
+          sm:space-y-8
+        "
         onClick={handleClick}
       >
         {/* Welcome Text */}
-        <h2 className="font-prompt text-xl mt-8">
+        <h2 className="
+          font-prompt 
+          text-xl
+          sm:text-2xl 
+          text-center 
+          px-4
+        ">
           Gracias por unirte &lt;3
         </h2>
 
         {/* Check Circle Icon */}
-        <div className="relative w-[136px] h-[137px] mt-8">
+        <div className="
+          relative 
+          w-24 
+          h-24 
+          sm:w-28 
+          sm:h-28
+          md:w-32 
+          md:h-32
+        ">
           <svg 
             viewBox="0 0 24 24" 
             className="w-full h-full"
@@ -41,7 +80,17 @@ const ConfirmacionRegistro = () => {
         </div>
         
         {/* Message Text */}
-        <p className="w-[528px] font-prompt text-xl text-center text-black mt-8 drop-shadow-md">
+        <p className="
+          w-full
+          max-w-[528px]
+          font-prompt 
+          text-lg
+          sm:text-xl
+          text-center 
+          text-black 
+          drop-shadow-md
+          px-4
+        ">
           ¡Juntos vamos a mejorar la consistencia en tus hábitos!
         </p>
       </div>
