@@ -32,12 +32,12 @@ const Registro = () => {
   };
 
   return (
-    <div className="flex flex-col min-h-screen overflow-x-hidden">
+    <div className="flex flex-col min-h-screen lg:min-h-[80vh] overflow-hidden">
       {/* Encabezado */}
       {/* <header className="w-full h-20 bg-[#5F936C] fixed top-0 z-50" /> */}
 
       {/* Contenido principal */}
-      <main className="flex-1 flex flex-col lg:flex-row items-center justify-center px-4 gap-16 lg:gap-32 mt-20 mb-9">
+      <main className="flex-1 flex flex-col lg:flex-row items-center justify-center px-4 gap-16 lg:gap-32">
         <div className="flex flex-col items-center relative">
           {/* Sección izquierda (Formulario) */}
           <div

@@ -2,7 +2,7 @@ import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
     accessToken: null,
-    nombre: "",
+    nombre: "Bichota",
     correo: "",
     isLoggedIn: false,
 };
