@@ -1,18 +1,24 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import register from '../assets/register.png';
+import { useUserActions } from '../hooks/useUserActions';
 
 const Login = () => {
   const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
+  const { updateUser } = useUserActions();
 
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
   };
 
   const handleLogin = () => {
-    // Aquí puedes agregar la lógica de autenticación
-    navigate('/');  // Navega a la ruta principal (Home/Calendar)
+    updateUser({
+      isLoggedIn: true,
+      //Cami aca es donde debes cargar la info que te llega por la API, podes llamar el servicio
+      //y que te retorne la info y colocarla aca con ...userData y ya esto lla actualiza en el state general
+    })
+    navigate('/');
   };
 
   return (
@@ -44,8 +50,8 @@ const Login = () => {
           >
             {/* Campo de correo */}
             <div className="flex flex-col mt-8">
-              <label 
-                htmlFor="email" 
+              <label
+                htmlFor="email"
                 className="text-[9px] uppercase tracking-widest mb-1"
               >
                 E-mail
@@ -68,8 +74,8 @@ const Login = () => {
 
             {/* Campo de contraseña */}
             <div className="flex flex-col relative">
-              <label 
-                htmlFor="password" 
+              <label
+                htmlFor="password"
                 className="text-[9px] uppercase tracking-widest mb-1"
               >
                 Contraseña
@@ -124,9 +130,9 @@ const Login = () => {
                 ¿Aún no estás registrado?
               </Link>
             </div>
-            </div>
+          </div>
 
-            {/* Botón Entrar */}
+          {/* Botón Entrar */}
           <button
             onClick={handleLogin}
             className="
@@ -148,7 +154,7 @@ const Login = () => {
         </div>
 
         {/* Sección derecha (Imagen y textos) */}
-        <div 
+        <div
           className="
             w-full 
             lg:w-1/2 
@@ -161,7 +167,7 @@ const Login = () => {
           "
         >
           {/* Título bienvenido */}
-          <h1 
+          <h1
             className="
               text-2xl 
               md:text-3xl 
@@ -181,7 +187,7 @@ const Login = () => {
           />
 
           {/* Texto descriptivo */}
-          <p 
+          <p
             className="
               text-base 
               md:text-lg 
