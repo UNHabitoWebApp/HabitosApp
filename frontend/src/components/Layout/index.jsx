@@ -27,8 +27,11 @@ const Layout = ({ children }) => {
             </header>
 
             {/* Contenido principal */}
-            <main className="flex-grow p-2 bg-[#F0F7F5]">{children}</main>
-            <footer className="bg-verdeLayout text-white p-4 text-center font-bold">
+            <main className="flex flex-col items-center justify-center flex-grow p-2 bg-[#F0F7F5]">
+                {children}
+            </main>
+
+            <footer className="bg-verdeLayout text-white p-2 text-center font-bold">
                 Footer
             </footer>
         </div>

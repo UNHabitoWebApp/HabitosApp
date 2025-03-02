@@ -4,7 +4,7 @@ const initialState = {
     accessToken: null,
     nombre: "Bichota",
     correo: "",
-    isLoggedIn: true,
+    isLoggedIn: false,
 };
 
 const userSlice = createSlice({
