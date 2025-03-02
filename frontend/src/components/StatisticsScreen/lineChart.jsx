@@ -6,9 +6,11 @@ const formatFecha = (fecha) => {
   return new Date(fecha).toLocaleDateString("es-ES", opciones);
 };
 
-const LineChartComponent = ({ data }) => {
+const LineChartComponent = ({ data, title = "Páginas Leídas" }) => {
   return (
-    <div className="bg-white p-6 rounded-lg shadow-md flex justify-center items-center overflow-hidden">
+    <div className="bg-white p-6 rounded-lg shadow-md flex flex-col justify-center items-center overflow-hidden">
+      {/* Mostrar el título arriba del gráfico */}
+      <h2 className="text-lg font-bold text-center mb-4">{title}</h2>
       <LineChart width={600} height={350} data={data}>
         <CartesianGrid strokeDasharray="3 3" />
         <XAxis dataKey="date" />
