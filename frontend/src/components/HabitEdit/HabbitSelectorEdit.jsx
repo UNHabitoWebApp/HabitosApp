@@ -4,8 +4,6 @@ import RoutineFormEdit from "./RoutineFormEdit";
 import PersonalizedForm from "./PersonalizedFormEdit";
 import FeedbackScreen from "../createHabbit/FeedbackScreen";
 import BackToHomeButton from "../createHabbit/BackToHomeButton";
-import personalized from "../../assets/icons/personalized.png"; 
-import routine from "../../assets/icons/routine.png"; 
 
 export default function HabitSelectorEdit() {
   const [screen, setScreen] = useState("select"); // Estado inicial
@@ -101,7 +99,7 @@ export default function HabitSelectorEdit() {
       {screen === "routineForm" && (
         <RoutineFormEdit onSave={handleRoutineSave} initialData={routineData} />
       )}
-      {screen === "personalizedForm" && ( 
+      {screen === "personalizedForm" && (
         <PersonalizedForm onSave={handlePersonalizedSave} initialData={personalizedData} />
       )}
       {screen === "feedback" && (

@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import BackToHomeButton from "../createHabbit/BackToHomeButton";
-import add from "../../assets/icons/add.png";
+import add from "../../assets/icons/add.svg";
 import PropTypes from "prop-types";
 
 export default function RoutineFormEdit({ onSave, initialData }) {
@@ -48,7 +48,7 @@ export default function RoutineFormEdit({ onSave, initialData }) {
               <option value="rutina2">Rutina 2</option>
               <option value="rutina3">Rutina 3</option>
             </select>
-            <p 
+            <p
               className="mt-2 text-[13px] text-[#569788] cursor-pointer hover:underline text-center"
               onClick={() => setIsAddingRoutine(true)}
             >
@@ -111,12 +111,12 @@ export default function RoutineFormEdit({ onSave, initialData }) {
       {/* Bloque Horario */}
       {isAddingRoutine && (
         <div className="mt-2 p-2 bg-[#ADD9C5] border-2 border-[#5F936C] rounded-[20px] w-full max-w-md">
-          <h2 className="text-black text-[15px] text-center mb-2 flex items-center justify-center gap-2">Horario 
+          <h2 className="text-black text-[15px] text-center mb-2 flex items-center justify-center gap-2">Horario
             <span title="Si al hábito no se le ingresa día y hora, el hábito quedará como no programado" className="cursor-pointer">
               ⓘ
             </span>
           </h2>
-        
+
           <div className="flex items-center justify-between">
             <div className="flex flex-col items-center">
               <h2 className="text-[13px] text-black mb-1">Días de la semana</h2>
@@ -124,9 +124,8 @@ export default function RoutineFormEdit({ onSave, initialData }) {
                 {["L", "M", "W", "J", "V", "S", "D"].map((day, index) => (
                   <button
                     key={index}
-                    className={`w-6 h-6 flex items-center justify-center border border-[#5F936C] rounded-full text-black text-[12px] transition-all duration-200 ${
-                      routine.days.includes(day) ? "bg-[#569788]" : ""
-                    }`}
+                    className={`w-6 h-6 flex items-center justify-center border border-[#5F936C] rounded-full text-black text-[12px] transition-all duration-200 ${routine.days.includes(day) ? "bg-[#569788]" : ""
+                      }`}
                     onClick={() => {
                       setRoutine((prev) => ({
                         ...prev,
@@ -141,7 +140,7 @@ export default function RoutineFormEdit({ onSave, initialData }) {
                 ))}
               </div>
             </div>
-            
+
             <div className="flex flex-col items-center">
               <h3 className="text-[13px] text-black mb-1">Hora de inicio</h3>
               <div className="flex items-center gap-1">
@@ -166,7 +165,7 @@ export default function RoutineFormEdit({ onSave, initialData }) {
                 />
               </div>
             </div>
-            
+
             <div className="flex flex-col items-center">
               <h3 className="text-[13px] text-black mb-1">Hora de fin</h3>
               <div className="flex items-center gap-1">
@@ -194,11 +193,11 @@ export default function RoutineFormEdit({ onSave, initialData }) {
           </div>
         </div>
       )}
-    
+
       {/* Botones de acción */}
       {isAddingRoutine && (
         <div className="mt-1 mb-5 flex justify-center gap-4 w-full max-w-md">
-          <BackToHomeButton/>
+          <BackToHomeButton />
           <button className="mt-5 px-7 py-1 text-white text-sm bg-[#569788] rounded-[20px] transition-all duration-300 hover:bg-[#84A59D]"
             onClick={() => {
               console.log("Datos guardados:", routine);
