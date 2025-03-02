@@ -9,8 +9,8 @@ const Layout = ({ children }) => {
 
     return (
         <div className="flex flex-col min-h-screen">
-            <header className="bg-verdePrincipal text-white p-2 flex justify-between items-center">
-                <div className="text-lg font-bold">Mi Aplicación</div>
+            <header className="bg-verdeLayout text-white p-2 flex justify-between items-center">
+                <div className="text-lg font-bold">HabitosWEB</div>
                 {isLoggedIn && (
                     <div className="flex items-center gap-4">
                         <FaUserCircle className="w-10 h-10" />
@@ -27,13 +27,8 @@ const Layout = ({ children }) => {
             </header>
 
             {/* Contenido principal */}
-            <main className="flex-grow h-0 overflow-auto p-4">
-                {children}
-            </main>
-
-
-            {/* Footer */}
-            <footer className="bg-verdePrincipal text-white p-2 text-center font-bold">
+            <main className="flex-grow p-2 bg-[#F0F7F5]">{children}</main>
+            <footer className="bg-verdeLayout text-white p-4 text-center font-bold">
                 Footer
             </footer>
         </div>
