@@ -28,7 +28,8 @@ const HabitSchema = new mongoose.Schema(
         endTime: { type: String, required: false },
         days: { type: [String], required: false },
         notifyMe: { type: Boolean, required: false, default: false },
-        variables: { type: [VariableSchema], required: false }
+        variables: { type: [VariableSchema], required: false },
+        personlized: { type: Boolean, required: false, default: false },
     },
     {
         timestamps: true,

@@ -8,7 +8,7 @@ const formatFecha = (fecha) => {
 
 const LineChartComponent = ({ data }) => {
   return (
-    <div className="bg-white p-6 rounded-lg shadow-md flex justify-center items-center">
+    <div className="bg-white p-6 rounded-lg shadow-md flex justify-center items-center overflow-hidden">
       <LineChart width={600} height={350} data={data}>
         <CartesianGrid strokeDasharray="3 3" />
         <XAxis dataKey="date" />
