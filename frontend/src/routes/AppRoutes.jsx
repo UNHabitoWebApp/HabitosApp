@@ -24,11 +24,11 @@ const AppRoutes = () => {
             <Route path='/routine_exercise/:routine_id/:exercise_id' element={<ExerciseForm />}></Route>
             <Route path='/personalize_habit/:id' element={<PersonalizeLog />}></Route>
             <Route path='/edit/routine/:id' element={<HabitSelectorEdit />}></Route>
+            <Route path="/login" element={<Login />} />
+            <Route path="/register" element={<Register />} />
+            <Route path="/confirmacion" element={<ConfirmacionRegistro />} />
             {/* Ruta comodín para 404 */}
             <Route path="*" element={<NotFound />} />
-            <Route path="/login" element={<Login />} />
-            <Route path="/register" element={<Register/>} />
-            <Route path="/confirmacion" element={<ConfirmacionRegistro/>} />
         </Routes >
     );
 };
