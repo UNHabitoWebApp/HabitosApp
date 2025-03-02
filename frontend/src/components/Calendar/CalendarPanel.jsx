@@ -2,6 +2,7 @@ import { FaEllipsisV } from "react-icons/fa";
 import { useControlActions } from '../../hooks/useControlActions';
 import { useCurrentDateInfo, useDateActions, useDateSelectors } from '../../hooks/useDateActions';
 import { useState } from 'react';
+import { formatSmallDate } from "../../utils/dateUtils";
 
 const CalendarPanel = () => {
     const { backwardAction, forwardAction, toggleModeAction, resetCurrent } = useDateActions();
@@ -20,7 +21,13 @@ const CalendarPanel = () => {
                 >
                     Hoy
                 </button>
-                <h2 className="hidden sm:block sm:text-sm md:text-sm lg:text-md lg:font-semibold text-gray-700 ml-2">{actualLabel}</h2>
+                <h2 className="hidden sm:block sm:text-sm md:text-sm lg:text-md font-semibold  text-gray-700 ml-2">
+                    {actualLabel}
+                </h2>
+                <h2 className="block sm:hidden font-semibold text-sm text-gray-700 ml-2">
+                    {formatSmallDate(actualLabel)}
+                </h2>
+
             </div>
 
             {/* Contenedor de flechas y modo */}
