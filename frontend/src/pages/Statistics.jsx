@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { BarChartComponent } from "../components/StatisticsScreen/barChart";
+import { BarChartComponent, DataDetails } from "../components/StatisticsScreen/barChart";
 import { LineChartComponent } from "../components/StatisticsScreen/lineChart";
 import { PieChartComponent } from "../components/StatisticsScreen/pieChart";
 import DataDisplay from "../components/StatisticsScreen/sideHistorial";
@@ -36,11 +36,26 @@ const StatisticsScreen = () => {
   const getSelectedChart = () => {
     switch (selectedView) {
       case "Paginas Leídas":
-        return <LineChartComponent data={lineData} title="Páginas Leídas" />;
+        return (
+          <>
+            <LineChartComponent data={lineData} title="Páginas Leídas" />
+            <DataDetails data={lineData} />
+          </>
+        );
       case "Disfrutaste la lectura":
-        return <PieChartComponent data={pieData} title="Disfrutaste la lectura" />;
+        return (
+          <>
+            <PieChartComponent data={pieData} title="Disfrutaste la lectura" />
+            <DataDetails data={pieData} />
+          </>
+        );
       case "Tipo de Lectura":
-        return <BarChartComponent data={barData} title="Tipo de Lectura" />;
+        return (
+          <>
+            <BarChartComponent data={barData} title="Tipo de Lectura" />
+            <DataDetails data={barData} />
+          </>
+        );
       default:
         return null;
     }

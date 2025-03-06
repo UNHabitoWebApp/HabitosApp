@@ -1,5 +1,14 @@
 import React from "react";
-import { XAxis, YAxis, Tooltip, CartesianGrid, BarChart, Bar, Legend, ResponsiveContainer } from "recharts";
+import {
+  XAxis,
+  YAxis,
+  Tooltip,
+  CartesianGrid,
+  BarChart,
+  Bar,
+  Legend,
+  ResponsiveContainer,
+} from "recharts";
 
 const BarChartComponent = ({ data, title = "Distribución de Categorías" }) => {
   return (
@@ -24,4 +33,21 @@ const BarChartComponent = ({ data, title = "Distribución de Categorías" }) => 
   );
 };
 
-export { BarChartComponent };
+const DataDetails = ({ data }) => {
+  return (
+    <div className="bg-green-100 text-green-900 p-3 mt-4 rounded-lg w-full text-sm">
+      <h3 className="font-semibold">Detalles de los Datos:</h3>
+      <p>Total de Categorías: {data.length}</p>
+      <ul className="list-disc pl-4">
+        {data.slice(0, 3).map((item, index) => (
+          <li key={index}>
+            {item.label}: {item.value}
+          </li>
+        ))}
+      </ul>
+      {data.length > 3 && <p>...y más</p>}
+    </div>
+  );
+};
+
+export { BarChartComponent, DataDetails };
