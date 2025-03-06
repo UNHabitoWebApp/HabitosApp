@@ -23,7 +23,7 @@ export const login = async (request, response) => {
         const token = jwt.sign(
             { id: user._id, email: user.email },
             SECRET_KEY,
-            { expiresIn: "15m" }
+            { expiresIn: "7d" }
         );
 
         // Crear el refresh token
