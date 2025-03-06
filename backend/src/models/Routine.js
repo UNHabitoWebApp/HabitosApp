@@ -2,13 +2,13 @@ import mongoose from "../config/mongoConfig.js";
 
 const RoutineSchema = new mongoose.Schema(
     {
-        userId: { type: String, required: true }, // Convertido a string
+        userId: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: false },
         name: { type: String, required: true },
-        beginTime: { type: String, required: false }, // Formato HH:mm
+        beginTime: { type: String, required: false },
         endTime: { type: String, required: false },
         days: { type: [String], required: false },
         notifyMe: { type: Boolean, required: false, default: false },
-        exercises: [{ type: String, ref: "Habit" }] // Convertido a string
+        exercises: [{ type: mongoose.Schema.Types.ObjectId, ref: "Habit" }]
     },
     {
         timestamps: true,

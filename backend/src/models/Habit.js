@@ -21,10 +21,10 @@ VariableSchema.set("toJSON", {
 
 const HabitSchema = new mongoose.Schema(
     {
-        userId: { type: String, required: false }, // Convertido a string
+        userId: { type: String, required: false },
         name: { type: String, required: true },
         exerciseType: { type: String, required: false },
-        beginTime: { type: String, required: false }, // Formato HH:mm
+        beginTime: { type: String, required: false },
         endTime: { type: String, required: false },
         days: { type: [String], required: false },
         notifyMe: { type: Boolean, required: false, default: false },

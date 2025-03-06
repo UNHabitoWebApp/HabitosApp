@@ -4,7 +4,10 @@ import express from "express";
 import initializeRoutes from "./routes/index.js";
 import cookieParser from "cookie-parser";
 import { mailerQueue } from "./BullMQ/queues/mailerQueue.js";
-import {removeJobByEmail} from "./BullMQ/Cleaners/emailCleaner.js";
+import { removeJobByEmail } from "./BullMQ/cleaners/emailCleaner.js";
+import { eventQueue } from "./BullMQ/queues/eventQueue.js";
+import { enqueueCreateEvent } from "./BullMQ/producers/eventProducer.js";
+
 const app = express();
 
 app.use(
@@ -74,6 +77,17 @@ app.put("/adelantar",
         res.json({ message: "Job encolado con delay de 5 segundos." });
     }
 );
+
+app.post("/test2", async (req, res) => {
+
+    const routineId = "67c9b71329f00cd857d6194a";
+
+    //await enqueueCreateEvent({ routineId: routineId }, 2000 );
+
+    console.log(await eventQueue.getJobCounts("delayed"));
+    console.log( (await eventQueue.getDelayed()));
+    res.json({ message: "Job encolado con delay de 5 minutos." });
+});
 
 initializeRoutes(app);
 
