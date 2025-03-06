@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import register from '../assets/register.png';
+import { useUserActions } from '../hooks/useUserActions';
 
 const Registro = () => {
   const navigate = useNavigate();
@@ -9,8 +10,8 @@ const Registro = () => {
   const [confirm, setConfirm] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-  
   const passwordMismatch = password !== confirm && confirm.length > 0;
+  const { updateUser } = useUserActions();
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -22,16 +23,21 @@ const Registro = () => {
       alert('¡Las contraseñas no coinciden!');
       return;
     }
+    updateUser({
+      isLoggedIn: true,
+      //Cami aca es donde debes cargar la info que te llega por la API, podes llamar el servicio
+      //y que te retorne la info y colocarla aca con ...userData y ya esto lla actualiza en el state general
+    })
     navigate('/confirmacion');
   };
 
   return (
-    <div className="flex flex-col min-h-screen overflow-x-hidden">
+    <div className="flex flex-col min-h-screen lg:min-h-[80vh] overflow-hidden">
       {/* Encabezado */}
       {/* <header className="w-full h-20 bg-[#5F936C] fixed top-0 z-50" /> */}
 
       {/* Contenido principal */}
-      <main className="flex-1 flex flex-col lg:flex-row items-center justify-center px-4 gap-16 lg:gap-32 mt-20 mb-9">
+      <main className="flex-1 flex flex-col lg:flex-row items-center justify-center px-4 gap-16 lg:gap-32">
         <div className="flex flex-col items-center relative">
           {/* Sección izquierda (Formulario) */}
           <div
@@ -54,8 +60,8 @@ const Registro = () => {
           >
             {/* Campo de correo */}
             <div className="flex flex-col mt-2"> {/* Changed from mt-8 to mt-4 */}
-              <label 
-                htmlFor="email" 
+              <label
+                htmlFor="email"
                 className="text-[9px] uppercase tracking-widest mb-1"
               >
                 E-mail
@@ -80,8 +86,8 @@ const Registro = () => {
 
             {/* Campo de contraseña */}
             <div className="flex flex-col relative">
-              <label 
-                htmlFor="password" 
+              <label
+                htmlFor="password"
                 className="text-[9px] uppercase tracking-widest mb-1"
               >
                 Contraseña
@@ -134,8 +140,8 @@ const Registro = () => {
 
             {/* Campo de confirmar contraseña */}
             <div className="flex flex-col relative">
-              <label 
-                htmlFor="confirm" 
+              <label
+                htmlFor="confirm"
                 className="text-[9px] uppercase tracking-widest mb-1"
               >
                 Confirmar Contraseña
@@ -224,7 +230,7 @@ const Registro = () => {
         </div>
 
         {/* Sección derecha (Imagen y textos) */}
-        <div 
+        <div
           className="
             w-full 
             lg:w-1/2 
@@ -236,7 +242,7 @@ const Registro = () => {
             lg:mt-0
           "
         >
-          <h1 
+          <h1
             className="
               text-2xl 
               md:text-3xl 
@@ -255,7 +261,7 @@ const Registro = () => {
             alt="Registro ilustración"
           />
 
-          <p 
+          <p
             className="
               text-base 
               md:text-lg 

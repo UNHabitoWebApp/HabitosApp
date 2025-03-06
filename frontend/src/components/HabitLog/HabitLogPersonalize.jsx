@@ -23,10 +23,7 @@ export default function ExerciseForm() {
   };
 
   return (
-    <div className="flex flex-col items-center min-h-screen bg-[#F0F7F5]">
-      {/* Header */}
-      <div className="w-full h-16 bg-[#5F936C]"></div>
-
+    <div className="flex flex-col items-center min-h-[80vh] bg-[#F0F7F5]">
       {/* Contenedor Invisible */}
       <div className="w-full flex justify-center px-4 pt-4">
         {/* Contenedor del formulario */}
@@ -99,9 +96,6 @@ export default function ExerciseForm() {
           </button>
         </div>
       </div>
-
-      {/* Footer */}
-      <div className="w-full h-[30px] bg-[#5F936C] mt-auto"></div>
     </div>
   );
 }

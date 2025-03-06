@@ -2,6 +2,7 @@ import { FaEllipsisV } from "react-icons/fa";
 import { useControlActions } from '../../hooks/useControlActions';
 import { useCurrentDateInfo, useDateActions, useDateSelectors } from '../../hooks/useDateActions';
 import { useState } from 'react';
+import { formatSmallDate } from "../../utils/dateUtils";
 
 const CalendarPanel = () => {
     const { backwardAction, forwardAction, toggleModeAction, resetCurrent } = useDateActions();
@@ -13,7 +14,6 @@ const CalendarPanel = () => {
 
     return (
         <div className="flex justify-between items-center px-4 py-2 bg-gray-100 border-b border-gray-300">
-            {/* Contenedor que agrupa el botón "Hoy" y la fecha */}
             <div className="flex items-center gap-2">
                 <button
                     onClick={resetCurrent}
@@ -21,7 +21,13 @@ const CalendarPanel = () => {
                 >
                     Hoy
                 </button>
-                <h2 className="sm:text-sm md:text-sm lg:text-md font-semibold text-gray-700 ml-2">{actualLabel}</h2>
+                <h2 className="hidden sm:block sm:text-sm md:text-sm lg:text-md font-semibold  text-gray-700 ml-2">
+                    {actualLabel}
+                </h2>
+                <h2 className="block sm:hidden font-semibold text-sm text-gray-700 ml-2">
+                    {formatSmallDate(actualLabel)}
+                </h2>
+
             </div>
 
             {/* Contenedor de flechas y modo */}
@@ -89,7 +95,7 @@ const CalendarPanel = () => {
                 <div>
                     <button
                         onClick={() => setVariable("openHabitManager", true)}
-                        className="p-2 rounded-full hover:bg-gray-300 transition flex items-center justify-center"
+                        className="lg:hidden p-2 rounded-full hover:bg-gray-300 transition flex items-center justify-center"
                         aria-label="Abrir menú"
                     >
                         <FaEllipsisV className="text-gray-700 text-xl" />

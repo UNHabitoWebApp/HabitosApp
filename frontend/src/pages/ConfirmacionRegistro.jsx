@@ -1,11 +1,10 @@
-import React from 'react';
 import { useNavigate } from 'react-router-dom';
 
 const ConfirmacionRegistro = () => {
   const navigate = useNavigate();
 
   const handleClick = () => {
-    navigate('/login');
+    navigate('/');
   };
 
   return (
@@ -14,9 +13,9 @@ const ConfirmacionRegistro = () => {
       <header className="w-full h-20 bg-[#5F936C] fixed top-0 z-50" />
       {/* Footer */}
       <footer className="w-full h-9 bg-[#5F936C] fixed bottom-0 left-0 right-0 z-50" />
-      
+
       {/* Confirmation Box */}
-      <div 
+      <div
         className="
           absolute 
           left-1/2 
@@ -67,18 +66,18 @@ const ConfirmacionRegistro = () => {
           md:w-32 
           md:h-32
         ">
-          <svg 
-            viewBox="0 0 24 24" 
+          <svg
+            viewBox="0 0 24 24"
             className="w-full h-full"
-            fill="none" 
-            stroke="#333333" 
+            fill="none"
+            stroke="#333333"
             strokeWidth="2"
           >
             <circle cx="12" cy="12" r="10" />
             <path d="M8 12l3 3 5-5" />
           </svg>
         </div>
-        
+
         {/* Message Text */}
         <p className="
           w-full

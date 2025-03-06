@@ -2,6 +2,7 @@ import { configureStore } from '@reduxjs/toolkit';
 import habitReducer from './slices/habitSlices';
 import dateReducer from './slices/dateSlices';
 import controlReducer from './slices/controlSlices'
+import userReducer from './slices/userSlices';
 
 const persistanceLocalStorageMiddleware = store => next => action => {
     next(action); // Asegura que la acción fluya a través de los middlewares
@@ -27,11 +28,12 @@ const store = configureStore({
 	reducer: {
 		habits: habitReducer,
 		date: dateReducer,
-        control: controlReducer
+        control: controlReducer,
+        user: userReducer,
 	},
 	middleware: (getDefaultMiddleware) => [
 		...getDefaultMiddleware(),
-		persistanceLocalStorageMiddleware,
+		//persistanceLocalStorageMiddleware,
 	],
 });
 

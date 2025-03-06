@@ -91,10 +91,7 @@ export default function HabitSelectorEdit() {
   };
 
   return (
-    <div className="flex flex-col items-center min-h-screen">
-      {/* Header */}
-      <div className="w-full h-16 bg-[#5F936C]"></div>
-
+    <div className="flex flex-col items-center min-h-[80vh]">
       {/* Mostrar el formulario correspondiente */}
       {screen === "routineForm" && (
         <RoutineFormEdit onSave={handleRoutineSave} initialData={routineData} />
@@ -113,9 +110,6 @@ export default function HabitSelectorEdit() {
       )}
 
       {screen === "select" && <BackToHomeButton />}
-
-      {/* Footer */}
-      <div className="w-full h-[30px] bg-[#5F936C] mt-auto"></div>
     </div>
   );
 }

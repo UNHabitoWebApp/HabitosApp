@@ -66,6 +66,21 @@ const dayNameFullMap = {
     Sunday: 'domingo',
 }
 
+const meses = {
+    enero: "01",
+    febrero: "02",
+    marzo: "03",
+    abril: "04",
+    mayo: "05",
+    junio: "06",
+    julio: "07",
+    agosto: "08",
+    septiembre: "09",
+    octubre: "10",
+    noviembre: "11",
+    diciembre: "12",
+};
+
 export const momentToObject = (moment) => {
     return {
         day: moment.format("dddd"),
@@ -86,4 +101,10 @@ export const getMonthName = (month) => {
 
 export const getDayName = (day) => {
     return dayNameFullMap[day] || day;
+}
+
+export const formatSmallDate = (date) => {
+    return date.replace(/(\d{2}) de (\w+) de (\d{4})/, (_, d, m, y) => {
+        return `${d}/${meses[m]}/${y.slice(-2)}`;}
+    )
 }

@@ -25,10 +25,7 @@ export default function ExerciseRoutine() {
   };
 
   return (
-    <div className="flex flex-col items-center min-h-screen bg-[#F0F7F5]">
-      {/* Header */}
-      <div className="w-full h-16 bg-[#5F936C]"></div>
-
+    <div className="flex flex-col items-center min-h-[80vh] bg-[#F0F7F5]">
       {/* Main Content */}
       <div className="flex items-center justify-center flex-1 w-full px-4">
         <div className="bg-white p-5 border-2 border-[#5F936C] rounded-[20px] shadow-lg w-full max-w-[450px]">
@@ -60,9 +57,6 @@ export default function ExerciseRoutine() {
           </div>
         </div>
       </div>
-
-      {/* Footer */}
-      <div className="w-full h-[30px] bg-[#5F936C] mt-auto"></div>
     </div>
   );
 }
