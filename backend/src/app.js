@@ -7,6 +7,8 @@ import { mailerQueue } from "./BullMQ/queues/mailerQueue.js";
 import { removeJobByEmail } from "./BullMQ/cleaners/emailCleaner.js";
 import { eventQueue } from "./BullMQ/queues/eventQueue.js";
 import { enqueueCreateEvent } from "./BullMQ/producers/eventProducer.js";
+import calendarRouter from "./routes/calendarRouter.js";
+//import { authenticateUser } from "./middlewares/authMiddleware.js";
 
 const app = express();
 
@@ -22,6 +24,7 @@ app.use(
 app.use(express.json());
 app.use(morgan("dev"));
 app.use(cookieParser());
+//sapp.use(authenticateUser());
 
 app.post("/test", async (req, res) => {
     const { email, msg } = req.body;
@@ -79,16 +82,16 @@ app.put("/adelantar",
 );
 
 app.post("/test2", async (req, res) => {
-
     const routineId = "67c9b71329f00cd857d6194a";
 
-    //await enqueueCreateEvent({ routineId: routineId }, 2000 );
+    await enqueueCreateEvent({ routineId: routineId }, { delay: 1000 * 60 * 5, jobId: routineId });
 
     console.log(await eventQueue.getJobCounts("delayed"));
-    console.log( (await eventQueue.getDelayed()));
+    console.log((await eventQueue.getDelayed()));
     res.json({ message: "Job encolado con delay de 5 minutos." });
 });
 
+app.use("/events",calendarRouter);
 initializeRoutes(app);
 
 export default app;

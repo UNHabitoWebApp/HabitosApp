@@ -6,6 +6,9 @@ import mailerWorker from "./BullMQ/workers/emailWorker.js";
 import { mailerQueue } from "./BullMQ/queues/mailerQueue.js";
 import { cleanQueue } from "./utils/BullUtils.js";
 import { cleanRedisKeys } from "./utils/RedisUtils.js";
+import { createExample } from "./utils/crearHabito.js";
+import { eventQueue } from "./BullMQ/queues/eventQueue.js";
+import eventWorker from "./BullMQ/workers/eventWorker.js";
 
 const startServer = async () => {
     try {
@@ -29,7 +32,10 @@ const startServer = async () => {
             .catch((err) => console.error("❌ Error al conectar con Redis:", err));
 
         mailerWorker;
+        eventWorker;
+        //await createExample();
         //await cleanQueue(mailerQueue);
+        //await cleanQueue(eventQueue);
         //await cleanRedisKeys();
     } catch (error) {
         console.error("❌ Error al iniciar la aplicación:", error);
