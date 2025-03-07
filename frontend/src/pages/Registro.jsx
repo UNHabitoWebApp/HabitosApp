@@ -12,21 +12,34 @@ const Registro = () => {
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const passwordMismatch = password !== confirm && confirm.length > 0;
   const { updateUser } = useUserActions();
+  const [emailError, setEmailError] = useState('');
+
+  const validateEmail = (email) => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
+  };
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    setEmailError('');
+
     if (!email || !password || !confirm) {
       alert('Por favor, completa todos los campos');
       return;
     }
+
+    if (!validateEmail(email)) {
+      setEmailError('Por favor, ingresa un correo electrónico válido');
+      return;
+    }
+
     if (passwordMismatch) {
       alert('¡Las contraseñas no coinciden!');
       return;
     }
+
     updateUser({
       isLoggedIn: true,
-      //Cami aca es donde debes cargar la info que te llega por la API, podes llamar el servicio
-      //y que te retorne la info y colocarla aca con ...userData y ya esto lla actualiza en el state general
     })
     navigate('/confirmacion');
   };
@@ -72,16 +85,21 @@ const Registro = () => {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="Parcero@gmail.com"
-                className="
+                className={`
                   h-10 
                   border 
-                  border-gray-400 
+                  ${emailError ? 'border-red-500' : 'border-gray-400'}
                   rounded 
                   px-3 
                   text-sm 
                   focus:outline-none 
-                "
+                `}
               />
+              {emailError && (
+                <p className="text-red-500 text-xs mt-1">
+                  {emailError}
+                </p>
+              )}
             </div>
 
             {/* Campo de contraseña */}
