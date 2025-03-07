@@ -22,7 +22,7 @@ const daysMap = {
 
 const TIMEZONE = "America/Bogota";
 
-calendarRouter.get("/generate", async (req, res) => {
+calendarRouter.post("/generate", async (req, res) => {
     try {
         const { startDate, endDate, userId } = req.body;
         if (!startDate || !endDate || !userId) {
@@ -66,8 +66,8 @@ calendarRouter.get("/generate", async (req, res) => {
                     routineId: log.routine_id,
                     habitIds: new Set(),
                     date: dateKey,
-                    beginTime: log.date,
-                    endTime: log.completionTime,
+                    beginTime: dayjs(log.date).tz(TIMEZONE).format("HH:mm"), // Formatear a HH:mm
+                    endTime: dayjs(log.completionTime).tz(TIMEZONE).format("HH:mm"), // Formatear a HH:mm
                     description: routineKey ? routineNames.get(routineKey) : habitNames.get(habitKey),
                     type: "past",
                     habit: !routineKey

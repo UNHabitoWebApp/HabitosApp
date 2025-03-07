@@ -68,9 +68,83 @@ const habitSlice = createSlice({
 					};
 				}
 			}
-		},
+		},/*
+		addFetchedHabits: (state, action) => {
+			const { events } = action.payload;
+	  
+			Object.entries(events).forEach(([year, months]) => {
+			  if (!state.habits[year]) state.habits[year] = {};
+	  
+			  Object.entries(months).forEach(([month, days]) => {
+				if (!state.habits[year][month]) state.habits[year][month] = {};
+	  
+				Object.entries(days).forEach(([day, habits]) => {
+				  if (!state.habits[year][month][day]) {
+					state.habits[year][month][day] = { habits: [] };
+				  }
+	  
+				  state.habits[year][month][day].habits = habits.map(habit => ({
+					id: habit.id,
+					name: habit.name,
+					description: habit.description || "",
+					start: habit.beginTime,
+					end: habit.endTime,
+					type: habit.type,
+					isHabit: habit.habit,
+				  }));
+				});
+			  });
+			});*/
+			addFetchedHabits: (state, action) => {
+				const { events } = action.payload;
+			
+				if (!events || typeof events !== "object") {
+					console.error("Eventos inválidos recibidos en addFetchedHabits:", events);
+					return;
+				}
+			
+				Object.entries(events).forEach(([year,months]) => {
+					console.log("year", year);
+					if (!state[year]) state[year] = {}; 
+					Object.entries(months).forEach(([month, days]) => {
+						if (!state[year][month]) state[year][month] = {}; 
+			
+						Object.entries(days).forEach(([day, habits]) => {
+							console.log(day);
+							if (!Array.isArray(habits)) {
+								//console.warn(`Los hábitos del día ${year}-${month}-${day} no son un array:`, habits);
+								return;
+							}
+			
+							console.log(habits.map(habit => ({
+								id: habit.id,
+								name: habit.name,
+								description: habit.description || "",
+								start: habit.beginTime,
+								end: habit.endTime,
+								type: habit.type,
+								isHabit: habit.habit,
+							})))
+
+							state[year][month][day] = {
+								habits: habits.map(habit => ({
+									id: habit.id,
+									name: habit.name,
+									description: habit.description || "",
+									start: habit.beginTime,
+									end: habit.endTime,
+									type: habit.type,
+									isHabit: habit.habit,
+								}))
+							};
+						});
+					});
+				});
+			
+			}			
+		}
   	},
-});
+);
 
 // 📌 Selector para obtener hábitos de una lista de fechas
 export const selectHabitsByDates = createSelector(
@@ -85,5 +159,5 @@ export const selectHabitsByDates = createSelector(
     }
 );
 
-export const { addHabit, removeHabit, updateHabit } = habitSlice.actions;
+export const { addHabit, removeHabit, updateHabit, addFetchedHabits } = habitSlice.actions;
 export default habitSlice.reducer;

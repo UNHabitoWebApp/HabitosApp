@@ -16,7 +16,9 @@ const DEFAULT_STATE = {
     daysOfWeek: [], 
     selectedDate: momentToObject(moment()),
     selectedWeek: moment().week(),
-    mode: 'week'
+    mode: 'week',
+    startDate: moment().subtract(2, 'weeks').startOf('week').format('YYYY-MM-DD'),
+    endDate: moment().add(2, 'weeks').endOf('week').format('YYYY-MM-DD')
 };
 
 const initialState = DEFAULT_STATE;

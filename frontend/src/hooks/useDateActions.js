@@ -75,5 +75,7 @@ export const useCurrentDateInfo = () => {
     const currentMode = useAppSelector((state) => state.date.mode);
     const selectedWeek = useAppSelector((state) => state.date.selectedWeek);
     const selectedDate = useAppSelector((state) => state.date.selectedDate);
-    return { currentTime, currentDate, currentMode, selectedWeek, selectedDate };
+    const startDate = useAppSelector((state) => state.date.startDate);
+    const endDate = useAppSelector((state) => state.date.endDate);
+    return { currentTime, currentDate, currentMode, selectedWeek, selectedDate , startDate, endDate};
 };
