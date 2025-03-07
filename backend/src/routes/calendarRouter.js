@@ -4,6 +4,7 @@ import timezone from "dayjs/plugin/timezone.js";
 import utc from "dayjs/plugin/utc.js";
 import HabitLog from "../models/HabitLog.js";
 import Routine from "../models/Routine.js";
+import Habit from "../models/Habit.js";
 
 const calendarRouter = express.Router();
 dayjs.extend(utc);
@@ -19,7 +20,6 @@ const daysMap = {
     Saturday: 6
 };
 
-
 const TIMEZONE = "America/Bogota";
 
 calendarRouter.get("/generate", async (req, res) => {
@@ -33,60 +33,84 @@ calendarRouter.get("/generate", async (req, res) => {
         const start = dayjs(startDate).tz(TIMEZONE).startOf("day");
         const end = dayjs(endDate).tz(TIMEZONE).endOf("day").hour(19).minute(59);
 
-        console.log(now.format(),start.format(),end.format());
-
         // PASADO: HabitLogs y eventos hasta ahora
-        const pastLogs = await HabitLog.find({
+        const pastLogs = (await HabitLog.find({
             userId,
             completionTime: { $gte: start.toDate(), $lte: now.toDate() }
-        });
+        })).map(log => ({ ...log.toObject(), type: "past" }));
 
         // PRESENTE: Eventos de hoy hasta el momento actual
-        const todayEvents = await HabitLog.find({
+        const todayEvents = (await HabitLog.find({
             userId,
             date: { $gte: now.startOf("day").toDate(), $lte: now.toDate() }
-        });
+        })).map(event => ({ ...event.toObject(), type: "today" }));
 
+        // FUTURO: Generar eventos tentativos sin duplicaciones
+        const routines = await Routine.find({ userId });
+        const habits = await Habit.find({ userId, routineId: { $exists: false } }); // Solo hábitos sin rutina
 
-        // FUTURO: Generar eventos tentativos
-        const routines = await Routine.find({ userId});
-        const futureEvents = [];
-        console.log(routines);
+        const futureEvents = new Map();
+
+        // Procesar rutinas
         for (const routine of routines) {
-            let currentDate = now.startOf("day"); // Punto de inicio: hoy
+            for (const dayName of routine.days) {
+                const dayNumber = daysMap[dayName];
 
-            while (currentDate.isBefore(end, "day")) {
-                for (const dayName of routine.days) {
-                    const dayNumber = daysMap[dayName]; // Convertir nombre a número
-                    if (dayNumber === undefined) continue; // Si el nombre es inválido, ignorarlo
+                let currentDate = now.startOf("week").add(dayNumber, "day");
 
-                    let eventDay = currentDate.startOf("week").add(dayNumber, "day"); // Ajustar al día de la semana correcto
-
-                    if (eventDay.isBefore(currentDate, "day")) {
-                        eventDay = eventDay.add(7, "day"); // Si ya pasó, mover a la próxima semana
-                    }
-
-                    if (eventDay.isAfter(end, "day")) {
-                        continue; // Saltar si está fuera del rango
-                    }
-
-                    futureEvents.push({
-                        routineId: routine._id,
-                        date: eventDay.format("YYYY-MM-DD"),
-                        beginTime: routine.beginTime,
-                        endTime: routine.endTime,
-                        description: "Evento tentativo"
-                    });
+                if (currentDate.isBefore(now, "day")) {
+                    currentDate = currentDate.add(7, "day");
                 }
-                currentDate = currentDate.add(1, "day"); // Avanzar un día
+
+                while (currentDate.isBefore(end, "day")) {
+                    const eventKey = `${currentDate.format("YYYY-MM-DD")}-${routine._id}`;
+
+                    if (!futureEvents.has(eventKey)) {
+                        futureEvents.set(eventKey, {
+                            routineId: routine._id,
+                            date: currentDate.format("YYYY-MM-DD"),
+                            beginTime: routine.beginTime,
+                            endTime: routine.endTime,
+                            description: routine.name || "Evento tentativo",
+                            type: "future"
+                        });
+                    }
+
+                    currentDate = currentDate.add(7, "day");
+                }
             }
         }
 
-        // Función para transformar los eventos en el formato deseado
+        // Procesar hábitos individuales (sin rutina)
+        for (const habit of habits) {
+            let currentDate = now.startOf("day");
+
+            while (currentDate.isBefore(end, "day")) {
+                const eventKey = `${currentDate.format("YYYY-MM-DD")}-${habit._id}`;
+
+                if (!futureEvents.has(eventKey)) {
+                    futureEvents.set(eventKey, {
+                        habitId: habit._id,
+                        date: currentDate.format("YYYY-MM-DD"),
+                        beginTime: habit.beginTime,
+                        endTime: habit.endTime,
+                        description: habit.name || "Hábito individual",
+                        type: "future"
+                    });
+                }
+
+                currentDate = currentDate.add(1, "day");
+            }
+        }
+
+        // Convertimos el Map a un array
+        const futureEventsArray = Array.from(futureEvents.values());
+
+        // Unificación y estructuración de eventos
+        const allEvents = [...pastLogs, ...todayEvents, ...futureEventsArray];
         const structureEvents = (events) => {
             return events.reduce((acc, event) => {
-                const [year, month, day] = event.date.split("-"); // Extraer año, mes y día
-
+                const [year, month, day] = event.date.split("-");
                 if (!acc[year]) acc[year] = {};
                 if (!acc[year][month]) acc[year][month] = {};
                 if (!acc[year][month][day]) acc[year][month][day] = [];
@@ -94,23 +118,19 @@ calendarRouter.get("/generate", async (req, res) => {
                 acc[year][month][day].push({
                     beginTime: event.beginTime,
                     endTime: event.endTime,
-                    name: event.description
+                    name: event.description,
+                    type: event.type
                 });
 
                 return acc;
             }, {});
         };
 
-        const structuredFutureEvents = structureEvents(futureEvents);
-
-        res.json({ pastLogs, todayEvents, events: structuredFutureEvents });
-
+        res.json({ events: structureEvents(allEvents) });
     } catch (error) {
         console.error("Error generando eventos: ", error);
         res.status(500).json({ error: "Error interno del servidor" });
     }
 });
-
-
 
 export default calendarRouter;
