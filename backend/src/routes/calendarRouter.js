@@ -28,26 +28,10 @@ calendarRouter.get("/generate", async (req, res) => {
         if (!startDate || !endDate || !userId) {
             return res.status(400).json({ error: "Faltan parámetros requeridos." });
         }
-
         const now = dayjs().tz(TIMEZONE);
         const start = dayjs(startDate).tz(TIMEZONE).startOf("day");
         const end = dayjs(endDate).tz(TIMEZONE).endOf("day").hour(19).minute(59);
 
-        // PASADO: HabitLogs y eventos hasta ahora
-        /*
-        const pastLogs = (await HabitLog.find({
-            habit_id: { $in: (await Routine.find({ userId })).map(h => h._id) },
-            completionTime: { $gte: start, $lte: now }
-        })).map(log => ({ ...log.toObject(), type: "past", habitId: log.habit_id, routineId: log.routine_id }));
-        console.log(pastLogs);
-        const xd = (await HabitLog.find());
-        for(const x of xd){
-            console.log(x.date);
-            console.log(x.date < now);
-            console.log(x.date > start);
-        }*/
-
-        // PRESENTE: Eventos de hoy hasta el momento actual
         const todayEvents = (await HabitLog.find({
             userId,
             date: { $gte: now.startOf("day").toDate(), $lte: now.toDate() }
@@ -65,6 +49,44 @@ calendarRouter.get("/generate", async (req, res) => {
             completionTime: { $gte: start.toDate(), $lte: now.toDate() }
         }).lean();
 
+        // Obtener nombres de hábitos y rutinas
+        const habitNames = new Map(habits.map(h => [h._id.toString(), h.name]));
+        const routineNames = new Map(routines.map(r => [r._id.toString(), r.name]));
+
+        // Unificar logs con la misma rutina en la misma fecha
+        const groupedPastLogs = new Map();
+
+        for (const log of pastLogs) {
+            const dateKey = dayjs(log.date).format("YYYY-MM-DD");
+            const routineKey = log.routine_id ? log.routine_id.toString() : null;
+            const habitKey = log.habit_id.toString();
+
+            const eventKey = routineKey ? `${dateKey}-${routineKey}` : `${dateKey}-${habitKey}`;
+
+            if (!groupedPastLogs.has(eventKey)) {
+                groupedPastLogs.set(eventKey, {
+                    routineId: log.routine_id,
+                    habitIds: new Set(),
+                    date: dateKey,
+                    beginTime: log.date,
+                    endTime: log.completionTime,
+                    description: routineKey ? routineNames.get(routineKey) : habitNames.get(habitKey),
+                    type: "past",
+                    habit: !routineKey
+                });
+            }
+
+            groupedPastLogs.get(eventKey).habitIds.add(habitKey);
+        }
+
+        // Convertir Set a Array y asignar IDs correctamente
+        const pastLogsArray = Array.from(groupedPastLogs.values()).map(event => ({
+            ...event,
+            habitIds: Array.from(event.habitIds),
+            id: event.routineId || event.habitIds[0],
+            type: event.type || "past",
+
+        }));
         const futureEvents = new Map();
 
         // Procesar rutinas
@@ -127,26 +149,7 @@ calendarRouter.get("/generate", async (req, res) => {
         const futureEventsArray = Array.from(futureEvents.values());
 
         // Unificación y estructuración de eventos
-        const allEvents = [...pastLogs, ...todayEvents, ...futureEventsArray];
-        /*const structureEvents = (events) => {
-            return events.reduce((acc, event) => {
-                const [year, month, day] = event.date.split("-");
-                if (!acc[year]) acc[year] = {};
-                if (!acc[year][month]) acc[year][month] = {};
-                if (!acc[year][month][day]) acc[year][month][day] = [];
-
-                acc[year][month][day].push({
-                    beginTime: event.beginTime,
-                    endTime: event.endTime,
-                    name: event.description,
-                    type: event.type,
-                    id: event.habitId || event.routineId,
-                    habit: event.habit || false
-                });
-
-                return acc;
-            }, {});
-        };*/
+        const allEvents = [...pastLogsArray, ...todayEvents, ...futureEventsArray];
 
         const structureEvents = (events) => {
             return events.reduce((acc, event) => {
