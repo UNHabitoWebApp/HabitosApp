@@ -5,6 +5,8 @@ import { useUserActions } from '../hooks/useUserActions';
 
 const Login = () => {
   const [showPassword, setShowPassword] = useState(false);
+  const [email, setEmail] = useState('');
+  const [emailError, setEmailError] = useState('');
   const navigate = useNavigate();
   const { updateUser } = useUserActions();
 
@@ -12,7 +14,19 @@ const Login = () => {
     setShowPassword(!showPassword);
   };
 
+  const validateEmail = (email) => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
+  };
+
   const handleLogin = () => {
+    setEmailError('');
+
+    if (!validateEmail(email)) {
+      setEmailError('Por favor, ingresa un correo electrónico válido');
+      return;
+    }
+
     updateUser({
       isLoggedIn: true,
       //Cami aca es donde debes cargar la info que te llega por la API, podes llamar el servicio
@@ -59,17 +73,24 @@ const Login = () => {
               <input
                 id="email"
                 type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
                 placeholder="Parcero@gmail.com"
-                className="
+                className={`
                   h-10 
                   border 
-                  border-gray-400 
+                  ${emailError ? 'border-red-500' : 'border-gray-400'}
                   rounded 
                   px-3 
                   text-sm 
                   focus:outline-none 
-                "
+                `}
               />
+              {emailError && (
+                <p className="text-red-500 text-xs mt-1">
+                  {emailError}
+                </p>
+              )}
             </div>
 
             {/* Campo de contraseña */}
