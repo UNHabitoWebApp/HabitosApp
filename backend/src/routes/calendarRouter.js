@@ -23,9 +23,6 @@ const daysMap = {
 const TIMEZONE = "America/Bogota";
 
 calendarRouter.post("/generate", async (req, res) => {
-
-    console.log(req.body);
-
     try {
         const { startDate, endDate, userId } = req.body;
         if (!startDate || !endDate || !userId) {
