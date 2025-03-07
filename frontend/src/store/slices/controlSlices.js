@@ -4,6 +4,7 @@ const initialState = {
     openHabitManager: false,
     isSidebarOpen: false,
     isModalOpen: false, 
+    loadCharge: false,
 };
 
 const controlSlice = createSlice({

@@ -14,8 +14,9 @@ const HabitLogSchema = new mongoose.Schema(
         routine_id: { type: mongoose.Schema.Types.ObjectId, ref: "Routine", required: false },
         habit_id: { type: mongoose.Schema.Types.ObjectId, ref: "Habit", required: true },
         date: { type: Date, required: true },
-        completionTime: { type: String, required: false },
-        variables: { type: [VariableSchema], required: false }
+        completionTime: { type: Date, required: false },
+        variables: { type: [VariableSchema], required: false },
+        done: { type: Boolean, required: true}
     },
     {
         timestamps: true,

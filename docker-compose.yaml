@@ -1,3 +1,5 @@
+version: "3.8"
+
 services:
   db_habit:
     image: mongo:6
@@ -11,6 +13,16 @@ services:
       - mongodata:/data/db
     ports:
       - "27017:27017"
+    networks:
+      - database_network
+
+  redis:
+    image: redis:latest
+    restart: always
+    container_name: habit_un_redis
+    hostname: habit_un_redis
+    ports:
+      - "6379:6379"
     networks:
       - database_network
 

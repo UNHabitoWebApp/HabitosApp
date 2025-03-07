@@ -32,10 +32,12 @@ export const useControlSelectors = () => {
     const openHabitManager = useAppSelector((state) => selectControlVariable(state, "openHabitManager"));
     const isSidebarOpen = useAppSelector((state) => selectControlVariable(state, "isSidebarOpen"));
     const isModalOpen = useAppSelector((state) => selectControlVariable(state, "isModalOpen"));
+    const loadCharge = useAppSelector((state) => selectControlVariable(state, "loadCharge"));
 
     return {
         openHabitManager,
         isSidebarOpen,
         isModalOpen,
+        loadCharge
     };
 };
