@@ -5,7 +5,9 @@ import CurrentTimeIndicator from "./CurrentTimeIndicator";
 import { generateDayFragmentContainerClasses } from "../../utils/classNameUtils";
 
 const DayFragment = ({ day, first = false, last = false, unique = false }) => {
-    const { habits = [] } = day; // Extraemos la información del día
+    const { habits = [] } = day;
+
+    //console.log("Hábitos en el día", habits);
 
     const mergedEvents = [];
 

@@ -1,28 +1,29 @@
 import { useEffect } from "react";
-import { useCurrentDateInfo } from "../../hooks/useDateActions";
+import { useCurrentDateInfo, useDateActions } from "../../hooks/useDateActions";
 import { useHabitsActions } from "../../hooks/useHabitsActions";
 import { fetchHabitsRange } from "../../service/fetchHabitsRange";
+import { useControlActions, useControlSelectors } from "../../hooks/useControlActions";
 
 const InitialDataLoader = () => {
-    const { startDate, endDate } = useCurrentDateInfo();
+    const { startDate, endDate, needFetch } = useCurrentDateInfo();
+    const { solicitarFetch } = useDateActions();
     const { addHabits } = useHabitsActions();
-
-    console.log("startDate", startDate);
-    console.log("endDate", endDate);
+    const { loadCharge } = useControlSelectors();
+    const { setVariable } = useControlActions();
 
     useEffect(() => {
         const fetchData = async () => {
-            if (startDate && endDate) {
+            console.log(startDate, endDate, loadCharge)
+            if (startDate && endDate && (!loadCharge || needFetch)) {
                 const events = await fetchHabitsRange(startDate, endDate);
                 if (events) {
-
+                    setVariable("loadCharge", true);
                     addHabits({ events });
                 }
             }
         };
-
         fetchData();
-    }, [addHabits]); 
+    }, [startDate, endDate, needFetch]); 
 
     return null;
 };

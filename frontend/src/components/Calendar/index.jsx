@@ -16,7 +16,6 @@ const Calendar = () => {
     const { updateCurrentTimeAction, resetDateAction } = useDateActions();
     const { daysOfWeek, remainingTime, remainingTimeForNextMinute } = useDateSelectors();
     const events = useEventsOfWeek(daysOfWeek);
-    console.log("Eventos en el calendario", events);
 
     useTimeUpdater(remainingTime, remainingTimeForNextMinute, updateCurrentTimeAction, resetDateAction);
     const { selectedDate, currentMode } = useCurrentDateInfo();

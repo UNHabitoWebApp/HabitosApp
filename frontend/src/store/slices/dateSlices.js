@@ -18,7 +18,8 @@ const DEFAULT_STATE = {
     selectedWeek: moment().week(),
     mode: 'week',
     startDate: moment().subtract(2, 'weeks').startOf('week').format('YYYY-MM-DD'),
-    endDate: moment().add(2, 'weeks').endOf('week').format('YYYY-MM-DD')
+    endDate: moment().add(2, 'weeks').endOf('week').format('YYYY-MM-DD'),
+    needFetch: false,
 };
 
 const initialState = DEFAULT_STATE;
@@ -47,6 +48,12 @@ const dateSlice = createSlice({
                     state.selectedDate = momentToObject(currentDateMoment.add(1, 'week'));
                     state.currentDateMomentISO = currentDateMoment.toISOString();
                 }
+
+                // Verificar si la nueva fecha es mayor que endDate
+                if (currentDateMoment.isAfter(moment(state.endDate))) {
+                    state.endDate = moment(state.endDate).add(1, 'month').endOf('week').format('YYYY-MM-DD');
+                    state.needFetch = true;
+                }
             } else {
                 const newDate = currentDateMoment.add(1, 'day'); 
                 state.currentDateMomentISO = newDate.toISOString();
@@ -55,6 +62,12 @@ const dateSlice = createSlice({
                     state.selectedWeek = newDate.week();
                 }   
                 state.selectedDate = momentToObject(newDate);
+
+                // Verificar si la nueva fecha es mayor que endDate
+                if (newDate.isAfter(moment(state.endDate))) {
+                    state.endDate = moment(state.endDate).add(1, 'month').endOf('week').format('YYYY-MM-DD');
+                    state.needFetch = true;
+                }
             }
         },
         backward: (state) => {
@@ -62,9 +75,15 @@ const dateSlice = createSlice({
             if (state.mode === 'week') {
                 state.selectedWeek -= 1; 
 
-                if (currentDateMoment .week() !== state.selectedWeek) {
+                if (currentDateMoment.week() !== state.selectedWeek) {
                     state.selectedDate = momentToObject(currentDateMoment.subtract(1, 'week'));
                     state.currentDateMomentISO = currentDateMoment.toISOString();
+                }
+
+                // Verificar si la nueva fecha es menor que startDate
+                if (currentDateMoment.isBefore(moment(state.startDate))) {
+                    state.startDate = moment(state.startDate).subtract(1, 'month').startOf('week').format('YYYY-MM-DD');
+                    state.needFetch = true;
                 }
             } else {
                 const newDate = currentDateMoment.subtract(1, 'day');
@@ -73,6 +92,12 @@ const dateSlice = createSlice({
                     state.selectedWeek = newDate.week();
                 }
                 state.selectedDate = momentToObject(newDate);
+
+                // Verificar si la nueva fecha es menor que startDate
+                if (newDate.isBefore(moment(state.startDate))) {
+                    state.startDate = moment(state.startDate).subtract(1, 'month').startOf('week').format('YYYY-MM-DD');
+                    state.needFetch = true;
+                }
             }
         },
         toggleMode : (state) => {
@@ -92,6 +117,9 @@ const dateSlice = createSlice({
             state.currentDateMomentISO = newDate.toISOString();
             state.selectedWeek = newDate.week();
             state.mode = 'day';
+        },
+        setneedFetch: (state, action) => {
+            state.needFetch = action.payload;   
         }
     },
 });
@@ -162,6 +190,7 @@ export const {
     backward,
     toggleMode,
     resetCurrentValues,
-    setDay
+    setDay,
+    setneedFetch
 } = dateSlice.actions;
 export default dateSlice.reducer;

@@ -1,27 +1,6 @@
 import { createSlice, createSelector } from '@reduxjs/toolkit';
-import { DEFAULT_STATE } from '../DEFAULT_STATES';
 
-const initialState = (() => {
-    const persistedState = localStorage.getItem("__redux__state__");
-
-    if (!persistedState) {
-        return DEFAULT_STATE; 
-    }
-
-    try {
-        const parsedState = JSON.parse(persistedState); 
-
-        if (!parsedState.habits) {
-            return DEFAULT_STATE;	
-        }
-
-        return parsedState.habits; 
-    } catch (error) {
-        console.error("Error al parsear localStorage:", error);
-        return DEFAULT_STATE; 
-    }
-})();
-
+const initialState = {}
 
 const habitSlice = createSlice({
 	name: "habits",
@@ -104,28 +83,15 @@ const habitSlice = createSlice({
 				}
 			
 				Object.entries(events).forEach(([year,months]) => {
-					console.log("year", year);
 					if (!state[year]) state[year] = {}; 
 					Object.entries(months).forEach(([month, days]) => {
 						if (!state[year][month]) state[year][month] = {}; 
 			
 						Object.entries(days).forEach(([day, habits]) => {
-							console.log(day);
 							if (!Array.isArray(habits)) {
 								//console.warn(`Los hábitos del día ${year}-${month}-${day} no son un array:`, habits);
 								return;
 							}
-			
-							console.log(habits.map(habit => ({
-								id: habit.id,
-								name: habit.name,
-								description: habit.description || "",
-								start: habit.beginTime,
-								end: habit.endTime,
-								type: habit.type,
-								isHabit: habit.habit,
-							})))
-
 							state[year][month][day] = {
 								habits: habits.map(habit => ({
 									id: habit.id,
