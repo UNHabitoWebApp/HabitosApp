@@ -34,20 +34,36 @@ calendarRouter.get("/generate", async (req, res) => {
         const end = dayjs(endDate).tz(TIMEZONE).endOf("day").hour(19).minute(59);
 
         // PASADO: HabitLogs y eventos hasta ahora
+        /*
         const pastLogs = (await HabitLog.find({
-            userId,
-            completionTime: { $gte: start.toDate(), $lte: now.toDate() }
-        })).map(log => ({ ...log.toObject(), type: "past" }));
+            habit_id: { $in: (await Routine.find({ userId })).map(h => h._id) },
+            completionTime: { $gte: start, $lte: now }
+        })).map(log => ({ ...log.toObject(), type: "past", habitId: log.habit_id, routineId: log.routine_id }));
+        console.log(pastLogs);
+        const xd = (await HabitLog.find());
+        for(const x of xd){
+            console.log(x.date);
+            console.log(x.date < now);
+            console.log(x.date > start);
+        }*/
 
         // PRESENTE: Eventos de hoy hasta el momento actual
         const todayEvents = (await HabitLog.find({
             userId,
             date: { $gte: now.startOf("day").toDate(), $lte: now.toDate() }
-        })).map(event => ({ ...event.toObject(), type: "today" }));
+        })).map(event => ({ ...event.toObject(), type: "today", habitId: event.habitId }));
 
         // FUTURO: Generar eventos tentativos sin duplicaciones
         const routines = await Routine.find({ userId });
-        const habits = await Habit.find({ userId, routineId: { $exists: false } }); // Solo hábitos sin rutina
+        const habits = await Habit.find({ userId, personlized: true }); // Traer todos los hábitos
+
+        const pastLogs = await HabitLog.find({
+            $or: [
+                { habit_id: { $in: habits.map(h => h._id) } },
+                { routine_id: { $in: routines.map(r => r._id) } }
+            ],
+            completionTime: { $gte: start.toDate(), $lte: now.toDate() }
+        }).lean();
 
         const futureEvents = new Map();
 
@@ -55,7 +71,6 @@ calendarRouter.get("/generate", async (req, res) => {
         for (const routine of routines) {
             for (const dayName of routine.days) {
                 const dayNumber = daysMap[dayName];
-
                 let currentDate = now.startOf("week").add(dayNumber, "day");
 
                 if (currentDate.isBefore(now, "day")) {
@@ -64,7 +79,6 @@ calendarRouter.get("/generate", async (req, res) => {
 
                 while (currentDate.isBefore(end, "day")) {
                     const eventKey = `${currentDate.format("YYYY-MM-DD")}-${routine._id}`;
-
                     if (!futureEvents.has(eventKey)) {
                         futureEvents.set(eventKey, {
                             routineId: routine._id,
@@ -72,43 +86,49 @@ calendarRouter.get("/generate", async (req, res) => {
                             beginTime: routine.beginTime,
                             endTime: routine.endTime,
                             description: routine.name || "Evento tentativo",
-                            type: "future"
+                            type: "future",
+                            habit: false
                         });
                     }
-
                     currentDate = currentDate.add(7, "day");
                 }
             }
         }
 
-        // Procesar hábitos individuales (sin rutina)
+        // Procesar hábitos individuales
         for (const habit of habits) {
-            let currentDate = now.startOf("day");
+            for (const dayName of habit.days) {
+                const dayNumber = daysMap[dayName];
+                let currentDate = now.startOf("week").add(dayNumber, "day");
 
-            while (currentDate.isBefore(end, "day")) {
-                const eventKey = `${currentDate.format("YYYY-MM-DD")}-${habit._id}`;
-
-                if (!futureEvents.has(eventKey)) {
-                    futureEvents.set(eventKey, {
-                        habitId: habit._id,
-                        date: currentDate.format("YYYY-MM-DD"),
-                        beginTime: habit.beginTime,
-                        endTime: habit.endTime,
-                        description: habit.name || "Hábito individual",
-                        type: "future"
-                    });
+                if (currentDate.isBefore(now, "day")) {
+                    currentDate = currentDate.add(7, "day");
                 }
 
-                currentDate = currentDate.add(1, "day");
+                while (currentDate.isBefore(end, "day")) {
+                    const eventKey = `${currentDate.format("YYYY-MM-DD")}-${habit._id}`;
+                    if (!futureEvents.has(eventKey)) {
+                        futureEvents.set(eventKey, {
+                            habitId: habit._id,
+                            date: currentDate.format("YYYY-MM-DD"),
+                            beginTime: habit.beginTime,
+                            endTime: habit.endTime,
+                            description: habit.name || "Hábito individual",
+                            type: "future",
+                            habit: true
+                        });
+                    }
+                    currentDate = currentDate.add(7, "day");
+                }
             }
         }
 
-        // Convertimos el Map a un array
+        // Convertir el Map a un array
         const futureEventsArray = Array.from(futureEvents.values());
 
         // Unificación y estructuración de eventos
         const allEvents = [...pastLogs, ...todayEvents, ...futureEventsArray];
-        const structureEvents = (events) => {
+        /*const structureEvents = (events) => {
             return events.reduce((acc, event) => {
                 const [year, month, day] = event.date.split("-");
                 if (!acc[year]) acc[year] = {};
@@ -119,12 +139,35 @@ calendarRouter.get("/generate", async (req, res) => {
                     beginTime: event.beginTime,
                     endTime: event.endTime,
                     name: event.description,
-                    type: event.type
+                    type: event.type,
+                    id: event.habitId || event.routineId,
+                    habit: event.habit || false
+                });
+
+                return acc;
+            }, {});
+        };*/
+
+        const structureEvents = (events) => {
+            return events.reduce((acc, event) => {
+                const [year, month, day] = dayjs(event.date).format("YYYY-MM-DD").split("-");
+                if (!acc[year]) acc[year] = {};
+                if (!acc[year][month]) acc[year][month] = {};
+                if (!acc[year][month][day]) acc[year][month][day] = [];
+
+                acc[year][month][day].push({
+                    beginTime: event.beginTime,
+                    endTime: event.endTime,
+                    name: event.description,
+                    type: event.type,
+                    id: event.habitId || event.routineId,
+                    habit: event.habit || false
                 });
 
                 return acc;
             }, {});
         };
+
 
         res.json({ events: structureEvents(allEvents) });
     } catch (error) {
