@@ -31,15 +31,15 @@ calendarRouter.get("/generate", async (req, res) => {
         const now = dayjs().tz(TIMEZONE);
         const start = dayjs(startDate).tz(TIMEZONE).startOf("day");
         const end = dayjs(endDate).tz(TIMEZONE).endOf("day").hour(19).minute(59);
+        const initialDate = start.isAfter(now) ? start : now;
 
         const todayEvents = (await HabitLog.find({
             userId,
             date: { $gte: now.startOf("day").toDate(), $lte: now.toDate() }
         })).map(event => ({ ...event.toObject(), type: "today", habitId: event.habitId }));
 
-        // FUTURO: Generar eventos tentativos sin duplicaciones
         const routines = await Routine.find({ userId });
-        const habits = await Habit.find({ userId, personlized: true }); // Traer todos los hábitos
+        const habits = await Habit.find({ userId, personlized: true });
 
         const pastLogs = await HabitLog.find({
             $or: [
@@ -49,11 +49,9 @@ calendarRouter.get("/generate", async (req, res) => {
             completionTime: { $gte: start.toDate(), $lte: now.toDate() }
         }).lean();
 
-        // Obtener nombres de hábitos y rutinas
         const habitNames = new Map(habits.map(h => [h._id.toString(), h.name]));
         const routineNames = new Map(routines.map(r => [r._id.toString(), r.name]));
 
-        // Unificar logs con la misma rutina en la misma fecha
         const groupedPastLogs = new Map();
 
         for (const log of pastLogs) {
@@ -79,26 +77,22 @@ calendarRouter.get("/generate", async (req, res) => {
             groupedPastLogs.get(eventKey).habitIds.add(habitKey);
         }
 
-        // Convertir Set a Array y asignar IDs correctamente
         const pastLogsArray = Array.from(groupedPastLogs.values()).map(event => ({
             ...event,
             habitIds: Array.from(event.habitIds),
             id: event.routineId || event.habitIds[0],
             type: event.type || "past",
-
         }));
+
         const futureEvents = new Map();
 
-        // Procesar rutinas
         for (const routine of routines) {
             for (const dayName of routine.days) {
                 const dayNumber = daysMap[dayName];
-                let currentDate = now.startOf("week").add(dayNumber, "day");
-
-                if (currentDate.isBefore(now, "day")) {
+                let currentDate = initialDate.startOf("week").add(dayNumber, "day");
+                if (currentDate.isBefore(initialDate, "day")) {
                     currentDate = currentDate.add(7, "day");
                 }
-
                 while (currentDate.isBefore(end, "day")) {
                     const eventKey = `${currentDate.format("YYYY-MM-DD")}-${routine._id}`;
                     if (!futureEvents.has(eventKey)) {
@@ -117,16 +111,13 @@ calendarRouter.get("/generate", async (req, res) => {
             }
         }
 
-        // Procesar hábitos individuales
         for (const habit of habits) {
             for (const dayName of habit.days) {
                 const dayNumber = daysMap[dayName];
-                let currentDate = now.startOf("week").add(dayNumber, "day");
-
-                if (currentDate.isBefore(now, "day")) {
+                let currentDate = initialDate.startOf("week").add(dayNumber, "day");
+                if (currentDate.isBefore(initialDate, "day")) {
                     currentDate = currentDate.add(7, "day");
                 }
-
                 while (currentDate.isBefore(end, "day")) {
                     const eventKey = `${currentDate.format("YYYY-MM-DD")}-${habit._id}`;
                     if (!futureEvents.has(eventKey)) {
@@ -145,10 +136,7 @@ calendarRouter.get("/generate", async (req, res) => {
             }
         }
 
-        // Convertir el Map a un array
         const futureEventsArray = Array.from(futureEvents.values());
-
-        // Unificación y estructuración de eventos
         const allEvents = [...pastLogsArray, ...todayEvents, ...futureEventsArray];
 
         const structureEvents = (events) => {
@@ -170,7 +158,6 @@ calendarRouter.get("/generate", async (req, res) => {
                 return acc;
             }, {});
         };
-
 
         res.json({ events: structureEvents(allEvents) });
     } catch (error) {
