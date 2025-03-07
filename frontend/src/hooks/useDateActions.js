@@ -10,7 +10,8 @@ import {
     resetCurrentValues,
     selectActualDateLabel,
     setDay,
-    setneedFetch
+    setneedFetch,
+    setSearch
 } from '../store/slices/dateSlices';
 import { useAppDispatch, useAppSelector } from './store';
 
@@ -49,6 +50,10 @@ export const useDateActions = () => {
         dispatch(setneedFetch(value));
     }
 
+    const setSearchParam = (value) => {
+        dispatch(setSearch(value));
+    }
+
     return { 
         updateCurrentTimeAction, 
         resetDateAction, 
@@ -57,7 +62,8 @@ export const useDateActions = () => {
         toggleModeAction,
         resetCurrent,
         clickDay,
-        solicitarFetch
+        solicitarFetch,
+        setSearchParam
     };
 };
 
@@ -84,5 +90,20 @@ export const useCurrentDateInfo = () => {
     const startDate = useAppSelector((state) => state.date.startDate);
     const endDate = useAppSelector((state) => state.date.endDate);
     const needFetch = useAppSelector((state) => state.date.needFetch);
-    return { currentTime, currentDate, currentMode, selectedWeek, selectedDate , startDate, endDate , needFetch};
+    const lastStartDate = useAppSelector((state) => state.date.lastStartDate);
+    const lastEndDate = useAppSelector((state) => state.date.lastEndDate);
+    const search = useAppSelector((state) => state.date.search);
+    return { 
+        currentTime, 
+        currentDate, 
+        currentMode, 
+        selectedWeek, 
+        selectedDate , 
+        startDate, 
+        endDate , 
+        needFetch, 
+        lastStartDate, 
+        lastEndDate, 
+        search
+    };
 };
