@@ -126,7 +126,7 @@ const seedDatabase = async () => {
     mongoose.connection.close();
     console.log("Conexión cerrada");
   } catch (error) {
-    console.error("Error al poblar la base de datos:", error);
+    console.error("Error al po`blar la base de datos:", error);
     mongoose.connection.close();
   }
 };
