@@ -69,7 +69,7 @@ export default function RoutineForm({ onSave }) {
       // Enviar cada ejercicio y obtener sus IDs
       const responses = await Promise.all(
         separatedExercises.map(async (exercise) => {
-          const data = await postData("/create_habits/personalized", exercise);
+          const data = await postData("create_habits/personalized", exercise);
           console.log("Hábito guardado exitosamente:", data);
           return data.id; //Almacenamos el ID
         })
@@ -84,7 +84,7 @@ export default function RoutineForm({ onSave }) {
       };
 
       // Enviar la rutina al backend
-      const routineData = await postData("/create_habits/routine", updatedRoutine);
+      const routineData = await postData("create_habits/routine", updatedRoutine);
       console.log("Rutina guardada exitosamente:", routineData);
     
     } catch (error) {
