@@ -21,7 +21,7 @@ const StatisticsScreen = () => {
       try {
         // Fetch habit data
         const habitResponse = await getData(`edit_habits/edit/${id}`);
-        console.log(habitResponse);
+        console.log("Habit Data:", habitResponse);
         const habitData = habitResponse;
 
         // Set habit name
@@ -33,9 +33,11 @@ const StatisticsScreen = () => {
           variableNamesMap[variable.id] = { name: variable.name, type: variable.type };
         });
         setVariableNames(variableNamesMap);
-        console.log(variableNames);
+        console.log("Variable Names Map:", variableNamesMap);
+
         // Fetch habit logs
         const logsResponse = await getData(`habitLog/habitLog/${id}`);
+        console.log("Habit Logs:", logsResponse);
         const logsData = logsResponse;
 
         // Process logs data for charts
@@ -46,13 +48,20 @@ const StatisticsScreen = () => {
 
         logsData.forEach(log => {
           const date = new Date(log.date).toISOString().split('T')[0]; // Format date
+
           log.variables.forEach(variable => {
-            const variableInfo = variableNamesMap[variable.habit_id];
+            const variableInfo = variableNamesMap[variable.id]; // Match variable.id to habitData.variables.id
+
+            if (!variableInfo) {
+              console.warn(`Variable info not found for ID: ${variable.id}`);
+              return; // Skip if variable info is not found
+            }
+
             // Determine chart type based on variable type
-            if (variableInfo.type === "number") {
+            if (variableInfo.type === "integer" || variableInfo.type === "number") {
               processedLineData.push({ date, value: parseFloat(variable.value) });
             } else if (variableInfo.type === "boolean") {
-              processedPieData.push({ name: variable.value ? "Sí" : "No", value: 1 });
+              processedPieData.push({ name: variable.value === "true" ? "Sí" : "No", value: 1 });
             } else if (variableInfo.type === "enum") {
               processedBarData.push({ label: variable.value, value: 1 });
             }
@@ -64,6 +73,11 @@ const StatisticsScreen = () => {
             processedHistorialData[date].push([variableInfo.name, variable.value]);
           });
         });
+
+        console.log("Processed Line Data:", processedLineData);
+        console.log("Processed Pie Data:", processedPieData);
+        console.log("Processed Bar Data:", processedBarData);
+        console.log("Processed Historial Data:", processedHistorialData);
 
         // Group and count data for pie and bar charts
         const pieDataGrouped = processedPieData.reduce((acc, curr) => {
@@ -84,6 +98,9 @@ const StatisticsScreen = () => {
           return acc;
         }, {});
 
+        console.log("Grouped Pie Data:", pieDataGrouped);
+        console.log("Grouped Bar Data:", barDataGrouped);
+
         // Update state
         setLineData(Object.values(processedLineData));
         setPieData(Object.values(pieDataGrouped));
@@ -103,14 +120,14 @@ const StatisticsScreen = () => {
         return (
           <>
             {lineData.length > 0 && (
-              <LineChartComponent data={lineData} title={variableNames[Object.keys(variableNames)[0]]?.name || "Line Chart"} />
+              <LineChartComponent data={lineData} title={Object.values(variableNames).find(v => v.type === "integer" || v.type === "number")?.name || "Line Chart"} />
             )}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 w-full">
               {pieData.length > 0 && (
-                <PieChartComponent data={pieData} title={variableNames[Object.keys(variableNames)[1]]?.name || "Pie Chart"} />
+                <PieChartComponent data={pieData} title={Object.values(variableNames).find(v => v.type === "boolean")?.name || "Pie Chart"} />
               )}
               {barData.length > 0 && (
-                <BarChartComponent data={barData} title={variableNames[Object.keys(variableNames)[2]]?.name || "Bar Chart"} />
+                <BarChartComponent data={barData} title={Object.values(variableNames).find(v => v.type === "enum")?.name || "Bar Chart"} />
               )}
             </div>
           </>
