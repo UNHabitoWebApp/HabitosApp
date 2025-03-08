@@ -41,7 +41,7 @@ calendarRouter.post("/generate", async (req, res) => {
         })).map(event => ({ ...event.toObject(), type: "today", habitId: event.habitId }));
 
         const routines = await Routine.find({ userId });
-        const habits = await Habit.find({ userId, personlized: true });
+        const habits = await Habit.find({ userId, personalized: true });
 
         const pastLogs = await HabitLog.find({
             $or: [
