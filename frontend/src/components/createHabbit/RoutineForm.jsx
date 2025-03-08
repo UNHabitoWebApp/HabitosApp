@@ -10,7 +10,7 @@ export default function RoutineForm({ onSave }) {
     name: "",
     exercises: [{ exerciseType: "", name: "" }],
     days: [],
-    startTime: "",
+    beginTime: "",
     endTime: "",
     personalized: false,
     notifyMe: false,
@@ -59,7 +59,7 @@ export default function RoutineForm({ onSave }) {
       name: exercise.name,
       exerciseType: exercise.exerciseType,
       days: routine.days,
-      startTime: routine.startTime,
+      beginTime: routine.beginTime,
       endTime: routine.endTime,
       personalized: routine.personalized,
       notifyMe: routine.notifyMe
@@ -206,9 +206,9 @@ export default function RoutineForm({ onSave }) {
                         type="number"
                         placeholder="00"
                         className="w-10 h-10 text-center border border-[#5F936C] rounded-md text-black"
-                        value={routine.startTime.split(":")[0] || ""}
+                        value={routine.beginTime.split(":")[0] || ""}
                         onChange={(e) =>
-                            setRoutine({ ...routine, startTime: `${e.target.value}:${routine.startTime.split(":")[1] || "00"}` })
+                            setRoutine({ ...routine, beginTime: `${e.target.value}:${routine.beginTime.split(":")[1] || "00"}` })
                         }
                     />
                     <span className="text-black">:</span>
@@ -216,9 +216,9 @@ export default function RoutineForm({ onSave }) {
                         type="number"
                         placeholder="00"
                         className="w-10 h-10 text-center border border-[#5F936C] rounded-md text-black"
-                        value={routine.startTime.split(":")[1] || ""}
+                        value={routine.beginTime.split(":")[1] || ""}
                         onChange={(e) =>
-                            setRoutine({ ...routine, startTime: `${routine.startTime.split(":")[0] || "00"}:${e.target.value}` })
+                            setRoutine({ ...routine, beginTime: `${routine.beginTime.split(":")[0] || "00"}:${e.target.value}` })
                         }
                     />
                     </div>
