@@ -8,7 +8,7 @@ export const fetchHabitsRange = async (startDate, endDate, userId="67c9b71329f00
                 "Content-Type": "application/json",
                 Authorization: `Bearer ${accessToken}`,
             },
-            body: JSON.stringify({ startDate, endDate, userId }),
+            body: JSON.stringify({ startDate, endDate }),
         });
     
         if (!response.ok) {
