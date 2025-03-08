@@ -36,9 +36,12 @@ export default function RoutineFormEdit({ onSave, initialData }) {
   };
 
   const updateExercise = (index, field, value) => {
-    const updatedExercises = [...routine.exercises];
-    updatedExercises[index][field] = value;
-    setRoutine({ ...routine, exercises: updatedExercises });
+    setRoutine((prev) => ({
+      ...prev,
+      exercises: prev.exercises.map((exercise, i) =>
+        i === index ? { ...exercise, [field]: value } : exercise
+      ),
+    }));
   };
 
   const toggleDay = (day) => {

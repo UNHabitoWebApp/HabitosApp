@@ -18,6 +18,7 @@ export default function HabitSelectorEdit() {
 
   const validExerciseTypes = ["cardio", "fuerza", "flexibilidad"];
 
+  // Obtener los datos de la API al montar el componente
   useEffect(() => {
     const fetchData = async () => {
       try {

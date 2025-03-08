@@ -51,6 +51,47 @@ export default function RoutineForm({ onSave }) {
     }));
   };
 
+  const handleSave = async () => {
+    onSave();
+
+    // Transformar la lista de ejercicios
+    const separatedExercises = routine.exercises.map(exercise => ({
+      name: exercise.name,
+      exerciseType: exercise.exerciseType,
+      days: routine.days,
+      startTime: routine.startTime,
+      endTime: routine.endTime,
+      personalized: routine.personalized,
+      notifyMe: routine.notifyMe
+    }));
+    
+    try {
+      // Enviar cada ejercicio y obtener sus IDs
+      const responses = await Promise.all(
+        separatedExercises.map(async (exercise) => {
+          const data = await postData("create_habits/personalized", exercise);
+          console.log("Hábito guardado exitosamente:", data);
+          return data.id; //Almacenamos el ID
+        })
+      );
+    
+      console.log("IDs de los hábitos guardados:", responses);
+
+      // Crear el nuevo objeto de rutina con la lista de IDs
+      const updatedRoutine = {
+        ...routine,
+        exercises: responses // Reemplazamos exercises con los IDs obtenidos
+      };
+
+      // Enviar la rutina al backend
+      const routineData = await postData("create_habits/routine", updatedRoutine);
+      console.log("Rutina guardada exitosamente:", routineData);
+    
+    } catch (error) {
+      console.error("Error al enviar los datos:", error);
+    }
+  };
+
   return (
     <>
       {/* Formulario de Rutina */}
@@ -217,10 +258,7 @@ export default function RoutineForm({ onSave }) {
         <div className="mt-1 mb-5 flex justify-center gap-4 w-full max-w-md">
             <BackToHomeButton/>
             <button className="mt-5 px-7 py-1 text-white text-sm bg-[#569788] rounded-[20px] transition-all duration-300 hover:bg-[#84A59D]"
-            onClick={() => {
-              console.log("Datos guardados:", routine);
-              onSave();
-            }}
+            onClick={handleSave}
             >
             Guardar
             </button>

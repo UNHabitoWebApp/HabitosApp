@@ -10,6 +10,7 @@ import HabitSelectorEdit from "../components/HabitEdit/HabbitSelectorEdit";
 import Login from "../pages/Login";
 import Register from "../pages/Registro";
 import ConfirmacionRegistro from "../pages/ConfirmacionRegistro";
+import StatisticsScreen from "../pages/statistics";
 
 export const routesList = [
     { path: "/", element: <Home /> },
@@ -23,5 +24,6 @@ export const routesList = [
     { path: "/login", element: <Login /> },
     { path: "/register", element: <Register /> },
     { path: "/confirmacion", element: <ConfirmacionRegistro /> },
+    { path: "/statistics", element: <StatisticsScreen /> },
     { path: "*", element: <NotFound /> },
 ];
