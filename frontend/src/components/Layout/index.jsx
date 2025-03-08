@@ -33,7 +33,6 @@ const Layout = ({ children }) => {
             </main>
 
             <footer className="bg-verdeLayout text-white p-2 text-center font-bold">
-                Footer
             </footer>
         </div>
     );
