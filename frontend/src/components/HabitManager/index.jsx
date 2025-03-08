@@ -70,12 +70,25 @@ const HabitList = ({ title, habits }) => (
     </div>
 );
 
-const HabitItem = ({ habit }) => (
-    <div className="bg-white h-8 px-4 flex items-center border rounded-md shadow-sm relative">
-        <div className="w-1 h-full bg-verdePrincipal absolute left-0 rounded-l-md"></div>
-        <span className="text-verdeTerciario">{habit.name}</span> {/* ← Aquí accedemos a `name` */}
-    </div>
-);
+const HabitItem = ({ habit }) => {
+    const navigate = useNavigate(); // Asegúrate de importar `useNavigate` de react-router-dom
+
+    const onClick = () => {
+        navigate(habit.isHabit ? `/personalize_habit/${habit.id}` : `/routine_exercises_list/${habit.id}`);
+    };
+
+    return (
+        <div
+            className="bg-white h-8 px-4 flex items-center border rounded-md shadow-sm relative cursor-pointer transition-all hover:bg-gray-100"
+            onClick={onClick}
+        >
+            <div className="w-1 h-full bg-verdePrincipal absolute left-0 rounded-l-md"></div>
+            <span className="text-verdeTerciario">{habit.name}</span>
+        </div>
+    );
+};
+
+
 
 HabitList.propTypes = {
     title: PropTypes.string.isRequired,
@@ -89,6 +102,8 @@ HabitList.propTypes = {
 HabitItem.propTypes = {
     habit: PropTypes.shape({
         name: PropTypes.string.isRequired,
+        id: PropTypes.string.isRequired,
+        isHabit: PropTypes.bool.isRequired,
     }).isRequired,
 };
 
