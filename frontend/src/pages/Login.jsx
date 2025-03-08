@@ -33,21 +33,42 @@ const Login = () => {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+          'Accept': 'application/json'
         },
-        credentials: 'include', // Importante para las cookies
+        credentials: 'include',
         body: JSON.stringify({ email, password })
       });
-      const data = await response.json();
-      if (data.accessToken) {
+
+      const responseText = await response.text();
+      let data;
+      
+      try {
+        data = JSON.parse(responseText);
+      } catch (e) {
+        console.error('Error parsing response:', responseText);
+        throw new Error('Error en el formato de respuesta del servidor');
+      }
+
+      if (response.ok && data.accessToken) {
+        // Guardar token en localStorage
         localStorage.setItem('accessToken', data.accessToken);
+        
+        // Actualizar estado del usuario con la información recibida
         updateUser({
           isLoggedIn: true,
-          ...data.user
+          id: data.user.id,
+          email: data.user.email,
+          firstName: data.user.firstName,
+          lastName: data.user.lastName
         });
+
         navigate('/');
+      } else {
+        throw new Error(data.message || 'Error en el inicio de sesión');
       }
     } catch (error) {
       console.error('Error:', error);
+      alert(`Error al iniciar sesión: ${error.message}`);
     }
   };
 
