@@ -13,10 +13,10 @@ export default function RoutineFormEdit({ onSave, initialData }) {
     endTime: "",
   });
 
-  // Inicializar el estado con los datos recibidos
+  // Cargar los datos iniciales solo la primera vez
   useEffect(() => {
     if (initialData) {
-      setRoutine(initialData);
+      setRoutine((prev) => ({ ...prev, ...initialData }));
     }
   }, [initialData]);
 
@@ -28,9 +28,12 @@ export default function RoutineFormEdit({ onSave, initialData }) {
   };
 
   const updateExercise = (index, field, value) => {
-    const updatedExercises = [...routine.exercises];
-    updatedExercises[index][field] = value;
-    setRoutine({ ...routine, exercises: updatedExercises });
+    setRoutine((prev) => ({
+      ...prev,
+      exercises: prev.exercises.map((exercise, i) =>
+        i === index ? { ...exercise, [field]: value } : exercise
+      ),
+    }));
   };
 
   return (
@@ -39,7 +42,6 @@ export default function RoutineFormEdit({ onSave, initialData }) {
       <div className="mt-2 p-2 bg-[#ADD9C5] border-2 border-[#5F936C] rounded-[20px] w-full max-w-md">
         <h2 className="text-black text-[15px] text-center">Rutina</h2>
 
-        {/* Modo Seleccionar o agregar rutina */}
         {!isAddingRoutine ? (
           <>
             <select className="mt-1 w-3/4 h-8 p-1 border border-[#5F936C] rounded-[10px] bg-white text-black text-sm block mx-auto">
@@ -58,10 +60,10 @@ export default function RoutineFormEdit({ onSave, initialData }) {
         ) : (
           <input
             type="text"
-            placeholder="Ingresa el nombre de la rutina a agregar"
+            placeholder="Ingresa el nombre de la rutina"
             className="mt-1 w-3/4 h-8 p-1 border border-[#5F936C] bg-white text-black text-sm block mx-auto"
             value={routine.name}
-            onChange={(e) => setRoutine({ ...routine, name: e.target.value })}
+            onChange={(e) => setRoutine((prev) => ({ ...prev, name: e.target.value }))}
           />
         )}
       </div>
@@ -108,101 +110,13 @@ export default function RoutineFormEdit({ onSave, initialData }) {
         </div>
       )}
 
-      {/* Bloque Horario */}
-      {isAddingRoutine && (
-        <div className="mt-2 p-2 bg-[#ADD9C5] border-2 border-[#5F936C] rounded-[20px] w-full max-w-md">
-          <h2 className="text-black text-[15px] text-center mb-2 flex items-center justify-center gap-2">Horario
-            <span title="Si al hábito no se le ingresa día y hora, el hábito quedará como no programado" className="cursor-pointer">
-              ⓘ
-            </span>
-          </h2>
-
-          <div className="flex items-center justify-between">
-            <div className="flex flex-col items-center">
-              <h2 className="text-[13px] text-black mb-1">Días de la semana</h2>
-              <div className="flex gap-1">
-                {["L", "M", "W", "J", "V", "S", "D"].map((day, index) => (
-                  <button
-                    key={index}
-                    className={`w-6 h-6 flex items-center justify-center border border-[#5F936C] rounded-full text-black text-[12px] transition-all duration-200 ${routine.days.includes(day) ? "bg-[#569788]" : ""
-                      }`}
-                    onClick={() => {
-                      setRoutine((prev) => ({
-                        ...prev,
-                        days: prev.days.includes(day)
-                          ? prev.days.filter((d) => d !== day)
-                          : [...prev.days, day],
-                      }));
-                    }}
-                  >
-                    {day}
-                  </button>
-                ))}
-              </div>
-            </div>
-
-            <div className="flex flex-col items-center">
-              <h3 className="text-[13px] text-black mb-1">Hora de inicio</h3>
-              <div className="flex items-center gap-1">
-                <input
-                  type="number"
-                  placeholder="00"
-                  className="w-10 h-10 text-center border border-[#5F936C] rounded-md text-black"
-                  value={routine.startTime.split(":")[0] || ""}
-                  onChange={(e) =>
-                    setRoutine({ ...routine, startTime: `${e.target.value}:${routine.startTime.split(":")[1] || "00"}` })
-                  }
-                />
-                <span className="text-black">:</span>
-                <input
-                  type="number"
-                  placeholder="00"
-                  className="w-10 h-10 text-center border border-[#5F936C] rounded-md text-black"
-                  value={routine.startTime.split(":")[1] || ""}
-                  onChange={(e) =>
-                    setRoutine({ ...routine, startTime: `${routine.startTime.split(":")[0] || "00"}:${e.target.value}` })
-                  }
-                />
-              </div>
-            </div>
-
-            <div className="flex flex-col items-center">
-              <h3 className="text-[13px] text-black mb-1">Hora de fin</h3>
-              <div className="flex items-center gap-1">
-                <input
-                  type="number"
-                  placeholder="00"
-                  className="w-10 h-10 text-center border border-[#5F936C] rounded-md text-black"
-                  value={routine.endTime.split(":")[0] || ""}
-                  onChange={(e) =>
-                    setRoutine({ ...routine, endTime: `${e.target.value}:${routine.endTime.split(":")[1] || "00"}` })
-                  }
-                />
-                <span className="text-black">:</span>
-                <input
-                  type="number"
-                  placeholder="00"
-                  className="w-10 h-10 text-center border border-[#5F936C] rounded-md text-black"
-                  value={routine.endTime.split(":")[1] || ""}
-                  onChange={(e) =>
-                    setRoutine({ ...routine, endTime: `${routine.endTime.split(":")[0] || "00"}:${e.target.value}` })
-                  }
-                />
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* Botones de acción */}
+      {/* Botón de acción */}
       {isAddingRoutine && (
         <div className="mt-1 mb-5 flex justify-center gap-4 w-full max-w-md">
           <BackToHomeButton />
-          <button className="mt-5 px-7 py-1 text-white text-sm bg-[#569788] rounded-[20px] transition-all duration-300 hover:bg-[#84A59D]"
-            onClick={() => {
-              console.log("Datos guardados:", routine);
-              onSave(routine);
-            }}
+          <button
+            className="mt-5 px-7 py-1 text-white text-sm bg-[#569788] rounded-[20px] transition-all duration-300 hover:bg-[#84A59D]"
+            onClick={() => onSave(routine)}
           >
             Guardar
           </button>
@@ -210,7 +124,7 @@ export default function RoutineFormEdit({ onSave, initialData }) {
       )}
 
       {/* Botón de volver al inicio */}
-      {(!isAddingRoutine && <BackToHomeButton />)}
+      {!isAddingRoutine && <BackToHomeButton />}
     </>
   );
 }

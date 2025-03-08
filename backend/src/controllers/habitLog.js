@@ -21,6 +21,15 @@ export const createHabitLog = async (request, response) => {
     return response.status(201).json(habitLog);
 }
 
+export const getAllHabitsLogByHabits = async (request, response) => {
+    const habitLog_service_obj = new HabitLogService();
+    const habits = request.body;
+    const user_id = request.user_id;
+    const habitLogs = await habitLog_service_obj.habitLogsByHabits(habits, user_id);
+    console.log("Registros de hábitos encontrados:", habitLogs);
+    return response.status(200).json(habitLogs);
+}
+
 export const getHabitLogByHabit = async (request, response) => {
     const habitLog_service_obj = new HabitLogService();
     const habit_id = request.params.id;
@@ -34,3 +43,4 @@ export const getHabitLogByHabit = async (request, response) => {
     console.log("Registros de hábito encontrados:", habitLogs);
     return response.status(200).json(habitLogs);
 }
+

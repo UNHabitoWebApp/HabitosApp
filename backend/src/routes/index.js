@@ -24,7 +24,7 @@ export default function initializeRoutes(app) {
     router.use("/edit_habits",editHabitsRouter);
     router.use("/ping",pingRouter);
     router.use("/events",calendarRouter);
-    router.use("/habitLog/",habitLogRouter);
+    router.use("/habitLog",habitLogRouter);
     //router.use(authenticateUser);
     router.use("/create_habits",createHabitsRouter);
     app.use(router);
