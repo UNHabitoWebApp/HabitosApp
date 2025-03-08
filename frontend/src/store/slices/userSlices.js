@@ -1,10 +1,10 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
-    accessToken: null,
+    accessToken: localStorage.getItem('accessToken')? localStorage.getItem('accessToken') : "",
     nombre: "Bichota",
     correo: "",
-    isLoggedIn: false,
+    isLoggedIn: localStorage.getItem('accessToken')? true : false,
 };
 
 const userSlice = createSlice({
