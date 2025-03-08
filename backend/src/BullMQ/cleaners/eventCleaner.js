@@ -1,6 +1,13 @@
 import { eventQueue } from "../queues/eventQueue.js";
 
-export async function removeEventByEventId(email) {
-    const job = (await eventQueue.getDelayed()).filter(job => job.data.to === email)[0];
-    if(job) await job.remove();
+export async function removeEventByEventId(id) {
+    const jobId = `job-correo-${id}`;
+    const job = await eventQueue.getJob(jobId);
+
+    if (job) {
+        await job.remove();
+        console.log(`✅ Job ${jobId} eliminado correctamente.`);
+    } else {
+        console.warn(`⚠️ Job ${jobId} no encontrado.`);
+    }
 }

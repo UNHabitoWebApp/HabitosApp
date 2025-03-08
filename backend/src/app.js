@@ -3,6 +3,8 @@ import morgan from "morgan";
 import express from "express";
 import initializeRoutes from "./routes/index.js";
 import cookieParser from "cookie-parser";
+import { enqueueCreateEvent } from "./BullMQ/producers/eventProducer.js";
+import { eventQueue } from "./BullMQ/queues/eventQueue.js";
 //import { authenticateUser } from "./middlewares/authMiddleware.js";
 
 const app = express();

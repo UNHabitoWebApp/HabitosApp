@@ -1,73 +1,70 @@
 import { Worker } from "bullmq";
 import { redisConfig } from "../../config/redisConfig.js";
 import Routine from "../../models/Routine.js";
-import HabitLog from "../../models/HabitLog.js";
+import Habit from "../../models/Habit.js"; // Importamos el modelo Habit
 import { enqueueCreateEvent } from "../producers/eventProducer.js";
+import sendEmail from "../../utils/sendEmail.js";
+import dayjs from "dayjs";
+import utc from "dayjs/plugin/utc.js";
+import timezone from "dayjs/plugin/timezone.js";
+
+dayjs.extend(utc);
+dayjs.extend(timezone);
 
 const eventWorker = new Worker(
     "events",
     async job => {
         console.log("Procesando job...");
 
-        const { routineId, currentDate } = job.data;
-
-        if (!routineId) return;
-
-        console.log(`Rutina ID: ${routineId}`);
-
-        let rutina = job.data.rutina;
-        if (!rutina) {
-            rutina = await Routine.findById(routineId).populate("exercises", "name days beginTime endTime");
+        const { routineId, habitId, currentDate, userEmail } = job.data;
+        if (!routineId && !habitId) {
+            console.error("❌ Error: No se proporcionó ni routineId ni habitId.");
+            return;
         }
-
-        if (!rutina.beginTime || !rutina.endTime) {
-            console.error("❌ Error: La rutina no tiene tiempos definidos.");
+        if (!userEmail) {
+            console.error("❌ Error: El email del usuario es requerido.");
             return;
         }
 
-        //const options = { timeZone: "America/Bogota", hour12: false, hour: "2-digit", minute: "2-digit" };
+        console.log("🔍 Buscando rutina o hábito...");
+        let rutina;
 
+        if (routineId) {
+            rutina = await Routine.findById(routineId).populate("exercises", "name days beginTime endTime");
+        } else if (habitId) {
+            rutina = await Habit.findById(habitId);
+        }
+
+        if (!rutina) {
+            console.error("❌ Error: No se encontró ni la rutina ni el hábito en la base de datos.");
+            return;
+        }
+
+        if (!rutina.beginTime) {
+            console.error("❌ Error: El elemento no tiene 'beginTime' definido.");
+            return;
+        }
+
+        // Obtener la fecha y hora de la ejecución actual
         const baseDate = new Date(currentDate || Date.now());
         job.data.days = rutina.days;
         job.data.currentDate = baseDate;
-        job.data.routineId = routineId;
         job.data.beginTime = rutina.beginTime;
 
-        //const localDate = new Intl.DateTimeFormat("es-CO", options).format(baseDate);
-
         const [hours, minutes] = rutina.beginTime.split(":").map(Number);
-        const [endHours, endMinutes] = rutina.endTime.split(":").map(Number);
-
         const date = new Date(baseDate);
         date.setHours(hours, minutes, 0, 0);
 
-        const completionTime = new Date(baseDate);
-        completionTime.setHours(endHours, endMinutes, 0, 0);
-
         console.log(`📅 Fecha de inicio: ${date.toLocaleString("es-CO", { timeZone: "America/Bogota" })}`);
-        console.log(`⌛ Fecha de finalización: ${completionTime.toLocaleString("es-CO", { timeZone: "America/Bogota" })}`);
 
-        for (const exercise of rutina.exercises) {
-            const logExists = await HabitLog.findOne({
-                habit_id: exercise._id,
-                routine_id: rutina._id,
-                date: { $gte: date, $lt: completionTime }
-            });
+        // 📧 Enviar el correo de recordatorio
+        await sendEmail(
+            userEmail,
+            `Recordatorio de tu actividad (${rutina.name || "Sin nombre"}) empieza pronto a las ${rutina.beginTime}`,
+            `Hola, tu actividad programada (${rutina.name || "Sin nombre"}) empieza pronto a las ${rutina.beginTime}.`
+        );
 
-            if (!logExists) {
-                const log = new HabitLog({
-                    habit_id: exercise._id,
-                    routine_id: rutina._id,
-                    date: date,
-                    completionTime: completionTime,
-                    done: false
-                });
-                await log.save();
-                console.log(`📝 Log creado para ${exercise.name}`);
-            } else {
-                console.log(`⚠️ Log ya existe para ${exercise.name}, no se creó otro.`);
-            }
-        }
+        console.log("📧 Correo enviado a:", userEmail);
     },
     {
         connection: redisConfig,
@@ -78,17 +75,23 @@ const eventWorker = new Worker(
 
 eventWorker.on("completed", async job => {
     console.log(`✅ Job completado: ${job.id}`);
-    console.log(job.data);
 
-    const {diffMs} = getNextExecutionTime(job.data);
+    // Obtener el próximo tiempo de ejecución
+    const { nextExecution, diffMs } = getNextExecutionTime(job.data);
 
-    console.log(`📅 Programando el siguiente job para: ${diffMs}`);
+    // Programar el siguiente job 10 minutos antes
+    const reminderTime = Math.max(diffMs - 10 * 60 * 1000, 0);
+    console.log(`📅 Programando el siguiente job para: ${reminderTime}ms antes (${nextExecution.format("YYYY-MM-DD HH:mm")})`);
 
     await enqueueCreateEvent(
         {
-            routineId: job.data.routineId,
+            routineId: job.data.routineId || null,
+            habitId: job.data.habitId || null,
+            userEmail: job.data.userEmail,
+            id: job.id,
+            cont: job.data.cont + 1
         },
-        diffMs
+        { delay: reminderTime, jobId: job.id }
     );
 });
 
@@ -96,39 +99,22 @@ eventWorker.on("failed", (job, err) => {
     console.error(`❌ Job ${job?.id} falló:`, err);
 });
 
-import dayjs from "dayjs";
-import utc from "dayjs/plugin/utc.js";
-import timezone from "dayjs/plugin/timezone.js";
-
-dayjs.extend(utc);
-dayjs.extend(timezone);
-
 function getNextExecutionTime({ days, currentDate, beginTime }) {
     const weekdays = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
-
     const now = dayjs(currentDate);
-    const currentDayIndex = now.day(); // Índice del día actual (0 = Domingo, 1 = Lunes, etc.)
+    const currentDayIndex = now.day();
 
-    // Ordenamos los días posibles en orden desde hoy
     const sortedDays = days
         .map(day => ({ day, index: weekdays.indexOf(day) }))
         .sort((a, b) => a.index - b.index);
 
-    // Buscar el siguiente día disponible
     const nextDay = sortedDays.find(d => d.index > currentDayIndex) || sortedDays[0];
-
-    // Si el siguiente día es la próxima semana, sumamos 7 días
     const daysToAdd = nextDay.index > currentDayIndex ? nextDay.index - currentDayIndex : (7 - currentDayIndex + nextDay.index);
 
-    // Construir la fecha final con beginTime
     const nextExecutionDate = now.add(daysToAdd, "day").format("YYYY-MM-DD") + " " + beginTime;
-    const nextExecution = dayjs(nextExecutionDate).tz("America/Bogota"); // Ajustar zona horaria si aplica
+    const nextExecution = dayjs(nextExecutionDate).tz("America/Bogota");
 
-    // Diferencia en milisegundos
-    const diffMs = nextExecution.diff(now);
-
-    return { nextExecution, diffMs };
+    return { nextExecution, diffMs: nextExecution.diff(now) };
 }
-
 
 export default eventWorker;

@@ -9,6 +9,7 @@ import { cleanRedisKeys } from "./utils/RedisUtils.js";
 import { createExample } from "./utils/crearHabito.js";
 import { eventQueue } from "./BullMQ/queues/eventQueue.js";
 import eventWorker from "./BullMQ/workers/eventWorker.js";
+import sendEmail from "./utils/sendEmail.js";
 
 const startServer = async () => {
     try {
@@ -33,6 +34,7 @@ const startServer = async () => {
 
         mailerWorker;
         eventWorker;
+        // Enviar un correo de prueba
         //await createExample();
         //await cleanQueue(mailerQueue);
         //await cleanQueue(eventQueue);

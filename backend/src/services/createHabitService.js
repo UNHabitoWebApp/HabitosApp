@@ -11,5 +11,5 @@ export default class CreateHabitService {
     async createRoutine (routineData) {
         const routine = new Routine(routineData);
         return await routine.save();
-    }
+    }
 }

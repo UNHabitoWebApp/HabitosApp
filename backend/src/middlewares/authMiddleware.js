@@ -14,6 +14,7 @@ export const authenticateUser = (request, response, next) => {
     try {
         const decoded = jwt.verify(token, SECRET_KEY);
         request.user_id = decoded.id;
+        request.email = decoded.email;
         next();
     } catch (error) {
         return response.status(401).json({ message: "Acceso no autorizado: Token inválido", error: error.message });
