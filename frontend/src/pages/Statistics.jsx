@@ -7,7 +7,7 @@ import HabitList from '../components/HabitList';
 
 const StatisticsScreen = () => {
   const [selectedView, setSelectedView] = useState("Mosaico");
-
+  const { id } = useParams();
   const lineData = [
     { date: "2024-12-09", value: 4 },
     { date: "2024-12-07", value: 15 },
