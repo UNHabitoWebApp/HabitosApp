@@ -13,7 +13,7 @@ export default function initializeRoutes(app) {
     const router = Router();
     router.use("/auth",authRouter);
     router.use("/ping",pingRouter);
-    router.use("events/",calendarRouter);
+    router.use("/events",calendarRouter);
     //router.use(authenticateUser);
     app.use(router);
 }
