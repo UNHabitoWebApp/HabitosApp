@@ -5,7 +5,7 @@ import PropTypes from "prop-types";
 import postData from "../../service/post";
 
 export default function RoutineForm({ onSave }) {
-  const [isAddingRoutine, setIsAddingRoutine] = useState(false);
+  const [isAddingRoutine, setIsAddingRoutine] = useState(true);
   const [routine, setRoutine] = useState({
     name: "",
     exercises: [{ exerciseType: "", name: "" }],
