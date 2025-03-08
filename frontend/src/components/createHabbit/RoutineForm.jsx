@@ -189,6 +189,9 @@ export default function RoutineForm({ onSave }) {
       {isAddingRoutine && (
         <div className="mt-2 p-2 bg-[#ADD9C5] border-2 border-[#5F936C] rounded-[20px] w-full max-w-md">
           <h2 className="text-black text-[15px] text-center mb-2 flex items-center justify-center gap-2">Horario
+          <span title="Formato 24 horas" className="cursor-pointer">
+             ⓘ
+          </span>
           </h2>
 
           <div className="flex items-center justify-between gap-2">
@@ -218,9 +221,15 @@ export default function RoutineForm({ onSave }) {
                   placeholder="00"
                   className="w-10 h-10 text-center border border-[#5F936C] rounded-md text-black"
                   value={routine.beginTime.split(":")[0] || ""}
-                  onChange={(e) =>
-                    setRoutine({ ...routine, beginTime: `${e.target.value}:${routine.beginTime.split(":")[1] || "00"}` })
-                  }
+                  onChange={(e) => {
+                    let value = e.target.value;
+                    if (value === "" || (/^\d+$/.test(value) && value >= 0 && value <= 23)) {
+                      setRoutine({
+                        ...routine,
+                        beginTime: `${value}:${routine.beginTime.split(":")[1] || "00"}`,
+                      });
+                    }
+                  }}
                 />
                 <span className="text-black">:</span>
                 <input
@@ -228,9 +237,15 @@ export default function RoutineForm({ onSave }) {
                   placeholder="00"
                   className="w-10 h-10 text-center border border-[#5F936C] rounded-md text-black"
                   value={routine.beginTime.split(":")[1] || ""}
-                  onChange={(e) =>
-                    setRoutine({ ...routine, beginTime: `${routine.beginTime.split(":")[0] || "00"}:${e.target.value}` })
-                  }
+                  onChange={(e) => {
+                    let value = e.target.value;
+                    if (value === "" || (/^\d+$/.test(value) && value >= 0 && value <= 59)) {
+                      setRoutine({
+                        ...routine,
+                        beginTime: `${routine.beginTime.split(":")[0] || "00"}:${value}`,
+                      });
+                    }
+                  }}
                 />
               </div>
             </div>
@@ -244,9 +259,15 @@ export default function RoutineForm({ onSave }) {
                   placeholder="00"
                   className="w-10 h-10 text-center border border-[#5F936C] rounded-md text-black"
                   value={routine.endTime.split(":")[0] || ""}
-                  onChange={(e) =>
-                    setRoutine({ ...routine, endTime: `${e.target.value}:${routine.endTime.split(":")[1] || "00"}` })
-                  }
+                  onChange={(e) => {
+                    let value = e.target.value;
+                    if (value === "" || (/^\d+$/.test(value) && value >= 0 && value <= 23)) {
+                      setRoutine({
+                        ...routine,
+                        endTime: `${value}:${routine.endTime.split(":")[1] || "00"}`,
+                      });
+                    }
+                  }}
                 />
                 <span className="text-black">:</span>
                 <input
@@ -254,9 +275,15 @@ export default function RoutineForm({ onSave }) {
                   placeholder="00"
                   className="w-10 h-10 text-center border border-[#5F936C] rounded-md text-black"
                   value={routine.endTime.split(":")[1] || ""}
-                  onChange={(e) =>
-                    setRoutine({ ...routine, endTime: `${routine.endTime.split(":")[0] || "00"}:${e.target.value}` })
-                  }
+                  onChange={(e) => {
+                    let value = e.target.value;
+                    if (value === "" || (/^\d+$/.test(value) && value >= 0 && value <= 59)) {
+                      setRoutine({
+                        ...routine,
+                        endTime: `${routine.endTime.split(":")[0] || "00"}:${value}`,
+                      });
+                    }
+                  }}
                 />
               </div>
             </div>

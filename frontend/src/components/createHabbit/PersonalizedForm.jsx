@@ -143,6 +143,9 @@ export default function PersonalizedForm({ onSave }) {
       {/* Bloque Horario */}
       <div className="mt-2 p-2 bg-[#ADD9C5] border-2 border-[#5F936C] rounded-[20px] w-full max-w-md">
         <h2 className="text-black text-[15px] text-center mb-2 flex items-center justify-center gap-2">Horario
+          <span title="Formato 24 horas" className="cursor-pointer">
+             ⓘ
+          </span>
         </h2>
 
         <div className="flex items-center justify-between gap-2">
@@ -172,9 +175,15 @@ export default function PersonalizedForm({ onSave }) {
                 placeholder="00"
                 className="w-10 h-10 text-center border border-[#5F936C] rounded-md text-black"
                 value={personalized.beginTime.split(":")[0] || ""}
-                onChange={(e) =>
-                  setPersonalized({ ...personalized, beginTime: `${e.target.value}:${personalized.beginTime.split(":")[1] || "00"}` })
-                }
+                onChange={(e) => {
+                  let value = e.target.value;
+                  if (value === "" || (/^\d+$/.test(value) && value >= 0 && value <= 23)) {
+                    setPersonalized({
+                      ...personalized,
+                      beginTime: `${value}:${personalized.beginTime.split(":")[1] || "00"}`,
+                    });
+                  }
+                }}
               />
               <span className="text-black">:</span>
               <input
@@ -182,9 +191,15 @@ export default function PersonalizedForm({ onSave }) {
                 placeholder="00"
                 className="w-10 h-10 text-center border border-[#5F936C] rounded-md text-black"
                 value={personalized.beginTime.split(":")[1] || ""}
-                onChange={(e) =>
-                  setPersonalized({ ...personalized, beginTime: `${personalized.beginTime.split(":")[0] || "00"}:${e.target.value}` })
-                }
+                onChange={(e) => {
+                  let value = e.target.value;
+                  if (value === "" || (/^\d+$/.test(value) && value >= 0 && value <= 59)) {
+                    setPersonalized({
+                      ...personalized,
+                      beginTime: `${personalized.beginTime.split(":")[0] || "00"}:${value}`,
+                    });
+                  }
+                }}
               />
             </div>
           </div>
@@ -198,9 +213,15 @@ export default function PersonalizedForm({ onSave }) {
                 placeholder="00"
                 className="w-10 h-10 text-center border border-[#5F936C] rounded-md text-black"
                 value={personalized.endTime.split(":")[0] || ""}
-                onChange={(e) =>
-                  setPersonalized({ ...personalized, endTime: `${e.target.value}:${personalized.endTime.split(":")[1] || "00"}` })
-                }
+                onChange={(e) => {
+                  let value = e.target.value;
+                  if (value === "" || (/^\d+$/.test(value) && value >= 0 && value <= 23)) {
+                    setPersonalized({
+                      ...personalized,
+                      endTime: `${value}:${personalized.endTime.split(":")[1] || "00"}`,
+                    });
+                  }
+                }}
               />
               <span className="text-black">:</span>
               <input
@@ -208,9 +229,15 @@ export default function PersonalizedForm({ onSave }) {
                 placeholder="00"
                 className="w-10 h-10 text-center border border-[#5F936C] rounded-md text-black"
                 value={personalized.endTime.split(":")[1] || ""}
-                onChange={(e) =>
-                  setPersonalized({ ...personalized, endTime: `${personalized.endTime.split(":")[0] || "00"}:${e.target.value}` })
-                }
+                onChange={(e) => {
+                  let value = e.target.value;
+                  if (value === "" || (/^\d+$/.test(value) && value >= 0 && value <= 59)) {
+                    setPersonalized({
+                      ...personalized,
+                      endTime: `${personalized.endTime.split(":")[0] || "00"}:${value}`,
+                    });
+                  }
+                }}
               />
             </div>
           </div>
