@@ -24,13 +24,14 @@ const InitialDataLoader = () => {
                         const events = await fetchHabitsRange(startDate, lastStartDate);
                         if (events) {
                             addHabits({ events });
-                        }}
-                    }else if (search === "regenerate"){
+                        }
+                    }
+                    else if (search === "regenerate"){
                         const today = moment().format('YYYY-MM-DD')
-                        
                         const events = await fetchHabitsRange(today, endDate);
                         if (events) {
                             addHabits({ events });
+                        }
                     }
                 }
                 if (!loadCharge) {
@@ -44,7 +45,7 @@ const InitialDataLoader = () => {
         };
 
         fetchData();
-    }, [startDate, endDate, needFetch]);
+    }, [startDate, endDate, needFetch, search]);
 
     return null;
 };
