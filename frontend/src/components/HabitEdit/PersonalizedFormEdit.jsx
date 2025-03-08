@@ -88,8 +88,8 @@ export default function PersonalizedForm({ onSave, initialData }) {
               >
                 <option value="">Seleccione el tipo</option>
                 <option value="integer">Número</option>
-                <option value="rating">Valoración (1 -10)</option>
-                <option value="checkbox">Checkbox</option>
+                <option value="enum">Valoración (1 -10)</option>
+                <option value="boolean">Checkbox</option>
               </select>
             </div>
             <div className="flex flex-col flex-1">
