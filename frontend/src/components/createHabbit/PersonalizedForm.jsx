@@ -29,6 +29,29 @@ export default function PersonalizedForm({ onSave }) {
     setPersonalized({ ...personalized, variables: updatedVariables });
   };
 
+  // Mapeo de iniciales en español a nombres en inglés
+  const daysMapping = {
+    L: "Monday",
+    M: "Tuesday",
+    W: "Wednesday",
+    J: "Thursday",
+    V: "Friday",
+    S: "Saturday",
+    D: "Sunday",
+  };
+
+  const toggleDay = (dayInitial) => {
+    const dayName = daysMapping[dayInitial]; // Obtener el nombre en inglés
+
+    setPersonalized((prev) => ({
+      ...prev,
+      days: prev.days.includes(dayName)
+        ? prev.days.filter((d) => d !== dayName) // Eliminar si ya está
+        : [...prev.days, dayName], // Agregar si no está
+    }));
+  };
+
+
   const handleSave = async () => {
     try {
       const data = await postData("/create_habits/personalized", personalized);
@@ -116,18 +139,11 @@ export default function PersonalizedForm({ onSave }) {
                   <div className="flex gap-1">
                       {["L", "M", "W", "J", "V", "S", "D"].map((day, index) => (
                       <button
-                          key={index}
-                          className={`w-6 h-6 flex items-center justify-center border border-[#5F936C] rounded-full text-black text-[12px] transition-all duration-200 ${
-                          personalized.days.includes(day) ? "bg-[#569788]" : ""
-                          }`}
-                          onClick={() => {
-                          setPersonalized((prev) => ({
-                              ...prev,
-                              days: prev.days.includes(day)
-                              ? prev.days.filter((d) => d !== day)
-                              : [...prev.days, day],
-                          }));
-                          }}
+                      key={index}
+                      className={`w-6 h-6 flex items-center justify-center border border-[#5F936C] rounded-full text-black text-[12px] transition-all duration-200 ${
+                        personalized.days.includes(daysMapping[day]) ? "bg-[#569788]" : ""
+                      }`}
+                      onClick={() => toggleDay(day)}
                       >
                           {day}
                       </button>

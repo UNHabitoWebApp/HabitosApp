@@ -2,21 +2,24 @@ import { useState } from "react";
 import BackToHomeButton from "./BackToHomeButton";
 import add from "../../assets/icons/add.svg";
 import PropTypes from "prop-types";
+import postData from "../../service/post";
 
 export default function RoutineForm({ onSave }) {
   const [isAddingRoutine, setIsAddingRoutine] = useState(false);
   const [routine, setRoutine] = useState({
     name: "",
-    exercises: [{ type: "", name: "" }],
+    exercises: [{ exerciseType: "", name: "" }],
     days: [],
     startTime: "",
     endTime: "",
+    personalized: false,
+    notifyMe: false,
   });
 
   const addExercise = () => {
     setRoutine((prev) => ({
       ...prev,
-      exercises: [...prev.exercises, { type: "", name: "" }],
+      exercises: [...prev.exercises, { exerciseType: "", name: "" }],
     }));
   };
 
@@ -24,6 +27,28 @@ export default function RoutineForm({ onSave }) {
     const updatedExercises = [...routine.exercises];
     updatedExercises[index][field] = value;
     setRoutine({ ...routine, exercises: updatedExercises });
+  };
+
+  // Mapeo de iniciales en español a nombres en inglés
+  const daysMapping = {
+    L: "Monday",
+    M: "Tuesday",
+    W: "Wednesday",
+    J: "Thursday",
+    V: "Friday",
+    S: "Saturday",
+    D: "Sunday",
+  };
+
+  const toggleDay = (dayInitial) => {
+    const dayName = daysMapping[dayInitial]; // Obtener el nombre en inglés
+
+    setRoutine((prev) => ({
+      ...prev,
+      days: prev.days.includes(dayName)
+        ? prev.days.filter((d) => d !== dayName) // Eliminar si ya está
+        : [...prev.days, dayName], // Agregar si no está
+    }));
   };
 
   return (
@@ -71,8 +96,8 @@ export default function RoutineForm({ onSave }) {
                 {/* Select de tipo de ejercicio */}
                 <select
                   className="h-8 p-1 border border-[#5F936C] rounded-[10px] bg-white text-black text-sm w-full"
-                  value={exercise.type}
-                  onChange={(e) => updateExercise(index, "type", e.target.value)}
+                  value={exercise.exerciseType}
+                  onChange={(e) => updateExercise(index, "exerciseType", e.target.value)}
                 >
                   <option value="">Seleccione el tipo</option>
                   <option value="cardio">Cardio</option>
@@ -120,18 +145,11 @@ export default function RoutineForm({ onSave }) {
                     <div className="flex gap-1">
                         {["L", "M", "W", "J", "V", "S", "D"].map((day, index) => (
                         <button
-                            key={index}
-                            className={`w-6 h-6 flex items-center justify-center border border-[#5F936C] rounded-full text-black text-[12px] transition-all duration-200 ${
-                            routine.days.includes(day) ? "bg-[#569788]" : ""
-                            }`}
-                            onClick={() => {
-                            setRoutine((prev) => ({
-                                ...prev,
-                                days: prev.days.includes(day)
-                                ? prev.days.filter((d) => d !== day)
-                                : [...prev.days, day],
-                            }));
-                            }}
+                        key={index}
+                        className={`w-6 h-6 flex items-center justify-center border border-[#5F936C] rounded-full text-black text-[12px] transition-all duration-200 ${
+                          routine.days.includes(daysMapping[day]) ? "bg-[#569788]" : ""
+                        }`}
+                        onClick={() => toggleDay(day)}
                         >
                             {day}
                         </button>
