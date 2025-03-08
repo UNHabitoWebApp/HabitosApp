@@ -72,7 +72,7 @@ calendarRouter.post("/generate", async (req, res) => {
                     endTime: dayjs(log.completionTime).tz(TIMEZONE).format("HH:mm"), // Formatear a HH:mm
                     description: routineKey ? routineNames.get(routineKey) : habitNames.get(habitKey),
                     type: "past",
-                    habit: !routineKey
+                    habit: !routineKey,
                 });
             }
 
@@ -167,5 +167,35 @@ calendarRouter.post("/generate", async (req, res) => {
         res.status(500).json({ error: "Error interno del servidor" });
     }
 });
+
+calendarRouter.get("/user_habits", async (req, res) => {
+    try {
+        const userId = req.user_id;
+        if (!userId) {
+            return res.status(400).json({ error: "Falta el ID del usuario." });
+        }
+
+        // Obtener hábitos personalizados y rutinas con solo _id y name
+        const habits = await Habit.find({ userId, personalized: true })
+            .select("_id name")
+            .lean()
+            .then(data => data.map(h => ({ id: h._id, name: h.name, isHabit: true })));
+
+        const routines = await Routine.find({ userId })
+            .select("_id name")
+            .lean()
+            .then(data => data.map(r => ({ id: r._id, name: r.name, isHabit: false })));
+
+        // Unir hábitos y rutinas en una sola lista
+        const combinedList = [...habits, ...routines];
+
+        res.json({ items: combinedList });
+
+    } catch (error) {
+        console.error("Error obteniendo hábitos y rutinas: ", error);
+        res.status(500).json({ error: "Error interno del servidor" });
+    }
+});
+
 
 export default calendarRouter;

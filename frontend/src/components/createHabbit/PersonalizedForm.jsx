@@ -56,6 +56,33 @@ export default function PersonalizedForm({ onSave }) {
 
 
   const handleSave = async () => {
+  // Verificar que el nombre no esté vacío
+  if (!personalized.name.trim()) {
+    alert("El nombre del hábito es obligatorio.");
+    return;
+  }
+
+  // Verificar que al menos un día esté seleccionado
+  if (personalized.days.length === 0) {
+    alert("Debes seleccionar al menos un día.");
+    return;
+  }
+
+  // Verificar que haya al menos una variable con nombre y tipo
+  const hasValidVariables = personalized.variables.every(
+    (variable) => variable.type.trim() && variable.name.trim()
+  );
+
+  if (!hasValidVariables) {
+    alert("Todas las variables deben tener un tipo y una etiqueta.");
+    return;
+  }
+
+  // Verificar que las horas de inicio y fin no estén vacías
+  if (!personalized.beginTime || !personalized.endTime) {
+    alert("Debes ingresar la hora de inicio y fin.");
+    return;
+  }
     try {
       const data = await postData("create_habits/personalized", personalized);
       console.log("Hábito guardado exitosamente:", data);
@@ -64,6 +91,18 @@ export default function PersonalizedForm({ onSave }) {
     } catch (error) {
       console.error("Error al enviar los datos:", error);
     }
+  };
+
+  const isValidForm = () => {
+    return (
+      personalized.name.trim() &&
+      personalized.days.length > 0 &&
+      personalized.variables.every(
+        (variable) => variable.type.trim() && variable.name.trim()
+      ) &&
+      personalized.beginTime &&
+      personalized.endTime
+    );
   };
 
   return (
@@ -231,6 +270,7 @@ export default function PersonalizedForm({ onSave }) {
         <BackToHomeButton />
         <button className="mt-5 px-7 py-1 text-white text-sm bg-[#569788] rounded-[20px] transition-all duration-300 hover:bg-[#84A59D]"
           onClick={handleSave}
+          disabled={!isValidForm()} // Desactiva el botón si el formulario no es válido
         >
           Guardar
         </button>
