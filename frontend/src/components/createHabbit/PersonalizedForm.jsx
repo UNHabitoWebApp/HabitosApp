@@ -54,7 +54,7 @@ export default function PersonalizedForm({ onSave }) {
 
   const handleSave = async () => {
     try {
-      const data = await postData("/create_habits/personalized", personalized);
+      const data = await postData("create_habits/personalized", personalized);
       console.log("Hábito guardado exitosamente:", data);
       onSave(personalized.notifyMe);
     } catch (error) {
