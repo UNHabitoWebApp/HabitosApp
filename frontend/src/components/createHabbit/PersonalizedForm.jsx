@@ -3,6 +3,7 @@ import BackToHomeButton from "./BackToHomeButton";
 import add from "../../assets/icons/add.svg";
 import PropTypes from "prop-types";
 import postData from "../../service/post";
+import { useDateActions } from "../../hooks/useDateActions";
 
 export default function PersonalizedForm({ onSave }) {
 
@@ -15,6 +16,8 @@ export default function PersonalizedForm({ onSave }) {
     notifyMe: false,
     personalized: true,
   });
+
+  const { setSearchParam } = useDateActions()
 
   const addVariable = () => {
     setPersonalized((prev) => ({
@@ -42,7 +45,7 @@ export default function PersonalizedForm({ onSave }) {
 
   const toggleDay = (dayInitial) => {
     const dayName = daysMapping[dayInitial]; // Obtener el nombre en inglés
-
+    
     setPersonalized((prev) => ({
       ...prev,
       days: prev.days.includes(dayName)
@@ -53,13 +56,53 @@ export default function PersonalizedForm({ onSave }) {
 
 
   const handleSave = async () => {
+  // Verificar que el nombre no esté vacío
+  if (!personalized.name.trim()) {
+    alert("El nombre del hábito es obligatorio.");
+    return;
+  }
+
+  // Verificar que al menos un día esté seleccionado
+  if (personalized.days.length === 0) {
+    alert("Debes seleccionar al menos un día.");
+    return;
+  }
+
+  // Verificar que haya al menos una variable con nombre y tipo
+  const hasValidVariables = personalized.variables.every(
+    (variable) => variable.type.trim() && variable.name.trim()
+  );
+
+  if (!hasValidVariables) {
+    alert("Todas las variables deben tener un tipo y una etiqueta.");
+    return;
+  }
+
+  // Verificar que las horas de inicio y fin no estén vacías
+  if (!personalized.beginTime || !personalized.endTime) {
+    alert("Debes ingresar la hora de inicio y fin.");
+    return;
+  }
     try {
       const data = await postData("create_habits/personalized", personalized);
       console.log("Hábito guardado exitosamente:", data);
+      setSearchParam("regenerate");
       onSave(personalized.notifyMe);
     } catch (error) {
       console.error("Error al enviar los datos:", error);
     }
+  };
+
+  const isValidForm = () => {
+    return (
+      personalized.name.trim() &&
+      personalized.days.length > 0 &&
+      personalized.variables.every(
+        (variable) => variable.type.trim() && variable.name.trim()
+      ) &&
+      personalized.beginTime &&
+      personalized.endTime
+    );
   };
 
   return (
@@ -69,19 +112,19 @@ export default function PersonalizedForm({ onSave }) {
         <h2 className="text-black text-[15px] text-center">Nombre del hábito</h2>
         {/* Input para el nombre del hábito */}
         <input
-            type="text"
-            placeholder="Ingresa el nombre del hábito a agregar"
-            className="mt-1 w-3/4 h-8 p-1 border border-[#5F936C] bg-white text-black text-sm block mx-auto"
-            value={personalized.name}
-            onChange={(e) => setPersonalized({ ...personalized, name: e.target.value })}
-         />     
+          type="text"
+          placeholder="Ingresa el nombre del hábito a agregar"
+          className="mt-1 w-3/4 h-8 p-1 border border-[#5F936C] bg-white text-black text-sm block mx-auto"
+          value={personalized.name}
+          onChange={(e) => setPersonalized({ ...personalized, name: e.target.value })}
+        />
       </div>
 
       {/* Bloque variables personalizadas */}
       <div className="mt-2 p-3 bg-[#ADD9C5] border-2 border-[#5F936C] rounded-[20px] w-full max-w-md">
         <h2 className="text-black text-[15px] text-center mb-2 flex items-center justify-center gap-2">Variables personalizadas
           <span title="Si eliges una variable numérica como valoración, número o checkbox, podemos darte estadísticas personalizadas sobre este aspecto de tu hábito." className="cursor-pointer">
-                ⓘ
+            ⓘ
           </span>
         </h2>
 
@@ -123,114 +166,114 @@ export default function PersonalizedForm({ onSave }) {
           <img src={add} alt="add" className="w-5 h-5" />
         </button>
       </div>
-      
+
       {/* Bloque Horario */}
       <div className="mt-2 p-2 bg-[#ADD9C5] border-2 border-[#5F936C] rounded-[20px] w-full max-w-md">
-          <h2 className="text-black text-[15px] text-center mb-2 flex items-center justify-center gap-2">Horario 
-            <span title="Si al hábito no se le ingresa día y hora, el hábito quedará como no programado" className="cursor-pointer">
-                ⓘ
-            </span>
-          </h2>
-      
-          <div className="flex items-center justify-between">
-              {/* Días de la semana */}
-              <div className="flex flex-col items-center">
-                  <h2 className="text-[13px] text-black mb-1">Días de la semana</h2>
-                  <div className="flex gap-1">
-                      {["L", "M", "W", "J", "V", "S", "D"].map((day, index) => (
-                      <button
-                      key={index}
-                      className={`w-6 h-6 flex items-center justify-center border border-[#5F936C] rounded-full text-black text-[12px] transition-all duration-200 ${
-                        personalized.days.includes(daysMapping[day]) ? "bg-[#569788]" : ""
-                      }`}
-                      onClick={() => toggleDay(day)}
-                      >
-                          {day}
-                      </button>
-                      ))}
-                  </div>
-              </div>
-          
-              {/* Hora de Inicio */}
-              <div className="flex flex-col items-center">
-                  <h3 className="text-[13px] text-black mb-1">Hora de inicio</h3>
-                  <div className="flex items-center gap-1">
-                  <input
-                      type="number"
-                      placeholder="00"
-                      className="w-10 h-10 text-center border border-[#5F936C] rounded-md text-black"
-                      value={personalized.beginTime.split(":")[0] || ""}
-                      onChange={(e) =>
-                          setPersonalized({ ...personalized, beginTime: `${e.target.value}:${personalized.beginTime.split(":")[1] || "00"}` })
-                      }
-                  />
-                  <span className="text-black">:</span>
-                  <input
-                      type="number"
-                      placeholder="00"
-                      className="w-10 h-10 text-center border border-[#5F936C] rounded-md text-black"
-                      value={personalized.beginTime.split(":")[1] || ""}
-                      onChange={(e) =>
-                          setPersonalized({ ...personalized, beginTime: `${personalized.beginTime.split(":")[0] || "00"}:${e.target.value}` })
-                      }
-                  />
-                  </div>
-              </div>
-          
-              {/* Hora de Fin */}
-              <div className="flex flex-col items-center">
-                  <h3 className="text-[13px] text-black mb-1">Hora de fin</h3>
-                  <div className="flex items-center gap-1">
-                      <input
-                          type="number"
-                          placeholder="00"
-                          className="w-10 h-10 text-center border border-[#5F936C] rounded-md text-black"
-                          value={personalized.endTime.split(":")[0] || ""}
-                          onChange={(e) =>
-                              setPersonalized({ ...personalized, endTime: `${e.target.value}:${personalized.endTime.split(":")[1] || "00"}` })
-                          }
-                      />
-                      <span className="text-black">:</span>
-                      <input
-                          type="number"
-                          placeholder="00"
-                          className="w-10 h-10 text-center border border-[#5F936C] rounded-md text-black"
-                          value={personalized.endTime.split(":")[1] || ""}
-                          onChange={(e) =>
-                              setPersonalized({ ...personalized, endTime: `${personalized.endTime.split(":")[0] || "00"}:${e.target.value}` })
-                          }
-                      />
-                  </div>
-              </div>
+        <h2 className="text-black text-[15px] text-center mb-2 flex items-center justify-center gap-2">Horario
+          <span title="Si al hábito no se le ingresa día y hora, el hábito quedará como no programado" className="cursor-pointer">
+            ⓘ
+          </span>
+        </h2>
+
+        <div className="flex items-center justify-between">
+          {/* Días de la semana */}
+          <div className="flex flex-col items-center">
+            <h2 className="text-[13px] text-black mb-1">Días de la semana</h2>
+            <div className="flex gap-1">
+              {["L", "M", "W", "J", "V", "S", "D"].map((day, index) => (
+                <button
+                  key={index}
+                  className={`w-6 h-6 flex items-center justify-center border border-[#5F936C] rounded-full text-black text-[12px] transition-all duration-200 ${personalized.days.includes(daysMapping[day]) ? "bg-[#569788]" : ""
+                    }`}
+                  onClick={() => toggleDay(day)}
+                >
+                  {day}
+                </button>
+              ))}
+            </div>
           </div>
-          {/* Notificarme */}
-          <div className="flex justify-center items-center w-full mt-2">
-            <label className="flex items-center gap-2 text-sm">
-              <input 
-                type="checkbox" 
-                checked={personalized.notifyMe} 
-                onChange={() => 
-                  setPersonalized((prev) => ({
-                    ...prev,
-                    notifyMe: !prev.notifyMe,
-                  }))
-                } 
+
+          {/* Hora de Inicio */}
+          <div className="flex flex-col items-center">
+            <h3 className="text-[13px] text-black mb-1">Hora de inicio</h3>
+            <div className="flex items-center gap-1">
+              <input
+                type="number"
+                placeholder="00"
+                className="w-10 h-10 text-center border border-[#5F936C] rounded-md text-black"
+                value={personalized.beginTime.split(":")[0] || ""}
+                onChange={(e) =>
+                  setPersonalized({ ...personalized, beginTime: `${e.target.value}:${personalized.beginTime.split(":")[1] || "00"}` })
+                }
               />
-              Notificarme
-            </label>
+              <span className="text-black">:</span>
+              <input
+                type="number"
+                placeholder="00"
+                className="w-10 h-10 text-center border border-[#5F936C] rounded-md text-black"
+                value={personalized.beginTime.split(":")[1] || ""}
+                onChange={(e) =>
+                  setPersonalized({ ...personalized, beginTime: `${personalized.beginTime.split(":")[0] || "00"}:${e.target.value}` })
+                }
+              />
+            </div>
           </div>
+
+          {/* Hora de Fin */}
+          <div className="flex flex-col items-center">
+            <h3 className="text-[13px] text-black mb-1">Hora de fin</h3>
+            <div className="flex items-center gap-1">
+              <input
+                type="number"
+                placeholder="00"
+                className="w-10 h-10 text-center border border-[#5F936C] rounded-md text-black"
+                value={personalized.endTime.split(":")[0] || ""}
+                onChange={(e) =>
+                  setPersonalized({ ...personalized, endTime: `${e.target.value}:${personalized.endTime.split(":")[1] || "00"}` })
+                }
+              />
+              <span className="text-black">:</span>
+              <input
+                type="number"
+                placeholder="00"
+                className="w-10 h-10 text-center border border-[#5F936C] rounded-md text-black"
+                value={personalized.endTime.split(":")[1] || ""}
+                onChange={(e) =>
+                  setPersonalized({ ...personalized, endTime: `${personalized.endTime.split(":")[0] || "00"}:${e.target.value}` })
+                }
+              />
+            </div>
+          </div>
+        </div>
+        {/* Notificarme */}
+        <div className="flex justify-center items-center w-full mt-2">
+          <label className="flex items-center gap-2 text-sm">
+            <input
+              type="checkbox"
+              checked={personalized.notifyMe}
+              onChange={() =>
+                setPersonalized((prev) => ({
+                  ...prev,
+                  notifyMe: !prev.notifyMe,
+                }))
+              }
+            />
+            Notificarme
+          </label>
+        </div>
       </div>
 
-      
+
 
       {/* Botones de acción */}
       <div className="mt-1 mb-5 flex justify-center gap-4 w-full max-w-md">
-          <BackToHomeButton/>
-          <button className="mt-5 px-7 py-1 text-white text-sm bg-[#569788] rounded-[20px] transition-all duration-300 hover:bg-[#84A59D]"
+        <BackToHomeButton />
+        <button className="mt-5 px-7 py-1 text-white text-sm bg-[#569788] rounded-[20px] transition-all duration-300 hover:bg-[#84A59D]"
           onClick={handleSave}
-          >
+          disabled={!isValidForm()} // Desactiva el botón si el formulario no es válido
+        >
           Guardar
-          </button>
+        </button>
       </div>
     </>
   );

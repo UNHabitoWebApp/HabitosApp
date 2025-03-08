@@ -7,24 +7,32 @@ export default function PersonalizedForm({ onSave, initialData }) {
   const [notificarme, setNotificarme] = useState(false);
   const [personalized, setPersonalized] = useState({
     name: "",
-    variables: [{ type: "", etiqueta: "" }],
+    variables: [{ type: "", name: "", config: {} }],
     days: [],
-    startTime: "",
+    beginTime: "",
     endTime: "",
   });
 
   // Inicializar el estado con los datos recibidos
   useEffect(() => {
+    console.log("Datos iniciales:", initialData);
     if (initialData) {
-      setPersonalized(initialData);
-      setNotificarme(initialData.notificarme || false); // Inicializar notificarme si está en los datos
+      setPersonalized({
+        ...initialData,
+        variables: initialData.variables.map(variable => ({
+          type: variable.type,
+          name: variable.name,
+          config: variable.config || {}
+        }))
+      });
+      setNotificarme(initialData.notifyMe || false); // Inicializar notificarme si está en los datos
     }
   }, [initialData]);
 
   const addVariable = () => {
     setPersonalized((prev) => ({
       ...prev,
-      variables: [...prev.variables, { type: "", etiqueta: "" }],
+      variables: [...prev.variables, { type: "", name: "", config: {} }],
     }));
   };
 
@@ -32,6 +40,17 @@ export default function PersonalizedForm({ onSave, initialData }) {
     const updatedVariables = [...personalized.variables];
     updatedVariables[index][field] = value;
     setPersonalized({ ...personalized, variables: updatedVariables });
+  };
+
+  // Mapeo de días en inglés a abreviaturas en español
+  const dayMap = {
+    "Monday": "L",
+    "Tuesday": "M",
+    "Wednesday": "W",
+    "Thursday": "J",
+    "Friday": "V",
+    "Saturday": "S",
+    "Sunday": "D"
   };
 
   return (
@@ -68,9 +87,9 @@ export default function PersonalizedForm({ onSave, initialData }) {
                 onChange={(e) => updateVariable(index, "type", e.target.value)}
               >
                 <option value="">Seleccione el tipo</option>
-                <option value="numero">Número</option>
-                <option value="validacion">Valoración (1 -10)</option>
-                <option value="checkbox">Checkbox</option>
+                <option value="integer">Número</option>
+                <option value="enum">Valoración (1 -10)</option>
+                <option value="boolean">Checkbox</option>
               </select>
             </div>
             <div className="flex flex-col flex-1">
@@ -80,8 +99,8 @@ export default function PersonalizedForm({ onSave, initialData }) {
                 type="text"
                 placeholder="Ej: Hojas leídas"
                 className="h-8 p-1 border border-[#5F936C] bg-white text-black text-sm w-full"
-                value={variable.etiqueta}
-                onChange={(e) => updateVariable(index, "etiqueta", e.target.value)}
+                value={variable.name}
+                onChange={(e) => updateVariable(index, "name", e.target.value)}
               />
             </div>
           </div>
@@ -112,14 +131,16 @@ export default function PersonalizedForm({ onSave, initialData }) {
               {["L", "M", "W", "J", "V", "S", "D"].map((day, index) => (
                 <button
                   key={index}
-                  className={`w-6 h-6 flex items-center justify-center border border-[#5F936C] rounded-full text-black text-[12px] transition-all duration-200 ${personalized.days.includes(day) ? "bg-[#569788]" : ""
-                    }`}
+                  className={`w-6 h-6 flex items-center justify-center border border-[#5F936C] rounded-full text-black text-[12px] transition-all duration-200 ${
+                    personalized.days.map(d => dayMap[d]).includes(day) ? "bg-[#569788]" : ""
+                  }`}
                   onClick={() => {
+                    const dayInEnglish = Object.keys(dayMap).find(key => dayMap[key] === day);
                     setPersonalized((prev) => ({
                       ...prev,
-                      days: prev.days.includes(day)
-                        ? prev.days.filter((d) => d !== day)
-                        : [...prev.days, day],
+                      days: prev.days.includes(dayInEnglish)
+                        ? prev.days.filter((d) => d !== dayInEnglish)
+                        : [...prev.days, dayInEnglish],
                     }));
                   }}
                 >
@@ -137,9 +158,9 @@ export default function PersonalizedForm({ onSave, initialData }) {
                 type="number"
                 placeholder="00"
                 className="w-10 h-10 text-center border border-[#5F936C] rounded-md text-black"
-                value={personalized.startTime.split(":")[0] || ""}
+                value={personalized.beginTime.split(":")[0] || ""}
                 onChange={(e) =>
-                  setPersonalized({ ...personalized, startTime: `${e.target.value}:${personalized.startTime.split(":")[1] || "00"}` })
+                  setPersonalized({ ...personalized, beginTime: `${e.target.value}:${personalized.beginTime.split(":")[1] || "00"}` })
                 }
               />
               <span className="text-black">:</span>
@@ -147,9 +168,9 @@ export default function PersonalizedForm({ onSave, initialData }) {
                 type="number"
                 placeholder="00"
                 className="w-10 h-10 text-center border border-[#5F936C] rounded-md text-black"
-                value={personalized.startTime.split(":")[1] || ""}
+                value={personalized.beginTime.split(":")[1] || ""}
                 onChange={(e) =>
-                  setPersonalized({ ...personalized, startTime: `${personalized.startTime.split(":")[0] || "00"}:${e.target.value}` })
+                  setPersonalized({ ...personalized, beginTime: `${personalized.beginTime.split(":")[0] || "00"}:${e.target.value}` })
                 }
               />
             </div>

@@ -1,6 +1,3 @@
-import jwt from "jsonwebtoken";
-import bcrypt from "bcryptjs";
-import UserService from "../services/userService.js";
 import HabitService from "../services/habitService.js";
 
 export const patchHabit = async (request, response) => {    

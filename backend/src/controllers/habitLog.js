@@ -23,9 +23,8 @@ export const createHabitLog = async (request, response) => {
 
 export const getAllHabitsLogByHabits = async (request, response) => {
     const habitLog_service_obj = new HabitLogService();
-    const habits = request.body;
     const user_id = request.user_id;
-    const habitLogs = await habitLog_service_obj.habitLogsByHabits(habits, user_id);
+    const habitLogs = await habitLog_service_obj.habitLogsByHabits(user_id);
     console.log("Registros de hábitos encontrados:", habitLogs);
     return response.status(200).json(habitLogs);
 }

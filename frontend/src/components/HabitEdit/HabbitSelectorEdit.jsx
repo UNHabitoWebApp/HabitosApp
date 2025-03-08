@@ -4,55 +4,75 @@ import RoutineFormEdit from "./RoutineFormEdit";
 import PersonalizedForm from "./PersonalizedFormEdit";
 import FeedbackScreen from "../createHabbit/FeedbackScreen";
 import BackToHomeButton from "../createHabbit/BackToHomeButton";
-import getData from "../../service/get"; // Importar getData para obtener datos de la API
-import patchData from "../../service/patch"; // Importar patchData para actualizar datos
+import getData from "../../service/get";
+import patchData from "../../service/patch";
 
 export default function HabitSelectorEdit() {
-  const [screen, setScreen] = useState("select"); // Estado inicial
+  const [screen, setScreen] = useState("select");
   const [feedbackData, setFeedbackData] = useState(null);
   const [routineData, setRoutineData] = useState(null);
-  const { id } = useParams(); // Obtener el id de la URL
-  const [personalizedData, setPersonalizedData] = useState(null); // Estado para datos personalizados
-  const [loading, setLoading] = useState(true); // Estado para manejar la carga
-  const [error, setError] = useState(null); // Estado para manejar errores
+  const { id } = useParams();
+  const [personalizedData, setPersonalizedData] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
-  // Tipos de ejercicio válidos
   const validExerciseTypes = ["cardio", "fuerza", "flexibilidad"];
 
   // Obtener los datos de la API al montar el componente
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const data = await getData(`routine/routine/${id}`); // Obtener datos de la API
-        if (data.type === "routine") {
-          // Filtrar los ejercicios para incluir solo los tipos válidos
-          const filteredExercises = data.exercises.filter(exercise =>
-            validExerciseTypes.includes(exercise.type)
-          );
-          setRoutineData({
-            ...data,
-            exercises: filteredExercises,
-          });
-          setScreen("routineForm"); // Mostrar el formulario de rutina
-        } else if (data.type === "personalized") {
-          setPersonalizedData(data);
-          setScreen("personalizedForm"); // Mostrar el formulario personalizado
+        let data = await getData(`routine/routine/${id}`);
+        if (!data || Object.keys(data).length === 0) {
+          throw new Error("No encontrado");
         }
+        console.log(data);
+        if (data?.exercises?.length > 0) {
+          const filteredExercises = data.exercises
+            .map(ex => ({
+              _id: ex._id,
+              exerciseType: ex.exerciseType.toLowerCase(),
+              name: ex.name || "",
+            }));
+  
+          setRoutineData({
+            name: data.name || "",
+            exercises: filteredExercises,
+            days: data.days || [],
+            beginTime: data.beginTime || "",
+            endTime: data.endTime || "",
+          });
+  
+          setTimeout(() => setScreen("routineForm"), 50); // Forzar re-render
+        } else {
+          setPersonalizedData(data);
+          setTimeout(() => setScreen("personalizedForm"), 50); // Forzar re-render
+        }
+        console.log(routineData);
       } catch (err) {
-        setError("Error al cargar los datos");
-        console.error(err);
+        try {
+          const altData = await getData(`edit_habits/edit/${id}`);
+          if (altData && Object.keys(altData).length > 0) {
+            setPersonalizedData(altData);
+            setTimeout(() => setScreen("personalizedForm"), 50);
+          } else {
+            throw new Error("No encontrado en ambos endpoints");
+          }
+        } catch (altErr) {
+          setError("Error al cargar los datos");
+          console.error(altErr);
+        }
       } finally {
-        setLoading(false); // Finalizar la carga
+        setLoading(false);
       }
     };
-
+  
     fetchData();
-  }, [id]); // Dependencia: id de la URL
+  }, [id]);
 
-  // Guardar la rutina actualizada
   const handleRoutineSave = async (updatedRoutine) => {
     try {
-      await patchData(`routine/routine/${id}`, updatedRoutine); // Actualizar datos en la API
+      await patchData(`routine/routine/${id}`, updatedRoutine);
       setFeedbackData({
         title: "¡Rutina actualizada con éxito!",
         description: "Tu rutina ha sido modificada correctamente.",
@@ -64,24 +84,20 @@ export default function HabitSelectorEdit() {
     }
   };
 
-  // Guardar el hábito personalizado
   const handlePersonalizedSave = async (notificarme) => {
     try {
-      await patchData(`routine/routine/${id}`, {
+      await patchData(`edit_habits/edit/${id}`, {
         ...personalizedData,
         notificarme,
-      }); // Actualizar datos en la API
-      if (notificarme) {
-        setFeedbackData({
-          title: "¡Hábito personalizado guardado con notificación!",
-          description: "Recibirás notificaciones para este hábito.",
-        });
-      } else {
-        setFeedbackData({
-          title: "¡Hábito personalizado guardado!",
-          description: "Tu hábito personalizado ha sido registrado.",
-        });
-      }
+      });
+      setFeedbackData({
+        title: notificarme
+          ? "¡Hábito personalizado guardado con notificación!"
+          : "¡Hábito personalizado guardado!",
+        description: notificarme
+          ? "Recibirás notificaciones para este hábito."
+          : "Tu hábito personalizado ha sido registrado.",
+      });
       setScreen("feedback");
     } catch (err) {
       setError("Error al guardar el hábito personalizado");
@@ -94,11 +110,10 @@ export default function HabitSelectorEdit() {
 
   return (
     <div className="flex flex-col items-center min-h-[80vh]">
-      {/* Mostrar el formulario correspondiente */}
-      {screen === "routineForm" && (
+      {screen === "routineForm" && routineData && (
         <RoutineFormEdit onSave={handleRoutineSave} initialData={routineData} />
       )}
-      {screen === "personalizedForm" && (
+      {screen === "personalizedForm" && personalizedData && (
         <PersonalizedForm onSave={handlePersonalizedSave} initialData={personalizedData} />
       )}
       {screen === "feedback" && (
@@ -110,7 +125,6 @@ export default function HabitSelectorEdit() {
           <BackToHomeButton />
         </>
       )}
-
       {screen === "select" && <BackToHomeButton />}
     </div>
   );

@@ -3,9 +3,10 @@ import BackToHomeButton from "./BackToHomeButton";
 import add from "../../assets/icons/add.svg";
 import PropTypes from "prop-types";
 import postData from "../../service/post";
+import { useDateActions } from "../../hooks/useDateActions";
 
 export default function RoutineForm({ onSave }) {
-  const [isAddingRoutine, setIsAddingRoutine] = useState(false);
+  const [isAddingRoutine, setIsAddingRoutine] = useState(true);
   const [routine, setRoutine] = useState({
     name: "",
     exercises: [{ exerciseType: "", name: "" }],
@@ -15,6 +16,7 @@ export default function RoutineForm({ onSave }) {
     personalized: false,
     notifyMe: false,
   });
+  const { setSearchParam } = useDateActions()
 
   const addExercise = () => {
     setRoutine((prev) => ({
@@ -64,7 +66,7 @@ export default function RoutineForm({ onSave }) {
       personalized: routine.personalized,
       notifyMe: routine.notifyMe
     }));
-    
+
     try {
       // Enviar cada ejercicio y obtener sus IDs
       const responses = await Promise.all(
@@ -74,7 +76,7 @@ export default function RoutineForm({ onSave }) {
           return data.id; //Almacenamos el ID
         })
       );
-    
+
       console.log("IDs de los hábitos guardados:", responses);
 
       // Crear el nuevo objeto de rutina con la lista de IDs
@@ -86,7 +88,8 @@ export default function RoutineForm({ onSave }) {
       // Enviar la rutina al backend
       const routineData = await postData("create_habits/routine", updatedRoutine);
       console.log("Rutina guardada exitosamente:", routineData);
-    
+      setSearchParam("regenerate");
+
     } catch (error) {
       console.error("Error al enviar los datos:", error);
     }
@@ -107,7 +110,7 @@ export default function RoutineForm({ onSave }) {
               <option value="rutina2">Rutina 2</option>
               <option value="rutina3">Rutina 3</option>
             </select>
-            <p 
+            <p
               className="mt-2 text-[13px] text-[#569788] cursor-pointer hover:underline text-center"
               onClick={() => setIsAddingRoutine(true)}
             >
@@ -173,95 +176,94 @@ export default function RoutineForm({ onSave }) {
       {/* Bloque Horario */}
       {isAddingRoutine && (
         <div className="mt-2 p-2 bg-[#ADD9C5] border-2 border-[#5F936C] rounded-[20px] w-full max-w-md">
-            <h2 className="text-black text-[15px] text-center mb-2 flex items-center justify-center gap-2">Horario 
-              <span title="Si al hábito no se le ingresa día y hora, el hábito quedará como no programado" className="cursor-pointer">
-                  ⓘ
-              </span>
-            </h2>
-        
-            <div className="flex items-center justify-between">
-                {/* Días de la semana */}
-                <div className="flex flex-col items-center">
-                    <h2 className="text-[13px] text-black mb-1">Días de la semana</h2>
-                    <div className="flex gap-1">
-                        {["L", "M", "W", "J", "V", "S", "D"].map((day, index) => (
-                        <button
-                        key={index}
-                        className={`w-6 h-6 flex items-center justify-center border border-[#5F936C] rounded-full text-black text-[12px] transition-all duration-200 ${
-                          routine.days.includes(daysMapping[day]) ? "bg-[#569788]" : ""
-                        }`}
-                        onClick={() => toggleDay(day)}
-                        >
-                            {day}
-                        </button>
-                        ))}
-                    </div>
-                </div>
-            
-                {/* Hora de Inicio */}
-                <div className="flex flex-col items-center">
-                    <h3 className="text-[13px] text-black mb-1">Hora de inicio</h3>
-                    <div className="flex items-center gap-1">
-                    <input
-                        type="number"
-                        placeholder="00"
-                        className="w-10 h-10 text-center border border-[#5F936C] rounded-md text-black"
-                        value={routine.beginTime.split(":")[0] || ""}
-                        onChange={(e) =>
-                            setRoutine({ ...routine, beginTime: `${e.target.value}:${routine.beginTime.split(":")[1] || "00"}` })
-                        }
-                    />
-                    <span className="text-black">:</span>
-                    <input
-                        type="number"
-                        placeholder="00"
-                        className="w-10 h-10 text-center border border-[#5F936C] rounded-md text-black"
-                        value={routine.beginTime.split(":")[1] || ""}
-                        onChange={(e) =>
-                            setRoutine({ ...routine, beginTime: `${routine.beginTime.split(":")[0] || "00"}:${e.target.value}` })
-                        }
-                    />
-                    </div>
-                </div>
-            
-                {/* Hora de Fin */}
-                <div className="flex flex-col items-center">
-                    <h3 className="text-[13px] text-black mb-1">Hora de fin</h3>
-                    <div className="flex items-center gap-1">
-                        <input
-                            type="number"
-                            placeholder="00"
-                            className="w-10 h-10 text-center border border-[#5F936C] rounded-md text-black"
-                            value={routine.endTime.split(":")[0] || ""}
-                            onChange={(e) =>
-                                setRoutine({ ...routine, endTime: `${e.target.value}:${routine.endTime.split(":")[1] || "00"}` })
-                            }
-                        />
-                        <span className="text-black">:</span>
-                        <input
-                            type="number"
-                            placeholder="00"
-                            className="w-10 h-10 text-center border border-[#5F936C] rounded-md text-black"
-                            value={routine.endTime.split(":")[1] || ""}
-                            onChange={(e) =>
-                                setRoutine({ ...routine, endTime: `${routine.endTime.split(":")[0] || "00"}:${e.target.value}` })
-                            }
-                        />
-                    </div>
-                </div>
+          <h2 className="text-black text-[15px] text-center mb-2 flex items-center justify-center gap-2">Horario
+            <span title="Si al hábito no se le ingresa día y hora, el hábito quedará como no programado" className="cursor-pointer">
+              ⓘ
+            </span>
+          </h2>
+
+          <div className="flex items-center justify-between">
+            {/* Días de la semana */}
+            <div className="flex flex-col items-center">
+              <h2 className="text-[13px] text-black mb-1">Días de la semana</h2>
+              <div className="flex gap-1">
+                {["L", "M", "W", "J", "V", "S", "D"].map((day, index) => (
+                  <button
+                    key={index}
+                    className={`w-6 h-6 flex items-center justify-center border border-[#5F936C] rounded-full text-black text-[12px] transition-all duration-200 ${routine.days.includes(daysMapping[day]) ? "bg-[#569788]" : ""
+                      }`}
+                    onClick={() => toggleDay(day)}
+                  >
+                    {day}
+                  </button>
+                ))}
+              </div>
             </div>
+
+            {/* Hora de Inicio */}
+            <div className="flex flex-col items-center">
+              <h3 className="text-[13px] text-black mb-1">Hora de inicio</h3>
+              <div className="flex items-center gap-1">
+                <input
+                  type="number"
+                  placeholder="00"
+                  className="w-10 h-10 text-center border border-[#5F936C] rounded-md text-black"
+                  value={routine.beginTime.split(":")[0] || ""}
+                  onChange={(e) =>
+                    setRoutine({ ...routine, beginTime: `${e.target.value}:${routine.beginTime.split(":")[1] || "00"}` })
+                  }
+                />
+                <span className="text-black">:</span>
+                <input
+                  type="number"
+                  placeholder="00"
+                  className="w-10 h-10 text-center border border-[#5F936C] rounded-md text-black"
+                  value={routine.beginTime.split(":")[1] || ""}
+                  onChange={(e) =>
+                    setRoutine({ ...routine, beginTime: `${routine.beginTime.split(":")[0] || "00"}:${e.target.value}` })
+                  }
+                />
+              </div>
+            </div>
+
+            {/* Hora de Fin */}
+            <div className="flex flex-col items-center">
+              <h3 className="text-[13px] text-black mb-1">Hora de fin</h3>
+              <div className="flex items-center gap-1">
+                <input
+                  type="number"
+                  placeholder="00"
+                  className="w-10 h-10 text-center border border-[#5F936C] rounded-md text-black"
+                  value={routine.endTime.split(":")[0] || ""}
+                  onChange={(e) =>
+                    setRoutine({ ...routine, endTime: `${e.target.value}:${routine.endTime.split(":")[1] || "00"}` })
+                  }
+                />
+                <span className="text-black">:</span>
+                <input
+                  type="number"
+                  placeholder="00"
+                  className="w-10 h-10 text-center border border-[#5F936C] rounded-md text-black"
+                  value={routine.endTime.split(":")[1] || ""}
+                  onChange={(e) =>
+                    setRoutine({ ...routine, endTime: `${routine.endTime.split(":")[0] || "00"}:${e.target.value}` })
+                  }
+                />
+              </div>
+            </div>
+          </div>
         </div>
       )}
-    
+
       {/* Botones de acción */}
       {isAddingRoutine && (
         <div className="mt-1 mb-5 flex justify-center gap-4 w-full max-w-md">
-            <BackToHomeButton/>
-            <button className="mt-5 px-7 py-1 text-white text-sm bg-[#569788] rounded-[20px] transition-all duration-300 hover:bg-[#84A59D]"
+          <BackToHomeButton />
+          <button className="mt-5 px-7 py-1 text-white text-sm bg-[#569788] rounded-[20px] transition-all duration-300 hover:bg-[#84A59D]"
             onClick={handleSave}
-            >
+          >
             Guardar
-            </button>
+          </button>
         </div>
       )}
 
