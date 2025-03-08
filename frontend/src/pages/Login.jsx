@@ -39,12 +39,11 @@ const Login = () => {
       });
       const data = await response.json();
       if (data.accessToken) {
-        // Guardar token y actualizar estado de usuario
+        localStorage.setItem('accessToken', data.accessToken);
         updateUser({
           isLoggedIn: true,
-//Cami aca es donde debes cargar la info que te llega por la API, podes llamar el servicio
-      //y que te retorne la info y colocarla aca con ...userData y ya esto lla actualiza en el state general
-        })
+          ...data.user
+        });
         navigate('/');
       }
     } catch (error) {
