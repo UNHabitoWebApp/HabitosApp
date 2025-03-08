@@ -7,6 +7,7 @@ const Login = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [email, setEmail] = useState('');
   const [emailError, setEmailError] = useState('');
+  const [password, setPassword] = useState('');
   const navigate = useNavigate();
   const { updateUser } = useUserActions();
 
@@ -19,7 +20,7 @@ const Login = () => {
     return emailRegex.test(email);
   };
 
-  const handleLogin = () => {
+  const handleLogin = async () => {
     setEmailError('');
 
     if (!validateEmail(email)) {
@@ -27,12 +28,28 @@ const Login = () => {
       return;
     }
 
-    updateUser({
-      isLoggedIn: true,
-      //Cami aca es donde debes cargar la info que te llega por la API, podes llamar el servicio
+    try {
+      const response = await fetch('http://localhost:8080/auth/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        credentials: 'include', // Importante para las cookies
+        body: JSON.stringify({ email, password })
+      });
+      const data = await response.json();
+      if (data.accessToken) {
+        // Guardar token y actualizar estado de usuario
+        updateUser({
+          isLoggedIn: true,
+//Cami aca es donde debes cargar la info que te llega por la API, podes llamar el servicio
       //y que te retorne la info y colocarla aca con ...userData y ya esto lla actualiza en el state general
-    })
-    navigate('/');
+        })
+        navigate('/');
+      }
+    } catch (error) {
+      console.error('Error:', error);
+    }
   };
 
   return (
@@ -129,6 +146,8 @@ const Login = () => {
                 <input
                   id="password"
                   type={showPassword ? "text" : "password"}
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
                   placeholder="********"
                   className="
                     h-10 

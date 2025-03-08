@@ -19,29 +19,55 @@ const Registro = () => {
     return emailRegex.test(email);
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setEmailError('');
 
-    if (!email || !password || !confirm) {
-      alert('Por favor, completa todos los campos');
-      return;
-    }
-
+    // Validate the email here
     if (!validateEmail(email)) {
-      setEmailError('Por favor, ingresa un correo electrónico válido');
+      setEmailError('El Email no es válido');
       return;
     }
 
-    if (passwordMismatch) {
-      alert('¡Las contraseñas no coinciden!');
-      return;
-    }
+    try {
+      const response = await fetch('http://localhost:8080/auth/register', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          email,
+          password,
+          firstName: 'Usuario', // Temporal
+          lastName: 'Test'      // Temporal
+        })
+      });
 
-    updateUser({
-      isLoggedIn: true,
-    })
-    navigate('/confirmacion');
+      // Primero intentamos obtener el cuerpo de la respuesta como texto
+      const responseText = await response.text();
+      let data;
+      try {
+        // Intentamos parsear el texto como JSON
+        data = JSON.parse(responseText);
+      } catch (e) {
+        console.error('Error parsing response:', responseText);
+        throw new Error('Error en el formato de respuesta del servidor');
+      }
+
+      if (response.ok) {
+        localStorage.setItem('accessToken', data.accessToken);
+        updateUser({
+          isLoggedIn: true,
+          ...data.user
+        });
+        navigate('/confirmacion');
+      } else {
+        throw new Error(data.message || 'Error en el registro');
+      }
+    } catch (error) {
+      console.error('Error detallado:', error);
+      alert(`Error al registrar: ${error.message}`);
+    }
   };
 
   return (
