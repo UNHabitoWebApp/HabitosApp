@@ -56,33 +56,6 @@ export default function PersonalizedForm({ onSave }) {
 
 
   const handleSave = async () => {
-  // Verificar que el nombre no esté vacío
-  if (!personalized.name.trim()) {
-    alert("El nombre del hábito es obligatorio.");
-    return;
-  }
-
-  // Verificar que al menos un día esté seleccionado
-  if (personalized.days.length === 0) {
-    alert("Debes seleccionar al menos un día.");
-    return;
-  }
-
-  // Verificar que haya al menos una variable con nombre y tipo
-  const hasValidVariables = personalized.variables.every(
-    (variable) => variable.type.trim() && variable.name.trim()
-  );
-
-  if (!hasValidVariables) {
-    alert("Todas las variables deben tener un tipo y una etiqueta.");
-    return;
-  }
-
-  // Verificar que las horas de inicio y fin no estén vacías
-  if (!personalized.beginTime || !personalized.endTime) {
-    alert("Debes ingresar la hora de inicio y fin.");
-    return;
-  }
     try {
       const data = await postData("create_habits/personalized", personalized);
       console.log("Hábito guardado exitosamente:", data);
@@ -170,12 +143,9 @@ export default function PersonalizedForm({ onSave }) {
       {/* Bloque Horario */}
       <div className="mt-2 p-2 bg-[#ADD9C5] border-2 border-[#5F936C] rounded-[20px] w-full max-w-md">
         <h2 className="text-black text-[15px] text-center mb-2 flex items-center justify-center gap-2">Horario
-          <span title="Si al hábito no se le ingresa día y hora, el hábito quedará como no programado" className="cursor-pointer">
-            ⓘ
-          </span>
         </h2>
 
-        <div className="flex items-center justify-between">
+        <div className="flex items-center justify-between gap-2">
           {/* Días de la semana */}
           <div className="flex flex-col items-center">
             <h2 className="text-[13px] text-black mb-1">Días de la semana</h2>
@@ -268,7 +238,7 @@ export default function PersonalizedForm({ onSave }) {
       {/* Botones de acción */}
       <div className="mt-1 mb-5 flex justify-center gap-4 w-full max-w-md">
         <BackToHomeButton />
-        <button className="mt-5 px-7 py-1 text-white text-sm bg-[#569788] rounded-[20px] transition-all duration-300 hover:bg-[#84A59D]"
+        <button className="mt-5 px-7 py-1 text-white text-sm bg-[#569788] rounded-[20px] transition-all duration-300 hover:bg-[#84A59D] disabled:bg-[#84A59D] disabled:cursor-not-allowed"
           onClick={handleSave}
           disabled={!isValidForm()} // Desactiva el botón si el formulario no es válido
         >
