@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { BarChartComponent, DataDetails } from "../components/StatisticsScreen/barChart";
 import { LineChartComponent } from "../components/StatisticsScreen/lineChart";
 import { PieChartComponent } from "../components/StatisticsScreen/pieChart";
+import { useParams } from "react-router-dom";
 import DataDisplay from "../components/StatisticsScreen/sideHistorial";
 import HabitList from '../components/HabitList';
 

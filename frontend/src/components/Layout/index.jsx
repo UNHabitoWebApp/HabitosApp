@@ -2,7 +2,7 @@ import PropTypes from "prop-types";
 import { useUserSelectors, useUserActions } from "../../hooks/useUserActions";
 import { FiLogOut } from "react-icons/fi";
 import { FaUserCircle } from "react-icons/fa";
-
+import Logotype from "../../assets/logotype.png";
 const Layout = ({ children }) => {
     const { nombre, isLoggedIn } = useUserSelectors();
     const { logout } = useUserActions();
@@ -10,8 +10,9 @@ const Layout = ({ children }) => {
     return (
         <div className="flex flex-col min-h-screen">
             <header className="bg-verdeLayout text-white p-2 flex justify-between items-center">
-                <div className="text-lg font-bold">HabitosWEB</div>
-                {isLoggedIn && (
+            <div className="text-lg font-bold">
+  <img src={Logotype} alt="Logotipo" className="w-16 h-16 inline-block" />
+</div>                {isLoggedIn && (
                     <div className="flex items-center gap-4">
                         <FaUserCircle className="w-10 h-10" />
                         <span className="font-medium hidden lg:block">{nombre}</span>

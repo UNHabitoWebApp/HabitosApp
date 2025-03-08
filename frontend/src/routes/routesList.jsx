@@ -26,7 +26,7 @@ export const routesList = [
     { path: "/login", element: <Login /> },
     { path: "/register", element: <Register /> },
     { path: "/confirmacion", element: <ConfirmacionRegistro /> },
-    { path: "/statistics", element: <StatisticsScreen /> },
+    { path: "/statistics/:id", element: <StatisticsScreen /> },
     {path: "/feedback", element: <Feedback />},
     { path: "*", element: <NotFound /> },
 ];
