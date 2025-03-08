@@ -20,7 +20,8 @@ const StatisticsScreen = () => {
     const fetchHabitData = async () => {
       try {
         // Fetch habit data
-        const habitResponse = await getData(`/edit_habits/edit/${id}`);
+        const habitResponse = await getData(`edit_habits/edit/${id}`);
+        console.log(habitResponse);
         const habitData = habitResponse;
 
         // Set habit name
@@ -32,7 +33,7 @@ const StatisticsScreen = () => {
           variableNamesMap[variable.id] = { name: variable.name, type: variable.type };
         });
         setVariableNames(variableNamesMap);
-
+        console.log(variableNames);
         // Fetch habit logs
         const logsResponse = await getData(`habitLog/habitLog/${id}`);
         const logsData = logsResponse;
@@ -45,10 +46,8 @@ const StatisticsScreen = () => {
 
         logsData.forEach(log => {
           const date = new Date(log.date).toISOString().split('T')[0]; // Format date
-
           log.variables.forEach(variable => {
-            const variableInfo = variableNamesMap[variable.id];
-
+            const variableInfo = variableNamesMap[variable.habit_id];
             // Determine chart type based on variable type
             if (variableInfo.type === "number") {
               processedLineData.push({ date, value: parseFloat(variable.value) });
