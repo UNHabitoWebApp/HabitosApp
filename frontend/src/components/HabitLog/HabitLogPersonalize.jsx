@@ -3,10 +3,16 @@ import { useParams } from "react-router-dom";
 import BackToHomeButton from "../createHabbit/BackToHomeButton";
 import postData from "../../service/post";
 import getData from "../../service/get";
+import stadisticIcon from "../../assets/icons/stadistic.svg";
+import lapixIcon from "../../assets/icons/lapix.svg";
+
+import { useNavigate } from "react-router-dom";
 
 export default function PersonalizeLog() {
   const { id } = useParams();
   const [habitTemplate, setHabitTemplate] = useState(null);
+  const navigate = useNavigate(); // Hook para la navegación
+
   const [formData, setFormData] = useState({});
   const [observations, setObservations] = useState("");
 
@@ -65,18 +71,35 @@ export default function PersonalizeLog() {
     try {
       await postData("habitLog/habitLog/", habitLog);
       console.log("Habit log guardado:", habitLog);
+      navigate("/feedback", {
+        state: {
+          title: "¡Hábito registrado con éxito!",
+          description: "Tu hábito ha sido registrado correctamente.",
+        },
+      });
     } catch (error) {
       console.error("Error al guardar habit log:", error);
     }
   };
-
+  const handleEditClick = () => {
+    navigate(`/edit/routine/${id}`);
+  };
   if (!habitTemplate) return <p>Cargando...</p>;
 
   return (
     <div className="flex flex-col items-center min-h-[80vh] bg-[#F0F7F5]">
       <div className="w-full flex justify-center px-4 pt-4">
         <div className="p-5 border-2 bg-[#ADD9C5] border-[#5F936C] rounded-[20px] shadow-lg w-full max-w-[450px]">
-          <h2 className="text-lg font-bold text-center mb-4">{habitTemplate.name}</h2>
+        <div className="flex items-center justify-between mb-4">
+          <img src={stadisticIcon} alt="Statistics" className="w-5 h-5 sm:w-6 sm:h-6 cursor-pointer" onClick={() => navigate(`/statistics/${id}`)}/>
+          <h2 className="text-lg font-bold text-center">{habitTemplate.name}</h2>
+          <img
+            src={lapixIcon}
+            alt="Edit"
+            className="w-5 h-5 flex-shrink-0 cursor-pointer"
+            onClick={handleEditClick} // Navega a la ruta de edición
+          />
+        </div>
           <div className="flex flex-col gap-3">
             {habitTemplate.variables.map((field) => (
               <div key={field.name} className="flex flex-col">
