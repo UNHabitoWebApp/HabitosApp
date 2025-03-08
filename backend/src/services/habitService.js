@@ -3,6 +3,7 @@ import Habit from "../models/Habit.js";
 export default class HabitService {
 
     async getHabitById (habit_id, user_id) {
+        console.log("HabitService.getHabitById", habit_id, user_id);
         return await Habit.findOne({ _id: habit_id, userId: user_id });
     }
 

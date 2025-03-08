@@ -32,3 +32,16 @@ export const createHabit = async (request, response) => {
     console.log("Hábito guardado:", habit);
     return response.status(201).json(habit);
 }
+
+export const getHabitById = async (request, response) => {
+    const habit_service_obj = new HabitService();
+    const user_id = request.user_id;
+    const habit_id = request.params.id;
+    console.log("Hábito a buscar:", habit_id);
+    const habit = await habit_service_obj.getHabitById(habit_id, user_id);
+    if (!habit) {
+        return response.status(404).json({ message: "Hábito no encontrado" });
+    }
+    console.log("Hábito encontrado:", habit);
+    return response.status(200).json(habit);
+}

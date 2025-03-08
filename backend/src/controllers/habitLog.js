@@ -1,5 +1,3 @@
-import HabitLogService from "../services/habitLogService";
-
 export const patchHabitLog = async (request, response) => {
     const habitLog_service_obj = new HabitLogService();
     const habitLog_id = request.params.id;
