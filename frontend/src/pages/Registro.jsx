@@ -36,7 +36,9 @@ const Registro = () => {
         },
         body: JSON.stringify({
           email,
-          password
+          password,
+          firstName: 'Usuario', // Temporal
+          lastName: 'Test'
         })
       });
 
