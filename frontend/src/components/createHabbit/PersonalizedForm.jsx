@@ -42,7 +42,7 @@ export default function PersonalizedForm({ onSave }) {
 
   const toggleDay = (dayInitial) => {
     const dayName = daysMapping[dayInitial]; // Obtener el nombre en inglés
-
+    
     setPersonalized((prev) => ({
       ...prev,
       days: prev.days.includes(dayName)

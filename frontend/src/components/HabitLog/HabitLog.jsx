@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import BackToHomeButton from "../createHabbit/BackToHomeButton";
 import Plus from "../../assets/icons/plus.svg";
 import postData from "../../service/post";
@@ -7,6 +7,7 @@ import getData from "../../service/get";
 
 export default function ExerciseForm() {
   const { routine_id, exercise_id } = useParams();
+  const navigate = useNavigate();
   const [exercise, setExercise] = useState(null);
   const [sets, setSets] = useState([{ reps: "", weight: "", time: "" }]);
   const [observations, setObservations] = useState("");
@@ -89,6 +90,7 @@ export default function ExerciseForm() {
     try {
       await postData("habitLog/habitLog/", habitLog);
       console.log("Habit log enviado con éxito:", habitLog);
+      navigate(-1); // Regresar a la página anterior
     } catch (error) {
       console.error("Error al enviar el habit log:", error);
     }
