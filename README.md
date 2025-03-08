@@ -108,9 +108,18 @@ Una vez que los contenedores estén en funcionamiento, navega a la carpeta del b
 
 ```
 cd backend
+npm install
 npm run dev
 ```
+### Ejecutar el front
+Una vez que los contenedores estén en funcionamiento, navega a la carpeta del front y ejecuta el servidor en modo de desarrollo:
 
+```
+cd frontend
+npm install
+
+npm run dev
+```
 ### API
 
 Hay un .json en la carpeta de backend con ejemplos de como deben ser las peticiones del Auth es una coleccion de thunderclient thunder-collection_auth.json la importan en el cliente de thunderclient para usarla
