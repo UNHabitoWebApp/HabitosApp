@@ -16,6 +16,7 @@ const HabitLogSchema = new mongoose.Schema(
         date: { type: Date, required: true },
         completionTime: { type: Date, required: false },
         variables: { type: [VariableSchema], required: false },
+        observation: { type: String, required: false },
         done: { type: Boolean, required: true}
     },
     {

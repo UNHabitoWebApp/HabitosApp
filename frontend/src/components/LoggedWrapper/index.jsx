@@ -8,7 +8,10 @@ const LoggedWrapper = ({ path, element }) => {
     const isAuthRoute = ["/login", "/register"].includes(path);
 
     if (!isLoggedIn && !isAuthRoute) {
+        return <>{element}</>;
+
         return <Navigate to="/login" replace />;
+
     }
 
     if (!isLoggedIn && isAuthRoute) {

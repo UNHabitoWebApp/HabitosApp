@@ -1,5 +1,4 @@
-import HabitLog from "../models/HabitLog";
-
+import HabitLog from "../models/HabitLog.js";
 class HabitLogService {
     async getHabitLogById (habitLog_id) {
         return await HabitLog.findOne({ _id: habitLog_id  })

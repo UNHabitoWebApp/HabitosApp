@@ -1,7 +1,7 @@
 const postData = async (url, data) => {
     try {
         const accessToken = localStorage.getItem('accessToken');
-        const response = await fetch("http://localhost:8080" + url, {
+        const response = await fetch("http://localhost:8080/" + url, {
             method: 'POST',
             headers: {
                 'Authorization': `Bearer ${accessToken}`,
