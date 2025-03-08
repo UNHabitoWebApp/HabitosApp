@@ -1,4 +1,4 @@
-export const fetchHabitsRange = async (startDate, endDate, userId="67c9b71329f00cd857d61949") => {
+export const fetchHabitsRange = async (startDate, endDate) => {
     try {
         const accessToken = localStorage.getItem('accessToken');
 

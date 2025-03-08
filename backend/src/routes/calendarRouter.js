@@ -27,10 +27,6 @@ calendarRouter.post("/generate", async (req, res) => {
         const userId = req.user_id;
         const { startDate, endDate } = req.body;
 
-        console.log("startDate: ", startDate);
-        console.log("endDate: ", endDate);
-        console.log("userId: ", userId);
-
         if (!startDate || !endDate || !userId) {
             return res.status(400).json({ error: "Faltan parámetros requeridos." });
         }

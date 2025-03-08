@@ -5,6 +5,8 @@ import routineRouter from "./routine.js";
 import { authenticateUser } from "../middlewares/authMiddleware.js";
 import editHabitsRouter from "./editHabitsRouter.js";
 import calendarRouter from "./calendarRouter.js";
+import createHabitsRouter from "./createHabitsRouter.js";
+
 import habitLogRouter from "./habitLogRouter.js";
 export default function initializeRoutes(app) {
     /*
@@ -24,5 +26,6 @@ export default function initializeRoutes(app) {
     router.use("/events",calendarRouter);
     router.use("/habitLog/",habitLogRouter);
     //router.use(authenticateUser);
+    router.use("/create_habits",createHabitsRouter);
     app.use(router);
 }
