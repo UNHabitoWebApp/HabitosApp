@@ -12,23 +12,62 @@ const Registro = () => {
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const passwordMismatch = password !== confirm && confirm.length > 0;
   const { updateUser } = useUserActions();
+  const [emailError, setEmailError] = useState('');
 
-  const handleSubmit = (e) => {
+  const validateEmail = (email) => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
+  };
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!email || !password || !confirm) {
-      alert('Por favor, completa todos los campos');
+    setEmailError('');
+
+    // Validate the email here
+    if (!validateEmail(email)) {
+      setEmailError('El Email no es válido');
       return;
     }
-    if (passwordMismatch) {
-      alert('¡Las contraseñas no coinciden!');
-      return;
+
+    try {
+      const response = await fetch('http://localhost:8080/auth/register', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          email,
+          password,
+          firstName: 'Usuario', // Temporal
+          lastName: 'Test'      // Temporal
+        })
+      });
+
+      // Primero intentamos obtener el cuerpo de la respuesta como texto
+      const responseText = await response.text();
+      let data;
+      try {
+        // Intentamos parsear el texto como JSON
+        data = JSON.parse(responseText);
+      } catch (e) {
+        console.error('Error parsing response:', responseText);
+        throw new Error('Error en el formato de respuesta del servidor');
+      }
+
+      if (response.ok) {
+        localStorage.setItem('accessToken', data.accessToken);
+        updateUser({
+          isLoggedIn: true,
+          ...data.user
+        });
+        navigate('/confirmacion');
+      } else {
+        throw new Error(data.message || 'Error en el registro');
+      }
+    } catch (error) {
+      console.error('Error detallado:', error);
+      alert(`Error al registrar: ${error.message}`);
     }
-    updateUser({
-      isLoggedIn: true,
-      //Cami aca es donde debes cargar la info que te llega por la API, podes llamar el servicio
-      //y que te retorne la info y colocarla aca con ...userData y ya esto lla actualiza en el state general
-    })
-    navigate('/confirmacion');
   };
 
   return (
@@ -72,16 +111,21 @@ const Registro = () => {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="Parcero@gmail.com"
-                className="
+                className={`
                   h-10 
                   border 
-                  border-gray-400 
+                  ${emailError ? 'border-red-500' : 'border-gray-400'}
                   rounded 
                   px-3 
                   text-sm 
                   focus:outline-none 
-                "
+                `}
               />
+              {emailError && (
+                <p className="text-red-500 text-xs mt-1">
+                  {emailError}
+                </p>
+              )}
             </div>
 
             {/* Campo de contraseña */}

@@ -2,10 +2,12 @@ import { useState } from "react";
 import { HiX } from "react-icons/hi";
 import PropTypes from "prop-types";
 import { useControlActions, useControlSelectors } from "../../hooks/useControlActions";
+import { useNavigate } from "react-router-dom";
 
 const HabitManager = () => {
     const { openHabitManager: isOpen } = useControlSelectors();
     const { setVariable } = useControlActions();
+    const navigate = useNavigate();
     const onClose = () => setVariable("openHabitManager", false);
 
     const [scheduledHabits] = useState([
@@ -41,7 +43,8 @@ const HabitManager = () => {
 
                 {/* Botón para añadir hábito */}
                 <div className="bg-verdePrincipal p-4 m-1 rounded-full shadow-md border-2 border-verdePrincipal flex items-center justify-center 
-                    transition-all duration-200 hover:bg-verdeSecundario hover:border-verdeOscuro hover:shadow-lg cursor-pointer group">
+                    transition-all duration-200 hover:bg-verdeSecundario hover:border-verdeOscuro hover:shadow-lg cursor-pointer group"
+                    onClick={() => navigate("/add")}>
                     <p className="text-white group-hover:text-black">Añadir Hábito</p>
                 </div>
 
@@ -51,7 +54,7 @@ const HabitManager = () => {
 };
 
 const HabitList = ({ title, habits }) => (
-    <div className="flex-1">
+    <div className="flex-col">
         <h3 className="text-md font-semibold mb-2">{title}</h3>
         <div className="h-[14rem] lg:h-[11.5rem] overflow-y-scroll p-2 border-2 bg-white border-verdePrincipal rounded-md shadow-md custom-scrollbar">
             <div className="flex flex-col gap-2">

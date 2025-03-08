@@ -3,6 +3,8 @@ import morgan from "morgan";
 import express from "express";
 import initializeRoutes from "./routes/index.js";
 import cookieParser from "cookie-parser";
+//import { authenticateUser } from "./middlewares/authMiddleware.js";
+
 const app = express();
 
 app.use(
@@ -17,6 +19,7 @@ app.use(
 app.use(express.json());
 app.use(morgan("dev"));
 app.use(cookieParser());
+//app.use(authenticateUser());
 
 initializeRoutes(app);
 

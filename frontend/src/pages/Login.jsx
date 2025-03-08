@@ -5,6 +5,9 @@ import { useUserActions } from '../hooks/useUserActions';
 
 const Login = () => {
   const [showPassword, setShowPassword] = useState(false);
+  const [email, setEmail] = useState('');
+  const [emailError, setEmailError] = useState('');
+  const [password, setPassword] = useState('');
   const navigate = useNavigate();
   const { updateUser } = useUserActions();
 
@@ -12,13 +15,41 @@ const Login = () => {
     setShowPassword(!showPassword);
   };
 
-  const handleLogin = () => {
-    updateUser({
-      isLoggedIn: true,
-      //Cami aca es donde debes cargar la info que te llega por la API, podes llamar el servicio
+  const validateEmail = (email) => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
+  };
+
+  const handleLogin = async () => {
+    setEmailError('');
+
+    if (!validateEmail(email)) {
+      setEmailError('Por favor, ingresa un correo electrónico válido');
+      return;
+    }
+
+    try {
+      const response = await fetch('http://localhost:8080/auth/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        credentials: 'include', // Importante para las cookies
+        body: JSON.stringify({ email, password })
+      });
+      const data = await response.json();
+      if (data.accessToken) {
+        // Guardar token y actualizar estado de usuario
+        updateUser({
+          isLoggedIn: true,
+//Cami aca es donde debes cargar la info que te llega por la API, podes llamar el servicio
       //y que te retorne la info y colocarla aca con ...userData y ya esto lla actualiza en el state general
-    })
-    navigate('/');
+        })
+        navigate('/');
+      }
+    } catch (error) {
+      console.error('Error:', error);
+    }
   };
 
   return (
@@ -59,17 +90,24 @@ const Login = () => {
               <input
                 id="email"
                 type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
                 placeholder="Parcero@gmail.com"
-                className="
+                className={`
                   h-10 
                   border 
-                  border-gray-400 
+                  ${emailError ? 'border-red-500' : 'border-gray-400'}
                   rounded 
                   px-3 
                   text-sm 
                   focus:outline-none 
-                "
+                `}
               />
+              {emailError && (
+                <p className="text-red-500 text-xs mt-1">
+                  {emailError}
+                </p>
+              )}
             </div>
 
             {/* Campo de contraseña */}
@@ -108,6 +146,8 @@ const Login = () => {
                 <input
                   id="password"
                   type={showPassword ? "text" : "password"}
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
                   placeholder="********"
                   className="
                     h-10 

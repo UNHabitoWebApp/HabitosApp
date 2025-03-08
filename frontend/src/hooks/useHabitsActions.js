@@ -1,5 +1,5 @@
 import { useAppDispatch, useAppSelector } from './store';
-import { addHabit, removeHabit, selectHabitsByDates } from "../store/slices/habitSlices";
+import { addFetchedHabits, addHabit, removeHabit, selectHabitsByDates } from "../store/slices/habitSlices";
 
 export const useHabitsActions = () => {
     const dispatch = useAppDispatch();
@@ -22,7 +22,11 @@ export const useHabitsActions = () => {
         dispatch(removeHabit(id));
     }
 
-    return { addDefaultHabbit, addNewHabit, removeNewHabit };
+    const addHabits = (events) => {
+        dispatch(addFetchedHabits( events ));
+    };
+
+    return { addDefaultHabbit, addNewHabit, removeNewHabit, addHabits };
 };
 
 export const useEventsOfWeek = (dates) => {

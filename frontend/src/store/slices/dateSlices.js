@@ -16,7 +16,13 @@ const DEFAULT_STATE = {
     daysOfWeek: [], 
     selectedDate: momentToObject(moment()),
     selectedWeek: moment().week(),
-    mode: 'week'
+    mode: 'week',
+    startDate: moment().subtract(2, 'weeks').startOf('week').format('YYYY-MM-DD'),
+    endDate: moment().add(2, 'weeks').endOf('week').format('YYYY-MM-DD'),
+    lastStartDate: null,
+    lastEndDate: null,
+    needFetch: false,
+    search: '',
 };
 
 const initialState = DEFAULT_STATE;
@@ -42,8 +48,18 @@ const dateSlice = createSlice({
                 state.selectedWeek += 1; // Avanzar una semana
 
                 if (currentDateMoment.week() !== state.selectedWeek) {
+                    state.lastEndDate = state.endDate;
                     state.selectedDate = momentToObject(currentDateMoment.add(1, 'week'));
                     state.currentDateMomentISO = currentDateMoment.toISOString();
+                    state.search = "forward";
+                }
+
+                // Verificar si la nueva fecha es mayor que endDate
+                if (currentDateMoment.isAfter(moment(state.endDate))) {
+                    state.lastEndDate = state.endDate;
+                    state.endDate = moment(state.endDate).add(1, 'month').endOf('week').format('YYYY-MM-DD');
+                    state.needFetch = true;
+                    state.search = "forward";
                 }
             } else {
                 const newDate = currentDateMoment.add(1, 'day'); 
@@ -53,6 +69,12 @@ const dateSlice = createSlice({
                     state.selectedWeek = newDate.week();
                 }   
                 state.selectedDate = momentToObject(newDate);
+
+                // Verificar si la nueva fecha es mayor que endDate
+                if (newDate.isAfter(moment(state.endDate))) {
+                    state.endDate = moment(state.endDate).add(1, 'month').endOf('week').format('YYYY-MM-DD');
+                    state.needFetch = true;
+                }
             }
         },
         backward: (state) => {
@@ -60,9 +82,17 @@ const dateSlice = createSlice({
             if (state.mode === 'week') {
                 state.selectedWeek -= 1; 
 
-                if (currentDateMoment .week() !== state.selectedWeek) {
+                if (currentDateMoment.week() !== state.selectedWeek) {
                     state.selectedDate = momentToObject(currentDateMoment.subtract(1, 'week'));
                     state.currentDateMomentISO = currentDateMoment.toISOString();
+                }
+
+                // Verificar si la nueva fecha es menor que startDate
+                if (currentDateMoment.isBefore(moment(state.startDate))) {
+                    state.lastStartDate = state.startDate;
+                    state.startDate = moment(state.startDate).subtract(1, 'month').startOf('week').format('YYYY-MM-DD');
+                    state.needFetch = true;
+                    state.search = "backward";
                 }
             } else {
                 const newDate = currentDateMoment.subtract(1, 'day');
@@ -71,6 +101,14 @@ const dateSlice = createSlice({
                     state.selectedWeek = newDate.week();
                 }
                 state.selectedDate = momentToObject(newDate);
+
+                // Verificar si la nueva fecha es menor que startDate
+                if (newDate.isBefore(moment(state.startDate))) {
+                    state.lastStartDate = state.startDate;
+                    state.startDate = moment(state.startDate).subtract(1, 'month').startOf('week').format('YYYY-MM-DD');
+                    state.needFetch = true;
+                    state.search = "backward";
+                }
             }
         },
         toggleMode : (state) => {
@@ -90,6 +128,15 @@ const dateSlice = createSlice({
             state.currentDateMomentISO = newDate.toISOString();
             state.selectedWeek = newDate.week();
             state.mode = 'day';
+        },
+        setneedFetch: (state, action) => {
+            state.needFetch = action.payload;   
+        },
+        setSearch: (state, action) => { 
+            if(action.payload === 'regenerate'){
+                state.search = action.payload;
+                state.needFetch = true;
+            }
         }
     },
 });
@@ -160,6 +207,8 @@ export const {
     backward,
     toggleMode,
     resetCurrentValues,
-    setDay
+    setDay,
+    setneedFetch,
+    setSearch
 } = dateSlice.actions;
 export default dateSlice.reducer;
