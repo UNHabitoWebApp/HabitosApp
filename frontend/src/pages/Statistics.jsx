@@ -1,104 +1,148 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { BarChartComponent, DataDetails } from "../components/StatisticsScreen/barChart";
 import { LineChartComponent } from "../components/StatisticsScreen/lineChart";
 import { PieChartComponent } from "../components/StatisticsScreen/pieChart";
 import { useParams } from "react-router-dom";
 import DataDisplay from "../components/StatisticsScreen/sideHistorial";
-import HabitList from '../components/HabitList';
+import getData from "../service/get.js"; // Service for HTTP requests
+import { useNavigate } from 'react-router-dom';
 
 const StatisticsScreen = () => {
-  const [selectedView, setSelectedView] = useState("Mosaico");
+  const [lineData, setLineData] = useState([]);
+  const [pieData, setPieData] = useState([]);
+  const [barData, setBarData] = useState([]);
+  const [historialData, setHistorialData] = useState({});
+  const [habitName, setHabitName] = useState("");
+  const [variableNames, setVariableNames] = useState({});
   const { id } = useParams();
-  const lineData = [
-    { date: "2024-12-09", value: 4 },
-    { date: "2024-12-07", value: 15 },
-    { date: "2024-12-05", value: 4 },
-    { date: "2024-12-04", value: 15 },
-    { date: "2024-12-03", value: 2 },
-  ];
+  const navigate = useNavigate();
 
-  const pieData = [
-    { name: "Sí", value: 3},
-    { name: "No", value: 2},
-  ];
+  useEffect(() => {
+    const fetchHabitData = async () => {
+      try {
+        // Fetch habit data
+        const habitResponse = await getData(`edit_habits/edit/${id}`);
+        console.log("Habit Data:", habitResponse);
+        const habitData = habitResponse;
 
-  const barData = [
-    { label: "Ficción", value: 2 },
-    { label: "Aventura", value: 3 },
-  ];
+        // Set habit name
+        setHabitName(habitData.name);
 
-  const historialData = {
-    "2024-12-09": [["Paginas Leídas", 4], ["Disfrutaste la lectura", "Sí"], ["Tipo de Lectura", "Aventura"]],
-    "2024-12-07": [["Paginas Leídas", 15], ["Disfrutaste la lectura", "No"], ["Tipo de Lectura", "Ficcion"]],
-    "2024-12-05": [["Paginas Leídas", 4], ["Disfrutaste la lectura", "Sí"], ["Tipo de Lectura", "Aventura"]],
-    "2024-12-04": [["Paginas Leídas", 15], ["Disfrutaste la lectura", "No"], ["Tipo de Lectura", "Aventura"]],
-    "2024-12-02": [["Paginas Leídas", 2], ["Disfrutaste la lectura", "Sí"], ["Tipo de Lectura", "Ficción"]],
-  };
+        // Extract variable names and types
+        const variableNamesMap = {};
+        habitData.variables.forEach(variable => {
+          variableNamesMap[variable.name] = { name: variable.name, type: variable.type };
+        });
+        setVariableNames(variableNamesMap);
+        console.log("Variable Names Map:", variableNamesMap);
 
-  const getSelectedChart = () => {
-    switch (selectedView) {
-      case "Paginas Leídas":
-        return (
-          <>
-            <LineChartComponent data={lineData} title="Páginas Leídas" />
-            <DataDetails data={lineData} />
-          </>
-        );
-      case "Disfrutaste la lectura":
-        return (
-          <>
-            <PieChartComponent data={pieData} title="Disfrutaste la lectura" />
-            <DataDetails data={pieData} />
-          </>
-        );
-      case "Tipo de Lectura":
-        return (
-          <>
-            <BarChartComponent data={barData} title="Tipo de Lectura" />
-            <DataDetails data={barData} />
-          </>
-        );
-      default:
-        return null;
-    }
-  };
+        // Fetch habit logs
+        const logsResponse = await getData(`habitLog/habitLog/${id}`);
+        console.log("Habit Logs:", logsResponse);
+        const logsData = logsResponse;
+
+        // Process logs data for charts
+        const processedLineData = [];
+        const processedPieData = [];
+        const processedBarData = [];
+        const processedHistorialData = {};
+
+        logsData.forEach(log => {
+          const date = new Date(log.date).toISOString().split('T')[0]; // Format date
+
+          log.variables.forEach(variable => {
+            const variableInfo = variableNamesMap[variable.name]; // Match variable.name to habitData.variables.name
+            console.log("Variable:", variable);
+            console.log("Variable Map:", variableNamesMap);
+            console.log(variableInfo);
+            if (!variableInfo) {
+              console.warn(`Variable info not found for name: ${variable.name}`);
+              return; // Skip if variable info is not found
+            }
+            console.log("Variable Info:", variableInfo);
+
+            // Determine chart type based on variable type
+            if (variableInfo.type === "integer" || variableInfo.type === "number") {
+              processedLineData.push({ date, value: parseFloat(variable.value) });
+            } else if (variableInfo.type === "boolean") {
+              processedPieData.push({ name: variable.value === "true" ? "Sí" : "No", value: 1 });
+            } else if (variableInfo.type === "enum") {
+              processedBarData.push({ label: variable.value, value: 1 });
+            }
+
+            // Organize data for historial
+            if (!processedHistorialData[date]) {
+              processedHistorialData[date] = [];
+            }
+            processedHistorialData[date].push([variableInfo.name, variable.value]);
+          });
+        });
+
+        console.log("Processed Line Data:", processedLineData);
+        console.log("Processed Pie Data:", processedPieData);
+        console.log("Processed Bar Data:", processedBarData);
+        console.log("Processed Historial Data:", processedHistorialData);
+
+        // Group and count data for pie and bar charts
+        const pieDataGrouped = processedPieData.reduce((acc, curr) => {
+          if (acc[curr.name]) {
+            acc[curr.name].value += 1;
+          } else {
+            acc[curr.name] = { name: curr.name, value: 1 };
+          }
+          return acc;
+        }, {});
+
+        const barDataGrouped = processedBarData.reduce((acc, curr) => {
+          if (acc[curr.label]) {
+            acc[curr.label].value += 1;
+          } else {
+            acc[curr.label] = { label: curr.label, value: 1 };
+          }
+          return acc;
+        }, {});
+
+        console.log("Grouped Pie Data:", pieDataGrouped);
+        console.log("Grouped Bar Data:", barDataGrouped);
+
+        // Update state
+        setLineData(Object.values(processedLineData));
+        setPieData(Object.values(pieDataGrouped));
+        setBarData(Object.values(barDataGrouped));
+        setHistorialData(processedHistorialData);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+    };
+
+    fetchHabitData();
+  }, [id]);
 
   return (
     <div className="bg-[#E6F2E6] flex flex-col items-center min-h-screen h-full py-4 px-2 w-full">
       <h1 className="text-2xl font-bold text-green-800 mb-4 p-2 border rounded-lg bg-green-100">
-        Seguimiento Hábito/Ejercicio Journaling
+        Seguimiento de {habitName}
       </h1>
-      <div className="flex justify-end w-full max-w-full mb-4 px-4">
-        <select
-          className="p-2 border border-black rounded-md bg-white text-black"
-          value={selectedView}
-          onChange={(e) => setSelectedView(e.target.value)}
-        >
-          <option value="Mosaico">Mosaico (TODAS)</option>
-          <option value="Paginas Leídas">Páginas Leídas</option>
-          <option value="Disfrutaste la lectura">Disfrutaste la lectura</option>
-          <option value="Tipo de Lectura">Tipo de Lectura</option>
-        </select>
-      </div>
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4 w-full max-w-full px-4">
         <div className="col-span-1 bg-[#C7E2D0] p-6 rounded-xl shadow-md border">
           <DataDisplay data={historialData} />
         </div>
         <div className="col-span-2 flex flex-col gap-4 items-center w-full">
-          {selectedView === "Mosaico" ? (
-            <>
-              <LineChartComponent data={lineData} title="Páginas Leídas" />
-              <div className="grid grid-cols-2 gap-4 w-full">
-                <PieChartComponent data={pieData} title="Disfrutaste la lectura" />
-                <BarChartComponent data={barData} title="Tipo de Lectura" />
-              </div>
-            </>
-          ) : (
-            getSelectedChart()
+          {/* Mostrar todos los gráficos en mosaico */}
+          {lineData.length > 0 && (
+            <LineChartComponent data={lineData} title={Object.values(variableNames).find(v => v.type === "integer" || v.type === "number")?.name || "Line Chart"} />
           )}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 w-full">
+            {pieData.length > 0 && (
+              <PieChartComponent data={pieData} title={Object.values(variableNames).find(v => v.type === "boolean")?.name || "Pie Chart"} />
+            )}
+            {barData.length > 0 && (
+              <BarChartComponent data={barData} title={Object.values(variableNames).find(v => v.type === "enum")?.name || "Bar Chart"} />
+            )}
+          </div>
         </div>
       </div>
-      <button className="mt-4 px-4 py-2 border-2 border-black rounded-full text-black hover:bg-black hover:text-white transition">
+      <button className="mt-4 px-4 py-2 border-2 border-black rounded-full text-black hover:bg-black hover:text-white transition" onClick={() => navigate("/")}>
         Volver al inicio
       </button>
     </div>
