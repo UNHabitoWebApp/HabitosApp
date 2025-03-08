@@ -41,7 +41,9 @@ export default function ExerciseRoutine() {
         return routineIcon;
     }
   };
-
+  const handleEditClick = () => {
+    navigate(`/edit/routine/${id}`);
+  };
   if (loading) return <p className="text-center">Cargando rutina...</p>;
   if (error) return <p className="text-center text-red-500">{error}</p>;
 
@@ -55,7 +57,12 @@ export default function ExerciseRoutine() {
             <h2 className="text-sm sm:text-base font-bold text-black text-center w-full mx-2">
               {routine.name}
             </h2>
-            <img src={lapixIcon} alt="Edit" className="w-5 h-5 flex-shrink-0" />
+            <img
+                src={lapixIcon}
+                alt="Edit"
+                className="w-5 h-5 flex-shrink-0 cursor-pointer"
+                onClick={handleEditClick} // Navega a la ruta de edición
+              />
           </div>
 
           {/* Lista de ejercicios */}

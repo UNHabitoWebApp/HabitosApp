@@ -7,20 +7,33 @@ export const patchRoutine = async (request, response) => {
     const user_id = request.user_id;
     const routine_id = request.params.id;
     const routineData = request.body;
-
+    const routine = await routine_service_obj.getRoutineById(routine_id, user_id);
     // Recorre el array de hábitos en la rutina
-    for (let habit of routineData.habits) {
+    for (let habit of routineData.exercises) {
+        console.log("Hábito:", habit);
+        habit.userId = user_id;
         if (!habit._id) {
             // Si el hábito no tiene _id, créalo
-            habit.userId = user_id;
-            const newHabit = await habit_service_obj.createHabit(habit);
+            const newHabit = await habit_service_obj.createHabit({
+                ...habit,
+                beginTime: habit.beginTime,
+                endTime: habit.endTime,
+                days: habit.days,
+                notifyMe: habit.notifyMe
+            });
             habit._id = newHabit._id; // Asigna el _id del nuevo hábito al objeto habit
         } else {
             // Si el hábito tiene _id, actualízalo
-            await habit_service_obj.updateHabit(habit._id, user_id, habit);
+            await habit_service_obj.updateHabit(habit._id, user_id, {
+                ...habit,
+                beginTime: habit.beginTime,
+                endTime: habit.endTime,
+                days: habit.days,
+                notifyMe: habit.notifyMe
+            });
         }
     }
-
+    
     const routineUpdate = await routine_service_obj.updateRoutine(routine_id, user_id, routineData);
     if (!routineUpdate) {
         return response.status(404).json({ message: "Rutina no encontrada" });

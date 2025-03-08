@@ -1,102 +1,118 @@
 import { useState, useEffect } from "react";
-import { useParams } from "react-router-dom"; // Importar useParams para simular el id de la URL
+import { useParams } from "react-router-dom";
 import RoutineFormEdit from "./RoutineFormEdit";
 import PersonalizedForm from "./PersonalizedFormEdit";
 import FeedbackScreen from "../createHabbit/FeedbackScreen";
 import BackToHomeButton from "../createHabbit/BackToHomeButton";
+import getData from "../../service/get";
+import patchData from "../../service/patch";
 
 export default function HabitSelectorEdit() {
-  const [screen, setScreen] = useState("select"); // Estado inicial
+  const [screen, setScreen] = useState("select");
   const [feedbackData, setFeedbackData] = useState(null);
   const [routineData, setRoutineData] = useState(null);
-  const { id } = useParams(); // Simular el id de la URL (aunque no se use en este caso)
-  const [personalizedData, setPersonalizedData] = useState(null); // Estado para datos personalizados
+  const { id } = useParams();
+  const [personalizedData, setPersonalizedData] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
-  // Tipos de ejercicio válidos
   const validExerciseTypes = ["cardio", "fuerza", "flexibilidad"];
 
   useEffect(() => {
-    const fakeRoutineData = {
-      name: "Rutina de Ejemplo",
-      type: "routinee", // Tipo de hábito: "routine" o "personalized"
-      exercises: [
-        { type: "cardio", name: "Correr" },
-        { type: "fuerza", name: "Press de banca" },
-        { type: "flexibilidad", name: "Estiramientos" },
-        { type: "otro", name: "Saltar la cuerda" }, // Este tipo no es válido y será filtrado
-      ],
-      days: ["L", "M", "W"],
-      startTime: "08:00",
-      endTime: "09:00",
+    const fetchData = async () => {
+      try {
+        let data = await getData(`routine/routine/${id}`);
+        if (!data || Object.keys(data).length === 0) {
+          throw new Error("No encontrado");
+        }
+        console.log(data);
+        if (data?.exercises?.length > 0) {
+          const filteredExercises = data.exercises
+            .map(ex => ({
+              _id: ex._id,
+              exerciseType: ex.exerciseType.toLowerCase(),
+              name: ex.name || "",
+            }));
+  
+          setRoutineData({
+            name: data.name || "",
+            exercises: filteredExercises,
+            days: data.days || [],
+            beginTime: data.beginTime || "",
+            endTime: data.endTime || "",
+          });
+  
+          setTimeout(() => setScreen("routineForm"), 50); // Forzar re-render
+        } else {
+          setPersonalizedData(data);
+          setTimeout(() => setScreen("personalizedForm"), 50); // Forzar re-render
+        }
+        console.log(routineData);
+      } catch (err) {
+        try {
+          const altData = await getData(`edit_habits/edit/${id}`);
+          if (altData && Object.keys(altData).length > 0) {
+            setPersonalizedData(altData);
+            setTimeout(() => setScreen("personalizedForm"), 50);
+          } else {
+            throw new Error("No encontrado en ambos endpoints");
+          }
+        } catch (altErr) {
+          setError("Error al cargar los datos");
+          console.error(altErr);
+        }
+      } finally {
+        setLoading(false);
+      }
     };
+  
+    fetchData();
+  }, [id]);
 
-    // Datos quemados para el hábito personalizado
-    const fakePersonalizedData = {
-      name: "Leer un libro",
-      type: "personalized", // Tipo de hábito: "routine" o "personalized"
-      variables: [
-        { type: "numero", etiqueta: "Páginas leídas" },
-        { type: "validacion", etiqueta: "Nivel de comprensión" },
-      ],
-      days: ["L", "J", "V"],
-      startTime: "19:00",
-      endTime: "20:00",
-      notificarme: true, // Opción de notificación
-    };
-
-    // Filtrar los ejercicios para incluir solo los tipos válidos
-    const filteredExercises = fakeRoutineData.exercises.filter(exercise =>
-      validExerciseTypes.includes(exercise.type)
-    );
-
-    // Actualizar los datos de la rutina con los ejercicios filtrados
-    setRoutineData({
-      ...fakeRoutineData,
-      exercises: filteredExercises,
-    });
-
-    // Actualizar los datos del hábito personalizado
-    setPersonalizedData(fakePersonalizedData);
-
-    // Determinar el screen inicial basado en el tipo de hábito
-    if (fakeRoutineData.type === "routine") {
-      setScreen("routineForm"); // Cargar el formulario de rutina
-    } else if (fakePersonalizedData.type === "personalized") {
-      setScreen("personalizedForm"); // Cargar el formulario personalizado
+  const handleRoutineSave = async (updatedRoutine) => {
+    try {
+      await patchData(`routine/routine/${id}`, updatedRoutine);
+      setFeedbackData({
+        title: "¡Rutina actualizada con éxito!",
+        description: "Tu rutina ha sido modificada correctamente.",
+      });
+      setScreen("feedback");
+    } catch (err) {
+      setError("Error al guardar la rutina");
+      console.error(err);
     }
-  }, []); // Sin dependencias, se ejecuta solo una vez al montar el componente
-
-  const handleRoutineSave = (updatedRoutine) => {
-    console.log("Rutina actualizada:", updatedRoutine);
-    setFeedbackData({
-      title: "¡Rutina actualizada con éxito!",
-      description: "Tu rutina ha sido modificada correctamente.",
-    });
-    setScreen("feedback");
   };
 
-  const handlePersonalizedSave = (notificarme) => {
-    if (notificarme) {
-      setFeedbackData({
-        title: "¡Hábito personalizado guardado con notificación!",
-        description: "Recibirás notificaciones para este hábito.",
+  const handlePersonalizedSave = async (notificarme) => {
+    try {
+      await patchData(`edit_habits/edit/${id}`, {
+        ...personalizedData,
+        notificarme,
       });
-    } else {
       setFeedbackData({
-        title: "¡Hábito personalizado guardado!",
-        description: "Tu hábito personalizado ha sido registrado.",
+        title: notificarme
+          ? "¡Hábito personalizado guardado con notificación!"
+          : "¡Hábito personalizado guardado!",
+        description: notificarme
+          ? "Recibirás notificaciones para este hábito."
+          : "Tu hábito personalizado ha sido registrado.",
       });
+      setScreen("feedback");
+    } catch (err) {
+      setError("Error al guardar el hábito personalizado");
+      console.error(err);
     }
-    setScreen("feedback");
   };
+
+  if (loading) return <p className="text-center">Cargando...</p>;
+  if (error) return <p className="text-center text-red-500">{error}</p>;
 
   return (
     <div className="flex flex-col items-center min-h-[80vh]">
-      {/* Mostrar el formulario correspondiente */}
-      {screen === "routineForm" && (
+      {screen === "routineForm" && routineData && (
         <RoutineFormEdit onSave={handleRoutineSave} initialData={routineData} />
       )}
-      {screen === "personalizedForm" && (
+      {screen === "personalizedForm" && personalizedData && (
         <PersonalizedForm onSave={handlePersonalizedSave} initialData={personalizedData} />
       )}
       {screen === "feedback" && (
@@ -108,7 +124,6 @@ export default function HabitSelectorEdit() {
           <BackToHomeButton />
         </>
       )}
-
       {screen === "select" && <BackToHomeButton />}
     </div>
   );
