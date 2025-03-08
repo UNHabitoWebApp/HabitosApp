@@ -4,16 +4,18 @@ import { useHabitsActions } from "../../hooks/useHabitsActions";
 import { fetchHabitsRange } from "../../service/fetchHabitsRange";
 import { useControlActions, useControlSelectors } from "../../hooks/useControlActions";
 import moment from "moment";
+import { useUserSelectors } from "../../hooks/useUserActions";
 
 const InitialDataLoader = () => {
     const { startDate, endDate, needFetch, lastStartDate, lastEndDate, search } = useCurrentDateInfo();
     const { addHabits } = useHabitsActions();
     const { loadCharge } = useControlSelectors();
     const { setVariable } = useControlActions();
+    const { isLoggedIn } = useUserSelectors();
 
     useEffect(() => {
         const fetchData = async () => {
-            if (startDate && endDate) {
+            if (startDate && endDate && isLoggedIn) {
                 if (needFetch) {
                     if (search === "forward") {
                         const events = await fetchHabitsRange(lastEndDate, endDate);
@@ -45,7 +47,7 @@ const InitialDataLoader = () => {
         };
 
         fetchData();
-    }, [startDate, endDate, needFetch, search]);
+    }, [startDate, endDate, needFetch, search, isLoggedIn]);
 
     return null;
 };
