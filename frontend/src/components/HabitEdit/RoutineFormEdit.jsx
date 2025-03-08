@@ -8,7 +8,7 @@ export default function RoutineFormEdit({ onSave, initialData }) {
     name: "",
     exercises: [{ exerciseType: "", name: "" }],
     days: [],
-    startTime: "",
+    beginTime: "",
     endTime: "",
   });
 
@@ -22,7 +22,7 @@ export default function RoutineFormEdit({ onSave, initialData }) {
           name: ex.name || "",
         })) || [{ exerciseType: "", name: "" }],
         days: initialData.days || [],
-        startTime: initialData.startTime || "",
+        beginTime: initialData.beginTime || "",
         endTime: initialData.endTime || "",
       });
     }
@@ -44,13 +44,26 @@ export default function RoutineFormEdit({ onSave, initialData }) {
     }));
   };
 
-  const toggleDay = (day) => {
-    setRoutine((prev) => {
-      const newDays = prev.days.includes(day)
-        ? prev.days.filter((d) => d !== day)
-        : [...prev.days, day];
-      return { ...prev, days: newDays };
-    });
+  // Mapeo de iniciales en español a nombres en inglés
+  const daysMapping = {
+    L: "Monday",
+    M: "Tuesday",
+    W: "Wednesday",
+    J: "Thursday",
+    V: "Friday",
+    S: "Saturday",
+    D: "Sunday",
+  };
+
+  const toggleDay = (dayInitial) => {
+    const dayName = daysMapping[dayInitial]; // Obtener el nombre en inglés
+
+    setRoutine((prev) => ({
+      ...prev,
+      days: prev.days.includes(dayName)
+        ? prev.days.filter((d) => d !== dayName) // Eliminar si ya está
+        : [...prev.days, dayName], // Agregar si no está
+    }));
   };
 
   return (
@@ -116,7 +129,9 @@ export default function RoutineFormEdit({ onSave, initialData }) {
               {["L", "M", "W", "J", "V", "S", "D"].map((day, index) => (
                 <button
                   key={index}
-                  className={`w-6 h-6 flex items-center justify-center border border-[#5F936C] rounded-full text-black text-[12px] transition-all duration-200 ${routine.days.includes(day) ? "bg-[#569788]" : ""}`}
+                  className={`w-6 h-6 flex items-center justify-center border border-[#5F936C] rounded-full text-black text-[12px] transition-all duration-200 ${
+                    routine.days.includes(daysMapping[day]) ? "bg-[#569788]" : ""
+                  }`}
                   onClick={() => toggleDay(day)}
                 >
                   {day}
@@ -126,11 +141,51 @@ export default function RoutineFormEdit({ onSave, initialData }) {
           </div>
           <div className="flex flex-col items-center">
             <h3 className="text-[13px] text-black mb-1">Hora de inicio</h3>
-            <input type="time" className="w-24 h-8 text-center border border-[#5F936C] rounded-md text-black" value={routine.startTime} onChange={(e) => setRoutine({ ...routine, startTime: e.target.value })} />
+            <div className="flex items-center gap-1">
+              <input
+                type="number"
+                placeholder="00"
+                className="w-10 h-10 text-center border border-[#5F936C] rounded-md text-black"
+                value={routine.beginTime.split(":")[0] || ""}
+                onChange={(e) =>
+                  setRoutine({ ...routine, beginTime: `${e.target.value}:${routine.beginTime.split(":")[1] || "00"}` })
+                }
+              />
+              <span className="text-black">:</span>
+              <input
+                type="number"
+                placeholder="00"
+                className="w-10 h-10 text-center border border-[#5F936C] rounded-md text-black"
+                value={routine.beginTime.split(":")[1] || ""}
+                onChange={(e) =>
+                  setRoutine({ ...routine, beginTime: `${routine.beginTime.split(":")[0] || "00"}:${e.target.value}` })
+                }
+              />
+            </div>
           </div>
           <div className="flex flex-col items-center">
             <h3 className="text-[13px] text-black mb-1">Hora de fin</h3>
-            <input type="time" className="w-24 h-8 text-center border border-[#5F936C] rounded-md text-black" value={routine.endTime} onChange={(e) => setRoutine({ ...routine, endTime: e.target.value })} />
+            <div className="flex items-center gap-1">
+              <input
+                type="number"
+                placeholder="00"
+                className="w-10 h-10 text-center border border-[#5F936C] rounded-md text-black"
+                value={routine.endTime.split(":")[0] || ""}
+                onChange={(e) =>
+                  setRoutine({ ...routine, endTime: `${e.target.value}:${routine.endTime.split(":")[1] || "00"}` })
+                }
+              />
+              <span className="text-black">:</span>
+              <input
+                type="number"
+                placeholder="00"
+                className="w-10 h-10 text-center border border-[#5F936C] rounded-md text-black"
+                value={routine.endTime.split(":")[1] || ""}
+                onChange={(e) =>
+                  setRoutine({ ...routine, endTime: `${routine.endTime.split(":")[0] || "00"}:${e.target.value}` })
+                }
+              />
+            </div>
           </div>
         </div>
       </div>
