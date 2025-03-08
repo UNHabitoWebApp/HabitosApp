@@ -1,39 +1,83 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { BarChartComponent, DataDetails } from "../components/StatisticsScreen/barChart";
 import { LineChartComponent } from "../components/StatisticsScreen/lineChart";
 import { PieChartComponent } from "../components/StatisticsScreen/pieChart";
 import { useParams } from "react-router-dom";
 import DataDisplay from "../components/StatisticsScreen/sideHistorial";
 import HabitList from '../components/HabitList';
+import getData from "../service/get.js"; // Asume que tienes un servicio para hacer solicitudes HTTP
 
 const StatisticsScreen = () => {
   const [selectedView, setSelectedView] = useState("Mosaico");
+  const [lineData, setLineData] = useState([]);
+  const [pieData, setPieData] = useState([]);
+  const [barData, setBarData] = useState([]);
+  const [historialData, setHistorialData] = useState({});
   const { id } = useParams();
-  const lineData = [
-    { date: "2024-12-09", value: 4 },
-    { date: "2024-12-07", value: 15 },
-    { date: "2024-12-05", value: 4 },
-    { date: "2024-12-04", value: 15 },
-    { date: "2024-12-03", value: 2 },
-  ];
 
-  const pieData = [
-    { name: "Sí", value: 3},
-    { name: "No", value: 2},
-  ];
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await getData(`habitLog/habitLog/${id}`);
+        const data = response;
+        console.log(data);
+        // Procesar los datos para los gráficos
+        const processedLineData = [];
+        const processedPieData = [];
+        const processedBarData = [];
+        const processedHistorialData = {};
 
-  const barData = [
-    { label: "Ficción", value: 2 },
-    { label: "Aventura", value: 3 },
-  ];
+        data.forEach(log => {
+          const date = new Date(log.date).toISOString().split('T')[0]; // Formatear la fecha
 
-  const historialData = {
-    "2024-12-09": [["Paginas Leídas", 4], ["Disfrutaste la lectura", "Sí"], ["Tipo de Lectura", "Aventura"]],
-    "2024-12-07": [["Paginas Leídas", 15], ["Disfrutaste la lectura", "No"], ["Tipo de Lectura", "Ficcion"]],
-    "2024-12-05": [["Paginas Leídas", 4], ["Disfrutaste la lectura", "Sí"], ["Tipo de Lectura", "Aventura"]],
-    "2024-12-04": [["Paginas Leídas", 15], ["Disfrutaste la lectura", "No"], ["Tipo de Lectura", "Aventura"]],
-    "2024-12-02": [["Paginas Leídas", 2], ["Disfrutaste la lectura", "Sí"], ["Tipo de Lectura", "Ficción"]],
-  };
+          log.variables.forEach(variable => {
+            if (variable.name === "Paginas Leídas") {
+              processedLineData.push({ date, value: parseInt(variable.value) });
+            } else if (variable.name === "Disfrutaste la lectura") {
+              processedPieData.push({ name: variable.value, value: 1 });
+            } else if (variable.name === "Tipo de Lectura") {
+              processedBarData.push({ label: variable.value, value: 1 });
+            }
+
+            // Organizar datos para el historial
+            if (!processedHistorialData[date]) {
+              processedHistorialData[date] = [];
+            }
+            processedHistorialData[date].push([variable.name, variable.value]);
+          });
+        });
+
+        // Agrupar y contar datos para el gráfico de pastel y barras
+        const pieDataGrouped = processedPieData.reduce((acc, curr) => {
+          if (acc[curr.name]) {
+            acc[curr.name].value += 1;
+          } else {
+            acc[curr.name] = { name: curr.name, value: 1 };
+          }
+          return acc;
+        }, {});
+
+        const barDataGrouped = processedBarData.reduce((acc, curr) => {
+          if (acc[curr.label]) {
+            acc[curr.label].value += 1;
+          } else {
+            acc[curr.label] = { label: curr.label, value: 1 };
+          }
+          return acc;
+        }, {});
+
+        // Actualizar el estado
+        setLineData(Object.values(processedLineData));
+        setPieData(Object.values(pieDataGrouped));
+        setBarData(Object.values(barDataGrouped));
+        setHistorialData(processedHistorialData);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+    };
+
+    fetchData();
+  }, [id]);
 
   const getSelectedChart = () => {
     switch (selectedView) {
