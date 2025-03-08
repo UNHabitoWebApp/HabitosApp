@@ -7,6 +7,7 @@ const EventCard = ({ event }) => {
     const navigate = useNavigate();
 
     const onClick = () => {
+        if (event.type === "past") return;
         navigate(event.isHabit ? `/personalize_habit/${event.id}` : `/routine_exercises_list/${event.id}`);
     };
 

@@ -38,7 +38,12 @@ calendarRouter.post("/generate", async (req, res) => {
         const todayEvents = (await HabitLog.find({
             userId,
             date: { $gte: now.startOf("day").toDate(), $lte: now.toDate() }
-        })).map(event => ({ ...event.toObject(), type: "today", habitId: event.habitId }));
+        })).map(event => ({
+            ...event.toObject(),
+            type: "today",
+            habitId: event.habitId,
+            id: event._id // Aquí se incluye el _id del HabitLog
+        }));
 
         const routines = await Routine.find({ userId });
         const habits = await Habit.find({ userId, personalized: true });
@@ -65,6 +70,7 @@ calendarRouter.post("/generate", async (req, res) => {
 
             if (!groupedPastLogs.has(eventKey)) {
                 groupedPastLogs.set(eventKey, {
+                    logId: log._id, // Guardamos el _id del primer HabitLog en este grupo
                     routineId: log.routine_id,
                     habitIds: new Set(),
                     date: dateKey,
@@ -82,7 +88,7 @@ calendarRouter.post("/generate", async (req, res) => {
         const pastLogsArray = Array.from(groupedPastLogs.values()).map(event => ({
             ...event,
             habitIds: Array.from(event.habitIds),
-            id: event.routineId || event.habitIds[0],
+            id: event.logId, // Se asigna el _id almacenado
             type: event.type || "past",
         }));
 
@@ -153,7 +159,7 @@ calendarRouter.post("/generate", async (req, res) => {
                     endTime: event.endTime,
                     name: event.description,
                     type: event.type,
-                    id: event.habitId || event.routineId,
+                    id: event.habitId || event.routineId || event.logId || event.id,
                     habit: event.habit || false
                 });
 
@@ -196,6 +202,5 @@ calendarRouter.get("/user_habits", async (req, res) => {
         res.status(500).json({ error: "Error interno del servidor" });
     }
 });
-
 
 export default calendarRouter;
