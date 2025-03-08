@@ -7,6 +7,7 @@ const Login = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [email, setEmail] = useState('');
   const [emailError, setEmailError] = useState('');
+  const [password, setPassword] = useState('');
   const navigate = useNavigate();
   const { updateUser } = useUserActions();
 
@@ -19,7 +20,7 @@ const Login = () => {
     return emailRegex.test(email);
   };
 
-  const handleLogin = () => {
+  const handleLogin = async () => {
     setEmailError('');
 
     if (!validateEmail(email)) {
@@ -27,12 +28,48 @@ const Login = () => {
       return;
     }
 
-    updateUser({
-      isLoggedIn: true,
-      //Cami aca es donde debes cargar la info que te llega por la API, podes llamar el servicio
-      //y que te retorne la info y colocarla aca con ...userData y ya esto lla actualiza en el state general
-    })
-    navigate('/');
+    try {
+      const response = await fetch('http://localhost:8080/auth/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json'
+        },
+        credentials: 'include',
+        body: JSON.stringify({ email, password })
+      });
+
+      const responseText = await response.text();
+      let data;
+      
+      try {
+        data = JSON.parse(responseText);
+      } catch (e) {
+        console.error('Error parsing response:', responseText);
+        throw new Error('Error en el formato de respuesta del servidor');
+      }
+
+      if (response.ok && data.accessToken) {
+        // Guardar token en localStorage
+        localStorage.setItem('accessToken', data.accessToken);
+        
+        // Actualizar estado del usuario con la información recibida
+        updateUser({
+          isLoggedIn: true,
+          id: data.user.id,
+          email: data.user.email,
+          firstName: data.user.firstName,
+          lastName: data.user.lastName
+        });
+
+        navigate('/');
+      } else {
+        throw new Error(data.message || 'Error en el inicio de sesión');
+      }
+    } catch (error) {
+      console.error('Error:', error);
+      alert(`Error al iniciar sesión: ${error.message}`);
+    }
   };
 
   return (
@@ -129,6 +166,8 @@ const Login = () => {
                 <input
                   id="password"
                   type={showPassword ? "text" : "password"}
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
                   placeholder="********"
                   className="
                     h-10 

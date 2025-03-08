@@ -23,7 +23,7 @@ export const login = async (request, response) => {
         const token = jwt.sign(
             { id: user._id, email: user.email },
             SECRET_KEY,
-            { expiresIn: "15m" }
+            { expiresIn: "7d" }
         );
 
         // Crear el refresh token
@@ -81,7 +81,7 @@ export const register = async (request, response) => {
         const token = jwt.sign(
             { id: createdUser._id, email: createdUser.email },
             SECRET_KEY,
-            { expiresIn: "15m" }
+            { expiresIn: "7d" }
         );
 
         // Generar el refresh token
