@@ -5,9 +5,9 @@ import { PieChartComponent } from "../components/StatisticsScreen/pieChart";
 import { useParams } from "react-router-dom";
 import DataDisplay from "../components/StatisticsScreen/sideHistorial";
 import getData from "../service/get.js"; // Service for HTTP requests
+import { useNavigate } from 'react-router-dom';
 
 const StatisticsScreen = () => {
-  const [selectedView, setSelectedView] = useState("Mosaico");
   const [lineData, setLineData] = useState([]);
   const [pieData, setPieData] = useState([]);
   const [barData, setBarData] = useState([]);
@@ -15,6 +15,7 @@ const StatisticsScreen = () => {
   const [habitName, setHabitName] = useState("");
   const [variableNames, setVariableNames] = useState({});
   const { id } = useParams();
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchHabitData = async () => {
@@ -30,7 +31,7 @@ const StatisticsScreen = () => {
         // Extract variable names and types
         const variableNamesMap = {};
         habitData.variables.forEach(variable => {
-          variableNamesMap[variable.id] = { name: variable.name, type: variable.type };
+          variableNamesMap[variable.name] = { name: variable.name, type: variable.type };
         });
         setVariableNames(variableNamesMap);
         console.log("Variable Names Map:", variableNamesMap);
@@ -50,12 +51,15 @@ const StatisticsScreen = () => {
           const date = new Date(log.date).toISOString().split('T')[0]; // Format date
 
           log.variables.forEach(variable => {
-            const variableInfo = variableNamesMap[variable.id]; // Match variable.id to habitData.variables.id
-
+            const variableInfo = variableNamesMap[variable.name]; // Match variable.name to habitData.variables.name
+            console.log("Variable:", variable);
+            console.log("Variable Map:", variableNamesMap);
+            console.log(variableInfo);
             if (!variableInfo) {
-              console.warn(`Variable info not found for ID: ${variable.id}`);
+              console.warn(`Variable info not found for name: ${variable.name}`);
               return; // Skip if variable info is not found
             }
+            console.log("Variable Info:", variableInfo);
 
             // Determine chart type based on variable type
             if (variableInfo.type === "integer" || variableInfo.type === "number") {
@@ -114,55 +118,31 @@ const StatisticsScreen = () => {
     fetchHabitData();
   }, [id]);
 
-  const getSelectedChart = () => {
-    switch (selectedView) {
-      case "Mosaico":
-        return (
-          <>
-            {lineData.length > 0 && (
-              <LineChartComponent data={lineData} title={Object.values(variableNames).find(v => v.type === "integer" || v.type === "number")?.name || "Line Chart"} />
-            )}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 w-full">
-              {pieData.length > 0 && (
-                <PieChartComponent data={pieData} title={Object.values(variableNames).find(v => v.type === "boolean")?.name || "Pie Chart"} />
-              )}
-              {barData.length > 0 && (
-                <BarChartComponent data={barData} title={Object.values(variableNames).find(v => v.type === "enum")?.name || "Bar Chart"} />
-              )}
-            </div>
-          </>
-        );
-      default:
-        return null;
-    }
-  };
-
   return (
     <div className="bg-[#E6F2E6] flex flex-col items-center min-h-screen h-full py-4 px-2 w-full">
       <h1 className="text-2xl font-bold text-green-800 mb-4 p-2 border rounded-lg bg-green-100">
         Seguimiento de {habitName}
       </h1>
-      <div className="flex justify-end w-full max-w-full mb-4 px-4">
-        <select
-          className="p-2 border border-black rounded-md bg-white text-black"
-          value={selectedView}
-          onChange={(e) => setSelectedView(e.target.value)}
-        >
-          <option value="Mosaico">Mosaico (TODAS)</option>
-          {Object.values(variableNames).map((variable, index) => (
-            <option key={index} value={variable.name}>{variable.name}</option>
-          ))}
-        </select>
-      </div>
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4 w-full max-w-full px-4">
         <div className="col-span-1 bg-[#C7E2D0] p-6 rounded-xl shadow-md border">
           <DataDisplay data={historialData} />
         </div>
         <div className="col-span-2 flex flex-col gap-4 items-center w-full">
-          {getSelectedChart()}
+          {/* Mostrar todos los gráficos en mosaico */}
+          {lineData.length > 0 && (
+            <LineChartComponent data={lineData} title={Object.values(variableNames).find(v => v.type === "integer" || v.type === "number")?.name || "Line Chart"} />
+          )}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 w-full">
+            {pieData.length > 0 && (
+              <PieChartComponent data={pieData} title={Object.values(variableNames).find(v => v.type === "boolean")?.name || "Pie Chart"} />
+            )}
+            {barData.length > 0 && (
+              <BarChartComponent data={barData} title={Object.values(variableNames).find(v => v.type === "enum")?.name || "Bar Chart"} />
+            )}
+          </div>
         </div>
       </div>
-      <button className="mt-4 px-4 py-2 border-2 border-black rounded-full text-black hover:bg-black hover:text-white transition">
+      <button className="mt-4 px-4 py-2 border-2 border-black rounded-full text-black hover:bg-black hover:text-white transition" onClick={() => navigate("/")}>
         Volver al inicio
       </button>
     </div>
