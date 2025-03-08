@@ -23,7 +23,6 @@ const Registro = () => {
     e.preventDefault();
     setEmailError('');
 
-    // Validate the email here
     if (!validateEmail(email)) {
       setEmailError('El Email no es válido');
       return;
@@ -39,7 +38,7 @@ const Registro = () => {
           email,
           password,
           firstName: 'Usuario', // Temporal
-          lastName: 'Test'      // Temporal
+          lastName: 'Test'
         })
       });
 
