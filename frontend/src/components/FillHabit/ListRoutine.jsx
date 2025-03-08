@@ -82,16 +82,8 @@ export default function ExerciseRoutine() {
                 >
                   {exercise.name}
                 </button>
-                <img
-                  src={stadisticIcon}
-                  alt="Statistics"
-                  className="ml-2 w-5 h-5 sm:w-6 sm:h-6"
-                />
-                <img
-                  src={getTypeIcon(exercise.exerciseType)}
-                  alt="Exercise Type"
-                  className="w-5 h-5 sm:w-6 sm:h-6 ml-2"
-                />
+                <img src={stadisticIcon} alt="Statistics" className="ml-2 w-5 h-5 sm:w-6 sm:h-6" onClick={() => navigate("/statistics")} />
+                <img src={getTypeIcon(exercise.exerciseType)} alt="Exercise Type" className="w-5 h-5 sm:w-6 sm:h-6 ml-2" />
               </div>
             ))}
           </div>

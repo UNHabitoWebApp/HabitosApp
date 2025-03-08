@@ -8,10 +8,10 @@ const formatFecha = (fecha) => {
 
 const LineChartComponent = ({ data, title = "Páginas Leídas" }) => {
   return (
-    <div className="bg-white p-6 rounded-lg shadow-md flex flex-col justify-center items-center overflow-hidden">
+    <div className="bg-white p-4 rounded-lg shadow-md flex flex-col justify-center items-center overflow-hidden">
       {/* Mostrar el título arriba del gráfico */}
-      <h2 className="text-lg font-bold text-center mb-4">{title}</h2>
-      <LineChart width={600} height={350} data={data}>
+      <h2 className="text-lg font-bold text-center mb-2">{title}</h2>
+      <LineChart width={600} height={250} data={data}>
         <CartesianGrid strokeDasharray="3 3" />
         <XAxis dataKey="date" />
         <YAxis />

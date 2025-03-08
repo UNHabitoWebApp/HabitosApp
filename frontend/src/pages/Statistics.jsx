@@ -3,6 +3,7 @@ import { BarChartComponent, DataDetails } from "../components/StatisticsScreen/b
 import { LineChartComponent } from "../components/StatisticsScreen/lineChart";
 import { PieChartComponent } from "../components/StatisticsScreen/pieChart";
 import DataDisplay from "../components/StatisticsScreen/sideHistorial";
+import HabitList from '../components/HabitList';
 
 const StatisticsScreen = () => {
   const [selectedView, setSelectedView] = useState("Mosaico");
