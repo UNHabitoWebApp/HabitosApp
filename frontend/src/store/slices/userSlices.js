@@ -19,6 +19,8 @@ const userSlice = createSlice({
             if (isLoggedIn !== undefined) state.isLoggedIn = isLoggedIn;
         },
         logoutUser: () => {
+            console.log("logoutUser");
+            localStorage.removeItem('accessToken');
             return { ...initialState };
         },
     },
