@@ -11,6 +11,7 @@ import Login from "../pages/Login";
 import Register from "../pages/Registro";
 import ConfirmacionRegistro from "../pages/ConfirmacionRegistro";
 import StatisticsScreen from "../pages/statistics";
+import Feedback from "../pages/Feedback";
 
 export const routesList = [
     { path: "/", element: <Home /> },
@@ -25,5 +26,6 @@ export const routesList = [
     { path: "/register", element: <Register /> },
     { path: "/confirmacion", element: <ConfirmacionRegistro /> },
     { path: "/statistics", element: <StatisticsScreen /> },
+    {path: "/feedback", element: <Feedback />},
     { path: "*", element: <NotFound /> },
 ];
