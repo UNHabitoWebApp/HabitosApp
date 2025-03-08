@@ -1,7 +1,8 @@
 import CreateHabitService from "../services/createHabitService.js";
 
 export const createHabit = async (request, response) => {
-    const newHabit = { ...request.body };
+    const newHabit = request.body;
+    newHabit.userId = request.user_id;
     const habit_service_obj = new CreateHabitService();
     const habit = await habit_service_obj.createHabit(newHabit);
     console.log("Hábito guardado:", habit);
@@ -9,7 +10,8 @@ export const createHabit = async (request, response) => {
 }
 
 export const createRoutine = async (request, response) => {
-    const newRoutine = { ...request.body };
+    const newRoutine = request.body;
+    newRoutine.userId = request.user_id;
     const habit_service_obj = new CreateHabitService();
     const routine = await habit_service_obj.createRoutine(newRoutine);
     console.log("Rutina guardada:", routine);

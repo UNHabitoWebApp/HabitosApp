@@ -4,11 +4,23 @@ const VariableSchema = new mongoose.Schema({
     name: { type: String, required: true },
     type: { type: String, enum: ["enum", "integer", "boolean", "open"], required: true },
     config: {
-        allowedValues: { type: [String], required: function () { return this.type === "enum"; } },
-        min: { type: Number, required: function () { return this.type === "integer"; } },
-        max: { type: Number, required: function () { return this.type === "integer"; } },
-        maxLength: { type: Number, required: function () { return this.type === "open"; } },
-    },
+        allowedValues: {
+            type: [String],
+            default: function () { return this.type === "enum" ? ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10"] : undefined; }
+        },
+        min: {
+            type: Number,
+            default: function () { return this.type === "integer" ? 1 : undefined; }
+        },
+        max: {
+            type: Number,
+            default: function () { return this.type === "integer" ? 1000 : undefined; }
+        },
+        maxLength: {
+            type: Number,
+            default: function () { return this.type === "open" ? 255 : undefined; } // Puedes cambiar 255 por el valor que prefieras
+        }
+    }
 });
 
 VariableSchema.set("toJSON", {
@@ -29,7 +41,7 @@ const HabitSchema = new mongoose.Schema(
         days: { type: [String], required: false },
         notifyMe: { type: Boolean, required: false, default: false },
         variables: { type: [VariableSchema], required: false },
-        personlized: { type: Boolean, required: false, default: false },
+        personalized: { type: Boolean, required: false, default: false },
     },
     {
         timestamps: true,
