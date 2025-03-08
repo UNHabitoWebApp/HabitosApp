@@ -6,6 +6,7 @@ import FeedbackScreen from "../createHabbit/FeedbackScreen";
 import BackToHomeButton from "../createHabbit/BackToHomeButton";
 import getData from "../../service/get";
 import patchData from "../../service/patch";
+import { useDateActions } from "../../hooks/useDateActions";
 
 export default function HabitSelectorEdit() {
   const [screen, setScreen] = useState("select");
@@ -15,6 +16,7 @@ export default function HabitSelectorEdit() {
   const [personalizedData, setPersonalizedData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const { setSearchParam } = useDateActions()
 
   const validExerciseTypes = ["cardio", "fuerza", "flexibilidad"];
 
@@ -77,6 +79,7 @@ export default function HabitSelectorEdit() {
         title: "¡Rutina actualizada con éxito!",
         description: "Tu rutina ha sido modificada correctamente.",
       });
+      setSearchParam("regenerate");
       setScreen("feedback");
     } catch (err) {
       setError("Error al guardar la rutina");
@@ -98,6 +101,7 @@ export default function HabitSelectorEdit() {
           ? "Recibirás notificaciones para este hábito."
           : "Tu hábito personalizado ha sido registrado.",
       });
+      setSearchParam("regenerate");
       setScreen("feedback");
     } catch (err) {
       setError("Error al guardar el hábito personalizado");
