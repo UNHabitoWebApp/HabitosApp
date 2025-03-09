@@ -62,11 +62,11 @@ export default function ExerciseRoutine() {
               {routine.name}
             </h2>
             <img
-                src={lapixIcon}
-                alt="Edit"
-                className="w-5 h-5 flex-shrink-0 cursor-pointer"
-                onClick={handleEditClick} // Navega a la ruta de edición
-              />
+              src={lapixIcon}
+              alt="Edit"
+              className="w-5 h-5 flex-shrink-0 cursor-pointer"
+              onClick={handleEditClick} // Navega a la ruta de edición
+            />
           </div>
 
           {/* Lista de ejercicios */}
@@ -84,7 +84,6 @@ export default function ExerciseRoutine() {
                 >
                   {exercise.name}
                 </button>
-                <img src={stadisticIcon} alt="Statistics" className="ml-2 w-5 h-5 sm:w-6 sm:h-6" onClick={() => navigate("/statistics")} />
                 <img src={getTypeIcon(exercise.exerciseType)} alt="Exercise Type" className="w-5 h-5 sm:w-6 sm:h-6 ml-2" />
               </div>
             ))}

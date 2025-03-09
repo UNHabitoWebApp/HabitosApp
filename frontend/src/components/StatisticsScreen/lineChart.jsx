@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { LineChart, Line, XAxis, YAxis, Tooltip, CartesianGrid } from "recharts";
 
 const formatFecha = (fecha) => {
@@ -7,11 +7,21 @@ const formatFecha = (fecha) => {
 };
 
 const LineChartComponent = ({ data, title = "Páginas Leídas" }) => {
+  const [width, setWidth] = useState(window.innerWidth > 1100 ? 600 : window.innerWidth > 800 ? 400 : window.innerWidth - 100);
+
+  useEffect(() => {
+    const handleResize = () => {
+      setWidth(window.innerWidth > 1100 ? 600 : window.innerWidth > 820 ? 400 : window.innerWidth - 100);
+    };
+
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
   return (
     <div className="bg-white p-4 rounded-lg shadow-md flex flex-col justify-center items-center overflow-hidden">
-      {/* Mostrar el título arriba del gráfico */}
       <h2 className="text-lg font-bold text-center mb-2">{title}</h2>
-      <LineChart width={600} height={250} data={data}>
+      <LineChart width={width} height={250} data={data}>
         <CartesianGrid strokeDasharray="3 3" />
         <XAxis dataKey="date" />
         <YAxis />

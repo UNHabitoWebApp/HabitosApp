@@ -4,6 +4,7 @@ import BackToHomeButton from "../createHabbit/BackToHomeButton";
 import Plus from "../../assets/icons/plus.svg";
 import postData from "../../service/post";
 import getData from "../../service/get";
+import { useDateActions } from "../../hooks/useDateActions";
 
 export default function ExerciseForm() {
   const { routine_id, exercise_id } = useParams();
@@ -12,6 +13,7 @@ export default function ExerciseForm() {
   const [sets, setSets] = useState([{ reps: "", weight: "", time: "" }]);
   const [observations, setObservations] = useState("");
   const [isChecked, setIsChecked] = useState(false);
+  const { setSearchParam } = useDateActions()
 
   // Cargar los datos del ejercicio desde el backend
   useEffect(() => {
@@ -47,7 +49,7 @@ export default function ExerciseForm() {
       console.error("Faltan datos en el ejercicio");
       return;
     }
-  
+
     // Función para convertir "HH:MM" a una fecha con la hora correcta del día
     const getDateWithTime = (timeString) => {
       const [hours, minutes] = timeString.split(":").map(Number);
@@ -55,21 +57,21 @@ export default function ExerciseForm() {
       date.setHours(hours, minutes, 0, 0); // Ajustamos la hora y minutos
       return date;
     };
-  
+
     const beginDate = getDateWithTime(exercise.beginTime);
     const endDate = getDateWithTime(exercise.endTime);
-  
+
     // Fecha actual como CompletionTime
     const now = new Date();
-  
+
     // Duración del ejercicio en milisegundos
     const durationMs = endDate - beginDate;
     console.log("Duración del ejercicio:", durationMs);
-  
+
     // Fecha del HabitLog = ahora - duración del ejercicio
     const habitLogDate = new Date(now.getTime() - durationMs);
     console.log("Fecha del HabitLog:", habitLogDate);
-  
+
     const habitLog = {
       routine_id, // Opcional, si aplica
       habit_id: exercise_id, // ID del ejercicio
@@ -86,18 +88,19 @@ export default function ExerciseForm() {
         observation: observations || "", // Observación dentro de cada variable
       })),
     };
-  
+
     try {
       await postData("habitLog/habitLog/", habitLog);
       console.log("Habit log enviado con éxito:", habitLog);
+      setSearchParam("regenerate");
       navigate(-1); // Regresar a la página anterior
     } catch (error) {
       console.error("Error al enviar el habit log:", error);
     }
   };
-  
-  
-  
+
+
+
   if (!exercise) return <p>Cargando...</p>;
 
   const isStrength = exercise.exerciseType.toLowerCase() === "fuerza";

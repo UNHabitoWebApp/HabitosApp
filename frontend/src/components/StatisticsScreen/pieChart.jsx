@@ -3,7 +3,7 @@ import { PieChart, Pie, Cell, Legend, Tooltip } from "recharts";
 
 const PieChartComponent = ({ data, title = "Distribución de Respuestas" }) => {
   const colors = ["#3498db", "#e74c3c"];
-
+  console.log(data)
   return (
     <div className="bg-white p-6 rounded-lg shadow-md flex flex-col justify-center items-center overflow-hidden">
       {/* Título */}
@@ -11,13 +11,13 @@ const PieChartComponent = ({ data, title = "Distribución de Respuestas" }) => {
 
       {/* Gráfico de pastel */}
       <PieChart width={300} height={300}>
-        <Pie 
-          data={data} 
-          dataKey="value" 
-          nameKey="name" 
-          cx="50%" 
-          cy="50%" 
-          outerRadius={100} 
+        <Pie
+          data={data}
+          dataKey="value"
+          nameKey="name"
+          cx="50%"
+          cy="50%"
+          outerRadius={100}
           label={({ name, percent }) => `${name}: ${(percent * 100).toFixed(1)}%`}
         >
           {data.map((entry, index) => (

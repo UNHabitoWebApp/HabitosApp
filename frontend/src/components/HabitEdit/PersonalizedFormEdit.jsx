@@ -123,17 +123,16 @@ export default function PersonalizedForm({ onSave, initialData }) {
           </span>
         </h2>
 
-        <div className="flex items-center justify-between">
+        <div className="md:flex lg:flex items-center justify-between">
           {/* Días de la semana */}
-          <div className="flex flex-col items-center">
+          <div className="flex-col items-center">
             <h2 className="text-[13px] text-black mb-1">Días de la semana</h2>
             <div className="flex gap-1">
               {["L", "M", "W", "J", "V", "S", "D"].map((day, index) => (
                 <button
                   key={index}
-                  className={`w-6 h-6 flex items-center justify-center border border-[#5F936C] rounded-full text-black text-[12px] transition-all duration-200 ${
-                    personalized.days.map(d => dayMap[d]).includes(day) ? "bg-[#569788]" : ""
-                  }`}
+                  className={`w-6 h-6 flex items-center justify-center border border-[#5F936C] rounded-full text-black text-[12px] transition-all duration-200 ${personalized.days.map(d => dayMap[d]).includes(day) ? "bg-[#569788]" : ""
+                    }`}
                   onClick={() => {
                     const dayInEnglish = Object.keys(dayMap).find(key => dayMap[key] === day);
                     setPersonalized((prev) => ({

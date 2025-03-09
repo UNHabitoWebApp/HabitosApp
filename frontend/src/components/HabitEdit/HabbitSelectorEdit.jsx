@@ -36,7 +36,7 @@ export default function HabitSelectorEdit() {
               exerciseType: ex.exerciseType.toLowerCase(),
               name: ex.name || "",
             }));
-  
+
           setRoutineData({
             name: data.name || "",
             exercises: filteredExercises,
@@ -44,7 +44,7 @@ export default function HabitSelectorEdit() {
             beginTime: data.beginTime || "",
             endTime: data.endTime || "",
           });
-  
+
           setTimeout(() => setScreen("routineForm"), 50); // Forzar re-render
         } else {
           setPersonalizedData(data);
@@ -68,7 +68,7 @@ export default function HabitSelectorEdit() {
         setLoading(false);
       }
     };
-  
+
     fetchData();
   }, [id]);
 
@@ -113,7 +113,7 @@ export default function HabitSelectorEdit() {
   if (error) return <p className="text-center text-red-500">{error}</p>;
 
   return (
-    <div className="flex flex-col items-center min-h-[80vh]">
+    <div className="flex flex-col items-center min-h-[80vh]  w-80 md:w-full lg:w-full">
       {screen === "routineForm" && routineData && (
         <RoutineFormEdit onSave={handleRoutineSave} initialData={routineData} />
       )}

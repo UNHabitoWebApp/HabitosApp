@@ -65,7 +65,7 @@ const StatisticsScreen = () => {
             if (variableInfo.type === "integer" || variableInfo.type === "number") {
               processedLineData.push({ date, value: parseFloat(variable.value) });
             } else if (variableInfo.type === "boolean") {
-              processedPieData.push({ name: variable.value === "true" ? "Sí" : "No", value: 1 });
+              processedPieData.push({ name: variable.value === true ? "Sí" : "No", value: 1 });
             } else if (variableInfo.type === "enum") {
               processedBarData.push({ label: variable.value, value: 1 });
             }

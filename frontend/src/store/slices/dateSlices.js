@@ -136,7 +136,7 @@ const dateSlice = createSlice({
             if(action.payload === 'regenerate'){
                 state.search = action.payload;
                 state.needFetch = true;
-            }
+            }   
         }
     },
 });

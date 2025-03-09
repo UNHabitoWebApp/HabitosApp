@@ -189,12 +189,12 @@ export default function RoutineForm({ onSave }) {
       {isAddingRoutine && (
         <div className="mt-2 p-2 bg-[#ADD9C5] border-2 border-[#5F936C] rounded-[20px] w-full max-w-md">
           <h2 className="text-black text-[15px] text-center mb-2 flex items-center justify-center gap-2">Horario
-          <span title="Formato 24 horas" className="cursor-pointer">
-             ⓘ
-          </span>
+            <span title="Formato 24 horas" className="cursor-pointer">
+              ⓘ
+            </span>
           </h2>
 
-          <div className="flex items-center justify-between gap-2">
+          <div className="md:flex lg:flex items-center justify-between gap-2">
             {/* Días de la semana */}
             <div className="flex flex-col items-center">
               <h2 className="text-[13px] text-black mb-1">Días de la semana</h2>

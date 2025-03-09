@@ -122,16 +122,15 @@ export default function RoutineFormEdit({ onSave, initialData }) {
 
       <div className="mt-2 p-2 bg-[#ADD9C5] border-2 border-[#5F936C] rounded-[20px] w-full max-w-md">
         <h2 className="text-black text-[15px] text-center mb-2">Horario</h2>
-        <div className="flex items-center justify-between">
+        <div className="md:flex lg:flex items-center justify-between">
           <div className="flex flex-col items-center">
             <h2 className="text-[13px] text-black mb-1">Días de la semana</h2>
             <div className="flex gap-1">
               {["L", "M", "W", "J", "V", "S", "D"].map((day, index) => (
                 <button
                   key={index}
-                  className={`w-6 h-6 flex items-center justify-center border border-[#5F936C] rounded-full text-black text-[12px] transition-all duration-200 ${
-                    routine.days.includes(daysMapping[day]) ? "bg-[#569788]" : ""
-                  }`}
+                  className={`w-6 h-6 flex items-center justify-center border border-[#5F936C] rounded-full text-black text-[12px] transition-all duration-200 ${routine.days.includes(daysMapping[day]) ? "bg-[#569788]" : ""
+                    }`}
                   onClick={() => toggleDay(day)}
                 >
                   {day}
